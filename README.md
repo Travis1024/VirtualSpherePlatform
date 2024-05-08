@@ -4,7 +4,7 @@
 
 ## 模块关系图
 
-<img src="https://travisnotes.oss-cn-shanghai.aliyuncs.com/mdpic/202405082339468.png" alt="image-20240508233917435" style="zoom:35%;" />
+<img src="https://travisnotes.oss-cn-shanghai.aliyuncs.com/mdpic/202405082348901.png" alt="image-20240508234854859" style="zoom:50%;" />
 
 ## 功能介绍
 
