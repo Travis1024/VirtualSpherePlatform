@@ -2,6 +2,8 @@
 
 ![Static Badge](https://img.shields.io/badge/License-GPL-blue)   ![Static Badge](https://img.shields.io/badge/Statue-Code_Refactoring-blue)   ![Static Badge](https://img.shields.io/badge/Spring_Boot-2.7.18-orange)  ![Static Badge](https://img.shields.io/badge/OS-Kylin_Server_v10-g)  
 
+> 代码重构中（Code Refactoring）
+
 ## 模块关系图
 
 <img src="https://travisnotes.oss-cn-shanghai.aliyuncs.com/mdpic/202405082348901.png" alt="image-20240508234854859" style="zoom:50%;" />
