@@ -15,6 +15,7 @@
         <option value="$PROJECT_DIR$/vsp-center-web/vsp-common/pom.xml" />
         <option value="$PROJECT_DIR$/vsp-center/pom.xml" />
         <option value="$PROJECT_DIR$/vsp-common/pom.xml" />
+        <option value="$PROJECT_DIR$/vsp-host-common/pom.xml" />
         <option value="$PROJECT_DIR$/vsp-host/pom.xml" />
         <option value="$PROJECT_DIR$/vsp-script/pom.xml" />
       </set>

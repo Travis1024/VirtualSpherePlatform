@@ -15,7 +15,6 @@
         <module>vsp-center-monitor</module>
         <module>vsp-center-script</module>
         <module>vsp-center-web</module>
-        <module>vsp-host-common</module>
         <module>vsp-host-web</module>
     </modules>
 
