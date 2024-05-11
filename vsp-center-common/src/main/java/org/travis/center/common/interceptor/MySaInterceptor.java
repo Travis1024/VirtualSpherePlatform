@@ -1,8 +1,11 @@
 package org.travis.center.common.interceptor;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.fun.SaParamFunction;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import lombok.extern.slf4j.Slf4j;
+import org.travis.center.common.enums.BizCodeEnum;
+import org.travis.center.common.exceptions.CommonException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +27,11 @@ public class MySaInterceptor extends SaInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("[URL-鉴权] -> {}", request.getRequestURI());
-        return super.preHandle(request, response, handler);
+        try {
+            super.preHandle(request, response, handler);
+            return true;
+        } catch (Exception e) {
+            throw new CommonException(BizCodeEnum.MISSING_TOKEN.getCode(), e.getMessage());
+        }
     }
 }

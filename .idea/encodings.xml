@@ -3,6 +3,7 @@
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vsp-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vsp-center-common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vsp-center-common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vsp-center-manage/src/main/java" charset="UTF-8" />

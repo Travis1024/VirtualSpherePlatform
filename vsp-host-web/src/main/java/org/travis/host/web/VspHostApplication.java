@@ -1,6 +1,7 @@
 package org.travis.host.web;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -17,6 +18,7 @@ import java.util.Arrays;
  * @Data 2024/5/10
  */
 @Slf4j
+@EnableDubbo
 @SpringBootApplication
 public class VspHostApplication {
     public static void main(String[] args) throws UnknownHostException {

@@ -16,6 +16,7 @@
         <module>vsp-center-script</module>
         <module>vsp-center-web</module>
         <module>vsp-host-web</module>
+        <module>vsp-api</module>
     </modules>
 
     <!-- 继承 SpringBoot 父工程 -->
@@ -37,6 +38,8 @@
         <dameng.version>8.1.1.49</dameng.version>
         <transmittable.threadlocal.version>2.14.5</transmittable.threadlocal.version>
         <satoken.version>1.37.0</satoken.version>
+        <dubbo.version>3.2.11</dubbo.version>
+        <curator.version>5.6.0</curator.version>
     </properties>
 
     <dependencyManagement>
@@ -82,6 +85,26 @@
                 <groupId>cn.dev33</groupId>
                 <artifactId>sa-token-redis-jackson</artifactId>
                 <version>${satoken.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-x-discovery</artifactId>
+                <version>${curator.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

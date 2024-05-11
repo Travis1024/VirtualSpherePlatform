@@ -2,6 +2,7 @@ package org.travis.center.common.config.mvc.advice;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.rpc.RpcException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -39,6 +40,13 @@ public class CommonExceptionAdvice {
         log.error("[登录鉴权异常] -> 异常类:{}, 状态码:{}, 异常信息:", exception.getClass().getName(), BizCodeEnum.MISSING_TOKEN, exception);
         return processResponse(BizCodeEnum.MISSING_TOKEN.getCode(), BizCodeEnum.MISSING_TOKEN.getMessage());
     }
+
+    @ExceptionHandler(RpcException.class)
+    public Object handleDubboRpcException(RpcException exception) {
+        log.error("[Dubbo-调用异常] -> 异常类:{}, 状态码:{}, 异常信息:", exception.getClass().getName(), BizCodeEnum.DUBBO_CALL_ERROR, exception);
+        return processResponse(BizCodeEnum.DUBBO_CALL_ERROR.getCode(), BizCodeEnum.DUBBO_CALL_ERROR.getMessage());
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Object handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {

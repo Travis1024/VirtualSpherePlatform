@@ -37,6 +37,7 @@ public enum BizCodeEnum {
      */
     TOKEN_CHECK_FAILED(901, "Token 验证失败"),
     DATABASE_OPERATION_FAILED(920, "数据库操作异常"),
+    DUBBO_CALL_ERROR(940, "Dubbo-远程调用异常"),
     /**
      * 未知错误
      */

@@ -18,7 +18,7 @@ import org.travis.center.common.exceptions.BadRequestException;
  */
 @Slf4j
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/web/auth")
 public class AuthController {
     @Operation(summary = "用户登录")
     @GetMapping("/login")

@@ -9,7 +9,7 @@
         <version>1.0</version>
     </parent>
 
-    <groupId>org.travis.host.web</groupId>
+    <groupId>org.travis.host</groupId>
     <artifactId>vsp-host-web</artifactId>
 
     <properties>
@@ -20,6 +20,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.travis.api</groupId>
+            <artifactId>vsp-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -27,13 +32,11 @@
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
-            <version>${knife4j.version}</version>
         </dependency>
         <!-- ThreadLocal -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>transmittable-thread-local</artifactId>
-            <version>${transmittable.threadlocal.version}</version>
         </dependency>
     </dependencies>
 

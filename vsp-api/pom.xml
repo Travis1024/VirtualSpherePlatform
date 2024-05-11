@@ -9,8 +9,8 @@
         <version>1.0</version>
     </parent>
 
-    <groupId>org.travis.center</groupId>
-    <artifactId>vsp-center-monitor</artifactId>
+    <groupId>org.travis.api</groupId>
+    <artifactId>vsp-api</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -19,10 +19,22 @@
     </properties>
 
     <dependencies>
+        <!-- Dubbo 服务依赖 -->
         <dependency>
-            <groupId>org.travis.center</groupId>
-            <artifactId>vsp-center-common</artifactId>
-            <version>1.0</version>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-x-discovery</artifactId>
         </dependency>
     </dependencies>
 

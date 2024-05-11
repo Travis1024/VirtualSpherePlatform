@@ -9,7 +9,7 @@
         <version>1.0</version>
     </parent>
 
-    <groupId>org.travis.center.common</groupId>
+    <groupId>org.travis.center</groupId>
     <artifactId>vsp-center-common</artifactId>
 
     <properties>
@@ -19,6 +19,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.travis.api</groupId>
+            <artifactId>vsp-api</artifactId>
+            <version>1.0</version>
+        </dependency>
         <!-- redisson -->
         <dependency>
             <groupId>org.redisson</groupId>

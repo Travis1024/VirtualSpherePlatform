@@ -1,6 +1,7 @@
 package org.travis.host.web.config.mvc;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -25,6 +26,7 @@ public class MvcAutoConfig implements WebMvcConfigurer {
      * 将「统一异常处理类」注入 Bean 容器
      */
     @Bean
+    @ConditionalOnMissingBean
     public CommonExceptionAdvice commonExceptionAdvice() {
         return new CommonExceptionAdvice();
     }
@@ -33,6 +35,7 @@ public class MvcAutoConfig implements WebMvcConfigurer {
      * 将「请求 ID 过滤器」注入 Bean 容器
      */
     @Bean
+    @ConditionalOnMissingBean
     public RequestIdFilter requestIdFilter() {
         return new RequestIdFilter();
     }
@@ -41,6 +44,7 @@ public class MvcAutoConfig implements WebMvcConfigurer {
      * 将「用户ID 过滤器」注入 Bean 容器
      */
     @Bean
+    @ConditionalOnMissingBean
     public UserInfoFilter userInfoInterceptor() {
         return new UserInfoFilter();
     }
@@ -49,6 +53,7 @@ public class MvcAutoConfig implements WebMvcConfigurer {
      * 将「响应信息包装类」注入 Bean 容器
      */
     @Bean
+    @ConditionalOnMissingBean
     public WrapperResponseBodyAdvice wrapperResponseBodyAdvice() {
         return new WrapperResponseBodyAdvice();
     }

@@ -9,7 +9,7 @@
         <version>1.0</version>
     </parent>
 
-    <groupId>org.travis.center.manage</groupId>
+    <groupId>org.travis.center</groupId>
     <artifactId>vsp-center-manage</artifactId>
 
     <properties>
@@ -20,7 +20,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.travis.center.common</groupId>
+            <groupId>org.travis.center</groupId>
             <artifactId>vsp-center-common</artifactId>
             <version>1.0</version>
         </dependency>

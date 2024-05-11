@@ -1,8 +1,14 @@
 package org.travis.center.web;
 
+import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.context.TypeExcludeFilter;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScans;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import java.net.InetAddress;
@@ -16,6 +22,8 @@ import java.util.Arrays;
  * @Version v1.0
  * @Data 2024/5/8
  */
+@EnableDubbo
+@ComponentScan("org.travis.center.**.controller")
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class VspCenterApplication {
     public static void main(String[] args) throws UnknownHostException {

@@ -1,0 +1,1 @@
+selectIpRouter=org.travis.center.common.config.dubbo.SelectByIpRouterFactory
