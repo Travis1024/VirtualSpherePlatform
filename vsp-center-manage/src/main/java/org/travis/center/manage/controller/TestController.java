@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.travis.api.client.host.HostCommandClient;
+import org.travis.shared.common.domain.R;
+import org.travis.shared.common.exceptions.CommonException;
+import org.travis.shared.common.exceptions.DubboCallException;
+import org.travis.shared.common.exceptions.DubboFunctionException;
 
 /**
  * @ClassName TestController
@@ -27,6 +31,10 @@ public class TestController {
     @GetMapping("/send")
     public String sendCommand(String targetHostIp, String command) {
         log.info("{} -> {}", targetHostIp, command);
-        return hostCommandClient.execSingleCommand(targetHostIp, command);
+        R<String> execked = hostCommandClient.execSingleCommand(targetHostIp, command);
+        if (execked.checkFail()) {
+            throw new DubboFunctionException(execked.getCode(), execked.getMsg());
+        }
+        return execked.getData();
     }
 }

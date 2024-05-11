@@ -1,11 +1,11 @@
-package org.travis.center.common.config.mvc;
+package org.travis.shared.common.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.travis.center.common.interceptor.UserInfoInterceptor;
+import org.travis.shared.common.filter.RequestIdFilter;
 
 import javax.servlet.Filter;
 
@@ -17,23 +17,24 @@ import javax.servlet.Filter;
  * @Data 2024/4/21
  */
 @Configuration
-@ConditionalOnClass({CommonExceptionAdvice.class, Filter.class})
+@ConditionalOnClass({Filter.class})
 public class MvcAutoConfig implements WebMvcConfigurer {
+
     /**
-     * 将「统一异常处理类」注入 Bean 容器
+     * 将「请求 ID 过滤器」注入 Bean 容器
      */
     @Bean
     @ConditionalOnMissingBean
-    public CommonExceptionAdvice commonExceptionAdvice() {
-        return new CommonExceptionAdvice();
+    public RequestIdFilter requestIdFilter() {
+        return new RequestIdFilter();
     }
 
     /**
-     * 将「用户ID拦截器」注入 Bean 容器
+     * 将「响应信息包装类」注入 Bean 容器
      */
     @Bean
     @ConditionalOnMissingBean
-    public UserInfoInterceptor userInfoInterceptor() {
-        return new UserInfoInterceptor();
+    public WrapperResponseBodyAdvice wrapperResponseBodyAdvice() {
+        return new WrapperResponseBodyAdvice();
     }
 }

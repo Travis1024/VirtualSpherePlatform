@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.travis.shared.common.config.MvcAutoConfig,\
+  org.travis.shared.common.config.JacksonConfig, \
+  org.travis.shared.common.config.CorsConfig

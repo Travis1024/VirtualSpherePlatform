@@ -20,23 +20,18 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.travis.api</groupId>
-            <artifactId>vsp-api</artifactId>
+            <groupId>org.travis.shared</groupId>
+            <artifactId>vsp-shared-common</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.travis.shared</groupId>
+            <artifactId>vsp-shared-api</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <!-- knife4j -->
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
-        </dependency>
-        <!-- ThreadLocal -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>transmittable-thread-local</artifactId>
         </dependency>
     </dependencies>
 

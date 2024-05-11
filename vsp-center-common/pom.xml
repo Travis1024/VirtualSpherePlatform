@@ -20,8 +20,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.travis.api</groupId>
-            <artifactId>vsp-api</artifactId>
+            <groupId>org.travis.shared</groupId>
+            <artifactId>vsp-shared-common</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.travis.shared</groupId>
+            <artifactId>vsp-shared-api</artifactId>
             <version>1.0</version>
         </dependency>
         <!-- redisson -->
@@ -46,40 +51,6 @@
             <artifactId>Dm8JdbcDriver18</artifactId>
             <version>${dameng.version}</version>
         </dependency>
-        <!-- knife4j -->
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
-            <version>${knife4j.version}</version>
-        </dependency>
-        <!-- mybatis plus -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatis.plus.version}</version>
-        </dependency>
-        <!--ThreadLocal-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>transmittable-thread-local</artifactId>
-        </dependency>
-        <!-- 主要应用于 Filter 相关类 -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!-- 主要应用于 Filter 相关类 -->
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!-- spring json -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-json</artifactId>
-        </dependency>
         <!-- Sa-Token 权限认证，在线文档：https://sa-token.cc -->
         <dependency>
             <groupId>cn.dev33</groupId>
@@ -90,7 +61,6 @@
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-redis-jackson</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>

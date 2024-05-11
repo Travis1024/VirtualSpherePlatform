@@ -16,7 +16,8 @@
         <module>vsp-center-script</module>
         <module>vsp-center-web</module>
         <module>vsp-host-web</module>
-        <module>vsp-api</module>
+        <module>vsp-shared-api</module>
+        <module>vsp-shared-common</module>
     </modules>
 
     <!-- 继承 SpringBoot 父工程 -->

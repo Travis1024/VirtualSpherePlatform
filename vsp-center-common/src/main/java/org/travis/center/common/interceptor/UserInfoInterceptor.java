@@ -3,7 +3,7 @@ package org.travis.center.common.interceptor;
 import cn.dev33.satoken.stp.StpUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.travis.center.common.utils.UserThreadLocalUtil;
+import org.travis.shared.common.utils.UserThreadLocalUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,5 +23,10 @@ public class UserInfoInterceptor implements HandlerInterceptor {
             UserThreadLocalUtil.setUserId(StpUtil.getLoginIdAsLong());
         }
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        UserThreadLocalUtil.removeUserId();
     }
 }

@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
-import org.travis.center.common.constants.SystemConstant;
-import org.travis.center.common.utils.UserThreadLocalUtil;
+import org.travis.shared.common.constants.SystemConstant;
+import org.travis.shared.common.utils.UserThreadLocalUtil;
 
 import java.sql.SQLException;
 

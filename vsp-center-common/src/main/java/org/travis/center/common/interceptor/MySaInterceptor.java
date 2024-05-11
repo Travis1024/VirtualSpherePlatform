@@ -1,11 +1,10 @@
 package org.travis.center.common.interceptor;
 
-import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.fun.SaParamFunction;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import lombok.extern.slf4j.Slf4j;
-import org.travis.center.common.enums.BizCodeEnum;
-import org.travis.center.common.exceptions.CommonException;
+import org.travis.shared.common.enums.BizCodeEnum;
+import org.travis.shared.common.exceptions.CommonException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
