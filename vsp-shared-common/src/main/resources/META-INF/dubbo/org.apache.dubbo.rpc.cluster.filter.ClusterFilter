@@ -1,0 +1,2 @@
+DubboRequestIdFilter=org.travis.shared.common.filter.dubbo.consumer.DubboRequestIdFilter
+DubboUserFilter=org.travis.shared.common.filter.dubbo.consumer.DubboUserFilter
