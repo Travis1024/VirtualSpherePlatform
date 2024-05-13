@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.travis.center.common.mapper.manage.HostInfoMapper">
+  <resultMap id="BaseResultMap" type="org.travis.center.common.entity.manage.HostInfo">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="IP" jdbcType="VARCHAR" property="ip" />
+    <result column="MEMORY_SIZE" jdbcType="BIGINT" property="memorySize" />
+    <result column="CPU_NUMBER" jdbcType="INTEGER" property="cpuNumber" />
+    <result column="ARCHITECTURE" jdbcType="TINYINT" property="architecture" />
+    <result column="LOGIN_USER" jdbcType="VARCHAR" property="loginUser" />
+    <result column="LOGIN_PASSWORD" jdbcType="VARCHAR" property="loginPassword" />
+    <result column="SSH_PORT" jdbcType="INTEGER" property="sshPort" />
+    <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
+    <result column="UPDATER" jdbcType="BIGINT" property="updater" />
+    <result column="CREATOR" jdbcType="BIGINT" property="creator" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="NETWORK_LAYER_ID" jdbcType="BIGINT" property="networkLayerId" />
+    <result column="SHARED_STORAGE_PATH" jdbcType="VARCHAR" property="sharedStoragePath" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    ID, "NAME", DESCRIPTION, IP, MEMORY_SIZE, CPU_NUMBER, ARCHITECTURE, LOGIN_USER, LOGIN_PASSWORD,
+    SSH_PORT, IS_DELETED, UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME, NETWORK_LAYER_ID,
+    SHARED_STORAGE_PATH
+  </sql>
+</mapper>

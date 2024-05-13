@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.travis.center.common.mapper.manage.DiskInfoMapper">
+  <resultMap id="BaseResultMap" type="org.travis.center.common.entity.manage.DiskInfo">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="SPACE_SIZE" jdbcType="BIGINT" property="spaceSize" />
+    <result column="SUB_PATH" jdbcType="VARCHAR" property="subPath" />
+    <result column="VMWARE_ID" jdbcType="BIGINT" property="vmwareId" />
+    <result column="DISK_TYPE" jdbcType="INTEGER" property="diskType" />
+    <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
+    <result column="UPDATER" jdbcType="BIGINT" property="updater" />
+    <result column="CREATOR" jdbcType="BIGINT" property="creator" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    ID, "NAME", DESCRIPTION, SPACE_SIZE, SUB_PATH, VMWARE_ID, DISK_TYPE, IS_DELETED,
+    UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME
+  </sql>
+</mapper>
