@@ -3,6 +3,7 @@ package org.travis.shared.common.utils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 /**
  * @ClassName VspStrUtil
@@ -33,6 +34,10 @@ public class VspStrUtil {
 
         // 遍历所有字段
         for (Field field : clazz.getDeclaredFields()) {
+            // 检查字段是否为 final 修饰
+            if (Modifier.isFinal(field.getModifiers())) {
+                continue;
+            }
             // 检查字段是否为 String 类型
             if (field.getType().equals(String.class)) {
                 try {
@@ -83,9 +88,12 @@ public class VspStrUtil {
 
         // 遍历所有字段
         for (Field field : clazz.getDeclaredFields()) {
+            // 检查字段是否为 final 修饰
+            if (Modifier.isFinal(field.getModifiers())) {
+                continue;
+            }
             // 确保私有字段也可访问
             field.setAccessible(true);
-
             try {
                 Object value = field.get(object);
                 // 如果字段是 String，进行 trim 操作

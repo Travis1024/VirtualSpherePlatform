@@ -10,7 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.travis.center.auth.pojo.dto.UserModifyPasswordDTO;
+import org.travis.center.auth.pojo.dto.UserModifyRoleDTO;
 import org.travis.center.auth.pojo.dto.UserRegisterDTO;
+import org.travis.center.auth.pojo.dto.UserUpdateDTO;
 import org.travis.center.common.enums.UserRoleEnum;
 import org.travis.center.common.mapper.auth.UserMapper;
 import org.travis.center.common.entity.auth.User;
@@ -47,8 +50,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public void register(UserRegisterDTO userRegisterDTO) {
         // 1.校验当前登录用户是否为管理员
-        Optional<User> curUserOptional = Optional.ofNullable(getOne(Wrappers.<User>lambdaQuery().select(User::getRoleType).eq(User::getId, UserThreadLocalUtil.getUserId())));
-        if (curUserOptional.isEmpty() || curUserOptional.get().getRoleType().getValue().equals(UserRoleEnum.NORMAL_USER.getValue())) {
+        boolean checkedAdminUser = checkAdminUser(UserThreadLocalUtil.getUserId());
+        if (!checkedAdminUser) {
             throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
         }
 
@@ -60,8 +63,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         // 3.数据库记录存储
         User user = new User();
-        user.setId(SnowflakeIdUtil.nextId());
         BeanUtils.copyProperties(userRegisterDTO, user);
+        user.setId(SnowflakeIdUtil.nextId());
+        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(12)));
         VspStrUtil.trimStr(user);
         save(user);
     }
@@ -70,8 +74,71 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public User queryById(Long userId) {
         Optional<User> userOptional = Optional.ofNullable(getById(userId));
         if (userOptional.isEmpty()) {
-            throw new BadRequestException("未查询到当前用户信息!");
+            throw new BadRequestException("未查询到用户信息!");
         }
         return userOptional.get().setPassword(null);
+    }
+
+    @Override
+    public boolean checkAdminUser(Long userId) {
+        Optional<User> userOptional = Optional.ofNullable(getById(userId));
+        if (userOptional.isEmpty()) {
+            throw new BadRequestException("未查询到用户信息!");
+        }
+        return userOptional.get().getRoleType().getValue().equals(UserRoleEnum.ADMIN_USER.getValue());
+    }
+
+    @Override
+    public void updateUserInfo(UserUpdateDTO userUpdateDTO) {
+        // 1.判断更新用户是否为当前登录用户, 判断是否为管理员用户
+        if (!userUpdateDTO.getId().equals(UserThreadLocalUtil.getUserId()) && !checkAdminUser(UserThreadLocalUtil.getUserId())) {
+            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
+        }
+        // 2.更新用户信息
+        User user = new User();
+        BeanUtils.copyProperties(userUpdateDTO, user);
+        updateById(user);
+    }
+
+    @Override
+    public void updatePassword(UserModifyPasswordDTO userModifyPasswordDTO) {
+        // 1.判断更新用户是否为当前登录用户, 判断是否为管理员用户
+        if (!userModifyPasswordDTO.getId().equals(UserThreadLocalUtil.getUserId()) && !checkAdminUser(UserThreadLocalUtil.getUserId())) {
+            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
+        }
+
+        // 2.获取数据库中用户密码
+        String databasePassword = getById(userModifyPasswordDTO.getId()).getPassword();
+
+        // 3.检测原密码是否正确
+        if (!BCrypt.checkpw(userModifyPasswordDTO.getOldPassword(), databasePassword)) {
+            throw new BadRequestException("用户原密码错误!");
+        }
+
+        // 4.更新数据库密码
+        update(Wrappers.<User>lambdaUpdate().set(User::getPassword, BCrypt.hashpw(userModifyPasswordDTO.getNewPassword(), BCrypt.gensalt(12))).eq(User::getId, userModifyPasswordDTO.getId()));
+    }
+
+    @Override
+    public void updateUserRole(UserModifyRoleDTO userModifyRoleDTO) {
+        // 1.校验当前登录用户是否为管理员
+        boolean checkedAdminUser = checkAdminUser(UserThreadLocalUtil.getUserId());
+        if (!checkedAdminUser) {
+            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
+        }
+        // 2.修改用户权限信息
+        update(Wrappers.<User>lambdaUpdate().set(User::getRoleType, userModifyRoleDTO.getRoleType()).eq(User::getId, userModifyRoleDTO.getId()));
+    }
+
+    @Override
+    public void userDelete(Long userId) {
+        // 1.判断更新用户是否为当前登录用户, 判断是否为管理员用户
+        if (!userId.equals(UserThreadLocalUtil.getUserId()) && !checkAdminUser(UserThreadLocalUtil.getUserId())) {
+            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
+        }
+        // 2.执行删除操作
+        removeById(userId);
+        // 3.退出登录
+        StpUtil.logout(userId);
     }
 }

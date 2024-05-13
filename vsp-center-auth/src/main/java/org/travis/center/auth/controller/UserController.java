@@ -3,8 +3,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.travis.center.auth.pojo.dto.UserLoginDTO;
-import org.travis.center.auth.pojo.dto.UserRegisterDTO;
+import org.travis.center.auth.pojo.dto.*;
 import org.travis.center.auth.service.UserService;
 import org.travis.center.common.entity.auth.User;
 import org.travis.center.auth.service.impl.UserServiceImpl;
@@ -31,19 +30,52 @@ public class UserController {
 
     @Operation(summary = "查询当前登录用户信息")
     @GetMapping("/queryCur")
-    public User queryCurUserInfo() {
+    private User queryCurUserInfo() {
         return userService.queryById(UserThreadLocalUtil.getUserId());
     }
 
     @Operation(summary = "用户登录")
     @PostMapping("/login")
-    public void login(@Validated @RequestBody UserLoginDTO userLoginDTO) {
+    private void login(@Validated @RequestBody UserLoginDTO userLoginDTO) {
         userService.login(userLoginDTO.getUsername(), userLoginDTO.getPassword());
+    }
+
+    @Operation(summary = "用户退出登录")
+    @GetMapping("/logout")
+    public void logout() {
+        StpUtil.logout();
+    }
+
+    @Operation(summary = "用户信息删除")
+    @DeleteMapping("/delete")
+    private void userDelete(@RequestParam("userId") Long userId) {
+        if (userId == null) {
+            throw new BadRequestException("用户-ID不能为空!");
+        }
+        userService.userDelete(userId);
     }
 
     @Operation(summary = "新用户注册")
     @PostMapping("/register")
     private void register(@Validated @RequestBody UserRegisterDTO userRegisterDTO) {
         userService.register(userRegisterDTO);
+    }
+
+    @Operation(summary = "用户基础信息更新")
+    @PutMapping("/update")
+    private void updateUserInfo(@Validated @RequestBody UserUpdateDTO userUpdateDTO) {
+        userService.updateUserInfo(userUpdateDTO);
+    }
+
+    @Operation(summary = "用户密码修改")
+    @PutMapping("/modifyPw")
+    private void updatePassword(@Validated @RequestBody UserModifyPasswordDTO userModifyPasswordDTO) {
+        userService.updatePassword(userModifyPasswordDTO);
+    }
+
+    @Operation(summary = "用户角色修改")
+    @PutMapping("/modifyRole")
+    private void updateUserRole(@Validated @RequestBody UserModifyRoleDTO userModifyRoleDTO) {
+        userService.updateUserRole(userModifyRoleDTO);
     }
 }

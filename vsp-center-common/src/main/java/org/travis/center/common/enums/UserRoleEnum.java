@@ -1,5 +1,6 @@
 package org.travis.center.common.enums;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -29,12 +30,12 @@ public enum UserRoleEnum {
     }
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static UserRoleEnum of(Integer value) {
-        if (value == null) {
+    public static UserRoleEnum of(String display) {
+        if (StrUtil.isEmpty(display)) {
             return null;
         }
         for (UserRoleEnum anEnum : values()) {
-            if (anEnum.getValue().equals(value)) {
+            if (anEnum.getDisplay().equals(display)) {
                 return anEnum;
             }
         }
