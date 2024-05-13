@@ -5,7 +5,7 @@ import org.travis.center.common.entity.manage.ImageInfo;
 
 /**
  * @ClassName ImageInfoMapper
- * @Description TODO
+ * @Description ImageInfoMapper
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/5/13

@@ -1,6 +1,10 @@
-package org.travis.center.common.entity.manage;
+package org.travis.center.common.entity.auth;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.Date;
@@ -12,21 +16,24 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * @ClassName NetworkLayerInfo
- * @Description NetworkLayerInfo
+ * @ClassName AuthUserRelation
+ * @Description AuthUserRelation
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/5/13
  */
-@Schema
+/**
+ * 权限组-用户关联关系表
+ */
+@Schema(description="权限组-用户关联关系表")
 @Data
 @EqualsAndHashCode(callSuper=true)
 @Accessors(chain = true)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "VSP_NETWORK_LAYER_INFO")
-public class NetworkLayerInfo extends com.baomidou.mybatisplus.extension.activerecord.Model<NetworkLayerInfo> implements Serializable {
+@TableName(value = "VSP_AUTH_USER_RELATION")
+public class AuthUserRelation extends com.baomidou.mybatisplus.extension.activerecord.Model<AuthUserRelation> implements Serializable {
     /**
      * ID
      */
@@ -35,32 +42,24 @@ public class NetworkLayerInfo extends com.baomidou.mybatisplus.extension.activer
     private Long id;
 
     /**
-     * 网卡名称（eg：p4p1）
+     * 用户ID
      */
-    @TableField(value = "NIC_NAME")
-    @Schema(description="网卡名称（eg：p4p1）")
-    private String nicName;
+    @TableField(value = "USER_ID")
+    @Schema(description="用户ID")
+    private Long userId;
 
     /**
-     * 网卡起始 IP 地址（192.168.0.0）
+     * 权限组ID
      */
-    @TableField(value = "NIC_START_ADDRESS")
-    @Schema(description="网卡起始 IP 地址（192.168.0.0）")
-    private String nicStartAddress;
-
-    /**
-     * 网卡掩码（eg：24）
-     */
-    @TableField(value = "NIC_MASK")
-    @Schema(description="网卡掩码（eg：24）")
-    private Integer nicMask;
+    @TableField(value = "AUTH_GROUP_ID")
+    @Schema(description="权限组ID")
+    private Long authGroupId;
 
     /**
      * 逻辑删除
      */
     @TableField(value = "IS_DELETED")
     @Schema(description="逻辑删除")
-    @TableLogic
     private Integer isDeleted;
 
     /**
@@ -95,11 +94,9 @@ public class NetworkLayerInfo extends com.baomidou.mybatisplus.extension.activer
 
     public static final String COL_ID = "ID";
 
-    public static final String COL_NIC_NAME = "NIC_NAME";
+    public static final String COL_USER_ID = "USER_ID";
 
-    public static final String COL_NIC_START_ADDRESS = "NIC_START_ADDRESS";
-
-    public static final String COL_NIC_MASK = "NIC_MASK";
+    public static final String COL_AUTH_GROUP_ID = "AUTH_GROUP_ID";
 
     public static final String COL_IS_DELETED = "IS_DELETED";
 

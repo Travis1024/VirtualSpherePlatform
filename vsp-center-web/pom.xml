@@ -43,6 +43,11 @@
             <artifactId>vsp-center-script</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.travis.center</groupId>
+            <artifactId>vsp-center-auth</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.travis.center.common.mapper.auth.UserMapper">
+  <resultMap id="BaseResultMap" type="org.travis.center.common.entity.auth.User">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+    <result column="EMAIL" jdbcType="VARCHAR" property="email" />
+    <result column="REAL_NAME" jdbcType="VARCHAR" property="realName" />
+    <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
+    <result column="UPDATER" jdbcType="BIGINT" property="updater" />
+    <result column="CREATOR" jdbcType="BIGINT" property="creator" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="ROLE_TYPE" jdbcType="INTEGER" property="roleType" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    ID, USERNAME, "PASSWORD", PHONE, EMAIL, REAL_NAME, IS_DELETED, UPDATER, CREATOR,
+    UPDATE_TIME, CREATE_TIME, ROLE_TYPE, DESCRIPTION
+  </sql>
+</mapper>

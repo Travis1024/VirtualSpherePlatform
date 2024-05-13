@@ -37,8 +37,7 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/doc.html")
                 .excludePathPatterns("/error")
                 // 鉴权
-                .excludePathPatterns("/web/auth/login")
-                .excludePathPatterns("/web/auth/register");
+                .excludePathPatterns("/user/login");
 
         // 添加用户信息 ThreadLocal 拦截器
         registry.addInterceptor(userInfoInterceptor);

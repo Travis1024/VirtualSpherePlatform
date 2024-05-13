@@ -18,6 +18,7 @@
         <module>vsp-host-web</module>
         <module>vsp-shared-api</module>
         <module>vsp-shared-common</module>
+        <module>vsp-center-auth</module>
     </modules>
 
     <!-- 继承 SpringBoot 父工程 -->

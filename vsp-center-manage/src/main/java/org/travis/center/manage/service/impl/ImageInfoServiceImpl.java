@@ -7,7 +7,7 @@ import org.travis.center.common.entity.manage.ImageInfo;
 import org.travis.center.manage.service.ImageInfoService;
 /**
  * @ClassName ImageInfoServiceImpl
- * @Description TODO
+ * @Description ImageInfoServiceImpl
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/5/13
