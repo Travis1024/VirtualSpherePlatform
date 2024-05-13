@@ -1,6 +1,7 @@
 package org.travis.center.manage.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +16,13 @@ import org.travis.center.manage.pojo.dto.HostInsertDTO;
 import org.travis.center.manage.service.HostInfoService;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
+import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.exceptions.CommonException;
 import org.travis.shared.common.exceptions.DubboFunctionException;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
+import org.travis.shared.common.utils.VspStrUtil;
+
+import java.util.Optional;
 
 /**
  * @ClassName HostInfoServiceImpl
@@ -35,7 +40,12 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
 
     @Override
     public HostInfo insertOne(HostInsertDTO hostInsertDTO) {
-        // 1.PING Dubbo 请求
+        // 1.检测 IP 地址是否已经存在
+        if (checkHostIpUnique(hostInsertDTO.getIp())) {
+            throw new BadRequestException("宿主机 IP 地址已存在!");
+        }
+
+        // 2.PING Dubbo 请求
         try {
             R<String> healthyCheckR = healthyClient.healthyCheck(hostInsertDTO.getIp());
             if (healthyCheckR.checkFail()) {
@@ -46,12 +56,26 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
             throw new CommonException(BizCodeEnum.DUBBO_HEALTHY_CHECK_ERROR.getCode(), BizCodeEnum.DUBBO_HEALTHY_CHECK_ERROR.getMessage() + StrUtil.COLON + e.getMessage());
         }
 
-        // 2.数据库记录存储
+        // 3.数据库记录存储
         HostInfo hostInfo = new HostInfo();
         BeanUtils.copyProperties(hostInsertDTO, hostInfo);
         hostInfo.setId(SnowflakeIdUtil.nextId());
+        VspStrUtil.trimStr(hostInfo);
         save(hostInfo);
         return hostInfo;
+    }
+
+
+    /**
+     * @MethodName checkHostIpUnique
+     * @Description 检测当前宿主机 IP 地址数据库中是否存在
+     * @Author travis-wei
+     * @Data 2024/5/13
+     * @param hostIp	宿主机 IP
+     * @Return boolean  true-存在，false-不存在
+     **/
+    private boolean checkHostIpUnique(String hostIp) {
+        return Optional.ofNullable(getOne(Wrappers.<HostInfo>lambdaQuery().select(HostInfo::getName).eq(HostInfo::getIp, hostIp))).isPresent();
     }
 
 
