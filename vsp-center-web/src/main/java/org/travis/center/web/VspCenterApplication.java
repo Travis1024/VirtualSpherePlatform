@@ -1,6 +1,7 @@
 package org.travis.center.web;
 
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,7 +25,9 @@ import java.util.Arrays;
  */
 @EnableDubbo
 @ComponentScan("org.travis.center.**.controller")
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@ComponentScan("org.travis.center.**.service")
+@MapperScan("org.travis.center.**.mapper")
+@SpringBootApplication
 public class VspCenterApplication {
     public static void main(String[] args) throws UnknownHostException {
         // Create Spring Application Instance

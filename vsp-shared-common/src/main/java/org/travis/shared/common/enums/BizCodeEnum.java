@@ -39,6 +39,7 @@ public enum BizCodeEnum {
     DATABASE_OPERATION_FAILED(920, "数据库操作异常"),
     DUBBO_CALL_ERROR(940, "Dubbo-服务提供者调用异常"),
     DUBBO_FUNCTION_ERROR(941, "Dubbo-远程方法执行异常"),
+    DUBBO_HEALTHY_CHECK_ERROR(942, "Dubbo-健康检查失败"),
     /**
      * 未知错误
      */
