@@ -19,9 +19,9 @@ public enum UserRoleEnum {
     ;
 
     @EnumValue
-    private Integer value;
+    private final Integer value;
     @JsonValue
-    private String display;
+    private final String display;
 
     UserRoleEnum(Integer value, String display) {
         this.value = value;

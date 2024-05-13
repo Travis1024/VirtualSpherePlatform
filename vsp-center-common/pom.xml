@@ -48,8 +48,7 @@
         <!-- 达梦数据库 -->
         <dependency>
             <groupId>com.dameng</groupId>
-            <artifactId>Dm8JdbcDriver18</artifactId>
-            <version>${dameng.version}</version>
+            <artifactId>DmJdbcDriver18</artifactId>
         </dependency>
         <!-- Sa-Token 权限认证，在线文档：https://sa-token.cc -->
         <dependency>

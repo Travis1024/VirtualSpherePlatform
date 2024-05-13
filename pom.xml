@@ -37,7 +37,7 @@
         <redisson.version>3.26.0</redisson.version>
         <knife4j.version>4.3.0</knife4j.version>
         <mybatis.plus.version>3.5.6</mybatis.plus.version>
-        <dameng.version>8.1.1.49</dameng.version>
+        <dameng.version>8.1.3.140</dameng.version>
         <transmittable.threadlocal.version>2.14.5</transmittable.threadlocal.version>
         <satoken.version>1.37.0</satoken.version>
         <dubbo.version>3.2.11</dubbo.version>
@@ -56,7 +56,7 @@
             <!-- 达梦数据库 -->
             <dependency>
                 <groupId>com.dameng</groupId>
-                <artifactId>Dm8JdbcDriver18</artifactId>
+                <artifactId>DmJdbcDriver18</artifactId>
                 <version>${dameng.version}</version>
             </dependency>
             <!-- knife4j -->
