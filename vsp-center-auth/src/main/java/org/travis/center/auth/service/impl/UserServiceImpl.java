@@ -81,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public boolean checkAdminUser(Long userId) {
-        Optional<User> userOptional = Optional.ofNullable(getById(userId));
+        Optional<User> userOptional = Optional.ofNullable(getOne(Wrappers.<User>lambdaQuery().select(User::getRoleType).eq(User::getId, userId)));
         if (userOptional.isEmpty()) {
             throw new BadRequestException("未查询到用户信息!");
         }
