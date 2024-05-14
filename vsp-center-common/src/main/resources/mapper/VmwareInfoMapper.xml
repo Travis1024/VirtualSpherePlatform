@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.travis.center.common.mapper.manage.VmwareInfoMapper">
+  <resultMap id="BaseResultMap" type="org.travis.center.common.entity.manage.VmwareInfo">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="UUID" jdbcType="VARCHAR" property="uuid" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="HOST_ID" jdbcType="BIGINT" property="hostId" />
+    <result column="STATE" jdbcType="INTEGER" property="state" />
+    <result column="CREATE_FORM" jdbcType="INTEGER" property="createForm" />
+    <result column="VCPU_MAX" jdbcType="INTEGER" property="vcpuMax" />
+    <result column="VCPU_CURRENT" jdbcType="INTEGER" property="vcpuCurrent" />
+    <result column="MEMORY_MAX" jdbcType="BIGINT" property="memoryMax" />
+    <result column="MEMORY_CURRENT" jdbcType="BIGINT" property="memoryCurrent" />
+    <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
+    <result column="UPDATER" jdbcType="BIGINT" property="updater" />
+    <result column="CREATOR" jdbcType="BIGINT" property="creator" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    ID, "NAME", UUID, DESCRIPTION, HOST_ID, "STATE", CREATE_FORM, VCPU_MAX, VCPU_CURRENT,
+    MEMORY_MAX, MEMORY_CURRENT, IS_DELETED, UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME
+  </sql>
+</mapper>
