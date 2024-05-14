@@ -19,6 +19,7 @@ import org.travis.center.manage.service.ImageInfoService;
 import org.travis.shared.common.constants.ImageConstant;
 import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.exceptions.BadRequestException;
+import org.travis.shared.common.utils.NetworkUtils;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
 
 import javax.annotation.Resource;
@@ -106,7 +107,7 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
     private List<String> getHealthyHostAgentIpList() {
         List<String> ipList = new ArrayList<>();
         try {
-            List<String> serverList = curatorFramework.getChildren().forPath(SystemConstant.ZOOKEEPER_SERVER_PATH);
+            List<String> serverList = curatorFramework.getChildren().forPath(SystemConstant.ZOOKEEPER_HOST_SERVER_PATH);
             if (serverList != null && !serverList.isEmpty()) {
                 ipList = serverList.stream().map(server -> server.split(StrUtil.COLON)[0]).collect(Collectors.toList());
             }
