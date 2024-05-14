@@ -1,6 +1,7 @@
 package org.travis.center.auth.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,6 +38,7 @@ public class AuthUserRelationServiceImpl extends ServiceImpl<AuthUserRelationMap
     @Resource
     private UserService userService;
     @Resource
+    @Lazy
     private AuthUserRelationService authUserRelationService;
 
     @Transactional

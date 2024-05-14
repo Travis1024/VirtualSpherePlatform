@@ -22,6 +22,7 @@ import org.travis.shared.common.exceptions.DubboFunctionException;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
 import org.travis.shared.common.utils.VspStrUtil;
 
+import java.io.File;
 import java.util.Optional;
 
 /**
@@ -60,6 +61,10 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
         HostInfo hostInfo = new HostInfo();
         BeanUtils.copyProperties(hostInsertDTO, hostInfo);
         hostInfo.setId(SnowflakeIdUtil.nextId());
+        // 删除最后的"/"符号
+        if (hostInfo.getSharedStoragePath().endsWith(File.separator)) {
+            hostInfo.setSharedStoragePath(hostInfo.getSharedStoragePath().substring(0, hostInfo.getSharedStoragePath().length() - 1));
+        }
         VspStrUtil.trimStr(hostInfo);
         save(hostInfo);
         return hostInfo;

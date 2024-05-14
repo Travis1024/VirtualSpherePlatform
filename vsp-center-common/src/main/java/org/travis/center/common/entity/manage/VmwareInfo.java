@@ -1,9 +1,6 @@
 package org.travis.center.common.entity.manage;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
@@ -113,6 +110,7 @@ public class VmwareInfo extends com.baomidou.mybatisplus.extension.activerecord.
      */
     @TableField(value = "IS_DELETED")
     @Schema(description="逻辑删除")
+    @TableLogic
     private Integer isDeleted;
 
     /**

@@ -37,4 +37,14 @@ public class SystemConstant {
      * 数据库表字段 - 逻辑删除: 0-未删除、1-已删除（is_deleted）
      */
     public static final String DATA_FIELD_NAME_IS_DELETED = "isDeleted";
+
+    /**
+     * HOST-AGENT 服务端口号
+     */
+    public static final String HOST_SERVER_PORT = "22002";
+
+    /**
+     * Zookeeper Agent 服务注册路径
+     */
+    public static final String ZOOKEEPER_SERVER_PATH = "/services/dubbo-vsp-host-service";
 }

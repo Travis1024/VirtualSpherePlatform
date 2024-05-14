@@ -7,10 +7,8 @@
     <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
     <result column="ARCHITECTURE" jdbcType="INTEGER" property="architecture" />
     <result column="SUB_PATH" jdbcType="VARCHAR" property="subPath" />
-    <result column="LOAD_URL" jdbcType="VARCHAR" property="loadUrl" />
-    <result column="IMAGE_TYPE" jdbcType="INTEGER" property="imageType" />
-    <result column="IMAGE_FORMAT" jdbcType="INTEGER" property="imageFormat" />
     <result column="IMAGE_PLATFORM" jdbcType="INTEGER" property="imagePlatform" />
+    <result column="STATE" jdbcType="INTEGER" property="state" />
     <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
     <result column="UPDATER" jdbcType="BIGINT" property="updater" />
     <result column="CREATOR" jdbcType="BIGINT" property="creator" />
@@ -19,7 +17,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    ID, "NAME", DESCRIPTION, ARCHITECTURE, SUB_PATH, LOAD_URL, IMAGE_TYPE, IMAGE_FORMAT,
+    ID, "NAME", DESCRIPTION, ARCHITECTURE, SUB_PATH, STATE,
     IMAGE_PLATFORM, IS_DELETED, UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME
   </sql>
 </mapper>

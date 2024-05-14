@@ -11,8 +11,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.travis.shared.common.utils.NetworkUtils;
 
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
@@ -29,7 +31,7 @@ import java.util.Arrays;
 @MapperScan("org.travis.center.**.mapper")
 @SpringBootApplication
 public class VspCenterApplication {
-    public static void main(String[] args) throws UnknownHostException {
+    public static void main(String[] args) throws UnknownHostException, SocketException {
         // Create Spring Application Instance
         SpringApplication application = new SpringApplication(VspCenterApplication.class);
 
@@ -59,7 +61,8 @@ public class VspCenterApplication {
                 protocol,
                 environment.getProperty("server.port"),
                 protocol,
-                InetAddress.getLocalHost().getHostAddress(),
+                // InetAddress.getLocalHost().getHostAddress(),
+                NetworkUtils.getLocalHostAddress(),
                 environment.getProperty("server.port"),
                 Arrays.toString(environment.getActiveProfiles())
         );

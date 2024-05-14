@@ -10,6 +10,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.travis.center.common.enums.ImageArchEnum;
+import org.travis.center.common.enums.ImagePlatformEnum;
+import org.travis.center.common.enums.ImageStateEnum;
 
 /**
  * @ClassName ImageInfo
@@ -53,7 +56,7 @@ public class ImageInfo extends com.baomidou.mybatisplus.extension.activerecord.M
      */
     @TableField(value = "ARCHITECTURE")
     @Schema(description="镜像 CPU 架构（1-x86_64、2-aarch64）")
-    private Integer architecture;
+    private ImageArchEnum architecture;
 
     /**
      * 镜像存储路径（共享存储子路径）
@@ -63,32 +66,18 @@ public class ImageInfo extends com.baomidou.mybatisplus.extension.activerecord.M
     private String subPath;
 
     /**
-     * 镜像获取 URL
-     */
-    @TableField(value = "LOAD_URL")
-    @Schema(description="镜像获取 URL")
-    private String loadUrl;
-
-    /**
-     * 镜像类型（1-系统引导镜像、2-系统根镜像）
-     */
-    @TableField(value = "IMAGE_TYPE")
-    @Schema(description="镜像类型（1-系统引导镜像、2-系统根镜像）")
-    private Integer imageType;
-
-    /**
-     * 镜像格式（1-iso、2-qcow2）
-     */
-    @TableField(value = "IMAGE_FORMAT")
-    @Schema(description="镜像格式（1-iso、2-qcow2）")
-    private Integer imageFormat;
-
-    /**
      * 镜像平台（0-Other、1-Linux、2-Windows）
      */
     @TableField(value = "IMAGE_PLATFORM")
     @Schema(description="镜像平台（0-Other、1-Linux、2-Windows）")
-    private Integer imagePlatform;
+    private ImagePlatformEnum imagePlatform;
+
+    /**
+     * 镜像状态（0-上传中、1-异常、2-就绪）
+     */
+    @TableField(value = "STATE")
+    @Schema(description = "镜像状态（0-上传中、1-异常、2-就绪）")
+    private ImageStateEnum state;
 
     /**
      * 逻辑删除
@@ -140,11 +129,9 @@ public class ImageInfo extends com.baomidou.mybatisplus.extension.activerecord.M
 
     public static final String COL_LOAD_URL = "LOAD_URL";
 
-    public static final String COL_IMAGE_TYPE = "IMAGE_TYPE";
-
-    public static final String COL_IMAGE_FORMAT = "IMAGE_FORMAT";
-
     public static final String COL_IMAGE_PLATFORM = "IMAGE_PLATFORM";
+
+    public static final String COL_STATE = "STATE";
 
     public static final String COL_IS_DELETED = "IS_DELETED";
 

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 * @author xxxxx
 */
 @RestController
-@RequestMapping("/VSP.VSP_VMWARE_XML_DETAILS")
+@RequestMapping("/vmwareXml")
 public class VmwareXmlDetailsController {
 
     /**

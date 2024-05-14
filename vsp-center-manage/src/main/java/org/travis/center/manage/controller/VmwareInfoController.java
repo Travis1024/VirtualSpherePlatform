@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 * @author xxxxx
 */
 @RestController
-@RequestMapping("/VSP.VSP_VMWARE_INFO")
+@RequestMapping("/vmware")
 public class VmwareInfoController {
 
     /**
