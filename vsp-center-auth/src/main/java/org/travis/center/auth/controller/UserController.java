@@ -1,5 +1,6 @@
 package org.travis.center.auth.controller;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.lang.Assert;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,7 @@ import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.utils.UserThreadLocalUtil;
 
 import javax.annotation.Resource;
+import java.util.function.Supplier;
 
 /**
 * 用户信息表(VSP.VSP_USER)表控制层
@@ -49,9 +51,7 @@ public class UserController {
     @Operation(summary = "用户信息删除")
     @DeleteMapping("/delete")
     private void userDelete(@RequestParam("userId") Long userId) {
-        if (userId == null) {
-            throw new BadRequestException("用户-ID不能为空!");
-        }
+        Assert.notNull(userId, () -> new BadRequestException("用户-ID不能为空!"));
         userService.userDelete(userId);
     }
 

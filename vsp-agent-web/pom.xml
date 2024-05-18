@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>org.travis.host</groupId>
-    <artifactId>vsp-host-web</artifactId>
+    <artifactId>vsp-agent-web</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

@@ -1,5 +1,6 @@
 package org.travis.center.manage.controller;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +35,7 @@ public class DubboHostController {
         // PING Dubbo 请求
         try {
             R<String> healthyCheckR = healthyClient.healthyCheck(ip);
-            if (healthyCheckR.checkFail()) {
-                throw new DubboFunctionException(healthyCheckR.getMsg());
-            }
+            Assert.isFalse(healthyCheckR.checkFail(), () -> new DubboFunctionException(healthyCheckR.getMsg()));
             return healthyCheckR.getData();
         } catch (Exception e) {
             log.error("[{} - Dubbo Check Error] -> {}", ip, e.getMessage());

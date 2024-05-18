@@ -1,5 +1,6 @@
 package org.travis.center.manage.service.impl;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jcraft.jsch.JSch;
@@ -42,16 +43,12 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
     @Override
     public HostInfo insertOne(HostInsertDTO hostInsertDTO) {
         // 1.检测 IP 地址是否已经存在
-        if (checkHostIpUnique(hostInsertDTO.getIp())) {
-            throw new BadRequestException("宿主机 IP 地址已存在!");
-        }
+        Assert.isFalse(checkHostIpUnique(hostInsertDTO.getIp()), () -> new BadRequestException("宿主机 IP 地址已存在!"));
 
         // 2.PING Dubbo 请求
         try {
             R<String> healthyCheckR = healthyClient.healthyCheck(hostInsertDTO.getIp());
-            if (healthyCheckR.checkFail()) {
-                throw new DubboFunctionException(healthyCheckR.getMsg());
-            }
+            Assert.isFalse(healthyCheckR.checkFail(), () -> new DubboFunctionException(healthyCheckR.getMsg()));
         } catch (Exception e) {
             log.error("[{} - Healthy Check Error] -> {}", hostInsertDTO.getIp(), e.getMessage());
             throw new CommonException(BizCodeEnum.DUBBO_HEALTHY_CHECK_ERROR.getCode(), BizCodeEnum.DUBBO_HEALTHY_CHECK_ERROR.getMessage() + StrUtil.COLON + e.getMessage());

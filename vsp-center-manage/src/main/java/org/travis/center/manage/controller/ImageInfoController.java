@@ -1,7 +1,9 @@
 package org.travis.center.manage.controller;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.curator.framework.CuratorFramework;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
 import org.travis.center.common.entity.manage.ImageInfo;
 import org.springframework.web.bind.annotation.*;
 import org.travis.center.manage.pojo.dto.ImageUploadDTO;
@@ -30,7 +32,7 @@ public class ImageInfoController {
     }
 
     @Operation(summary = "修改镜像文件上传状态为[就绪]")
-    @GetMapping("/success")
+    @PutMapping("/success")
     private void changeImageInfoSuccessState(@RequestParam("imageId") Long imageId) {
         imageInfoService.changeImageInfoSuccessState(imageId);
     }

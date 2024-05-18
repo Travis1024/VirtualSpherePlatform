@@ -1,5 +1,6 @@
 package org.travis.center.auth.service.impl;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.beans.BeanUtils;
@@ -65,9 +66,7 @@ public class AuthGroupServiceImpl extends ServiceImpl<AuthGroupMapper, AuthGroup
     public AuthGroup insertOneAuthGroup(AuthGroupInsertDTO authGroupInsertDTO) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = userService.checkAdminUser(UserThreadLocalUtil.getUserId());
-        if (!checkedAdminUser) {
-            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
-        }
+        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
         // 2.存储权限组信息
         AuthGroup authGroup = new AuthGroup();
         BeanUtils.copyProperties(authGroupInsertDTO, authGroup);
@@ -81,9 +80,7 @@ public class AuthGroupServiceImpl extends ServiceImpl<AuthGroupMapper, AuthGroup
     public void updateOneAuthGroup(AuthGroupUpdateDTO authGroupUpdateDTO) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = userService.checkAdminUser(UserThreadLocalUtil.getUserId());
-        if (!checkedAdminUser) {
-            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
-        }
+        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
         // 2.修改权限组信息
         update(
                 Wrappers.<AuthGroup>lambdaUpdate()

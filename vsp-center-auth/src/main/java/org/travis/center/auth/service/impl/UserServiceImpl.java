@@ -2,6 +2,7 @@ package org.travis.center.auth.service.impl;
 
 import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -38,12 +39,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public void login(String username, String password) {
         Optional<User> userOptional = Optional.ofNullable(getOne(Wrappers.<User>lambdaQuery().select(User::getId, User::getPassword).eq(User::getUsername, username)));
-        if (userOptional.isEmpty()) {
-            throw new BadRequestException("用户名或密码错误!");
-        }
-        if (!BCrypt.checkpw(password, userOptional.get().getPassword())) {
-            throw new BadRequestException("用户名或密码错误!");
-        }
+        Assert.isFalse(userOptional.isEmpty(), () -> new BadRequestException("用户名或密码错误!"));
+        Assert.isTrue(BCrypt.checkpw(password, userOptional.get().getPassword()), () -> new BadRequestException("用户名或密码错误!"));
         StpUtil.login(userOptional.get().getId());
     }
 
@@ -51,15 +48,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void register(UserRegisterDTO userRegisterDTO) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = checkAdminUser(UserThreadLocalUtil.getUserId());
-        if (!checkedAdminUser) {
-            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
-        }
+        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
 
         // 2.校验用户名是否存在
         Optional<User> userOptional = Optional.ofNullable(getOne(Wrappers.<User>lambdaQuery().select(User::getId).eq(User::getUsername, userRegisterDTO.getUsername())));
-        if (userOptional.isPresent()) {
-            throw new BadRequestException("当前用户名已存在!");
-        }
+        Assert.isFalse(userOptional.isPresent(), () -> new BadRequestException("当前用户名已存在!"));
 
         // 3.数据库记录存储
         User user = new User();
@@ -73,18 +66,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public User queryById(Long userId) {
         Optional<User> userOptional = Optional.ofNullable(getById(userId));
-        if (userOptional.isEmpty()) {
-            throw new BadRequestException("未查询到用户信息!");
-        }
+        Assert.isFalse(userOptional.isEmpty(), () -> new BadRequestException("未查询到用户信息!"));
         return userOptional.get().setPassword(null);
     }
 
     @Override
     public boolean checkAdminUser(Long userId) {
         Optional<User> userOptional = Optional.ofNullable(getOne(Wrappers.<User>lambdaQuery().select(User::getRoleType).eq(User::getId, userId)));
-        if (userOptional.isEmpty()) {
-            throw new BadRequestException("未查询到用户信息!");
-        }
+        Assert.isFalse(userOptional.isEmpty(), () -> new BadRequestException("未查询到用户信息!"));
         return userOptional.get().getRoleType().getValue().equals(UserRoleEnum.ADMIN_USER.getValue());
     }
 
@@ -111,9 +100,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String databasePassword = getById(userModifyPasswordDTO.getId()).getPassword();
 
         // 3.检测原密码是否正确
-        if (!BCrypt.checkpw(userModifyPasswordDTO.getOldPassword(), databasePassword)) {
-            throw new BadRequestException("用户原密码错误!");
-        }
+        Assert.isTrue(BCrypt.checkpw(userModifyPasswordDTO.getOldPassword(), databasePassword), () -> new BadRequestException("用户原密码错误!"));
 
         // 4.更新数据库密码
         update(Wrappers.<User>lambdaUpdate().set(User::getPassword, BCrypt.hashpw(userModifyPasswordDTO.getNewPassword(), BCrypt.gensalt(12))).eq(User::getId, userModifyPasswordDTO.getId()));
@@ -123,9 +110,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void updateUserRole(UserModifyRoleDTO userModifyRoleDTO) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = checkAdminUser(UserThreadLocalUtil.getUserId());
-        if (!checkedAdminUser) {
-            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
-        }
+        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
         // 2.修改用户权限信息
         update(Wrappers.<User>lambdaUpdate().set(User::getRoleType, userModifyRoleDTO.getRoleType()).eq(User::getId, userModifyRoleDTO.getId()));
     }

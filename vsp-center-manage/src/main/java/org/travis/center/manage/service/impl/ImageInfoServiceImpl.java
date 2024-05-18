@@ -1,5 +1,6 @@
 package org.travis.center.manage.service.impl;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -57,9 +58,7 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
 
         // 2. 查询在线的 Agent 服务地址
         List<String> agentIpList = getHealthyHostAgentIpList();
-        if (agentIpList.isEmpty()) {
-            throw new BadRequestException("未查询到在线 Host-Agent 服务!");
-        }
+        Assert.isFalse(agentIpList.isEmpty(), () -> new BadRequestException("未查询到在线 Host-Agent 服务!"));
         String serverAgentIp = agentIpList.get(RandomUtil.randomInt(0, agentIpList.size()));
         String serverAgentPort = SystemConstant.HOST_SERVER_PORT;
         String serverUploadUri = ImageConstant.HOST_SLICE_UPLOAD_URI;
@@ -67,9 +66,7 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
 
         // 3.查询 Agent-IP 对应宿主机的共享存储地址
         Optional<HostInfo> hostInfoOptional = Optional.ofNullable(hostInfoMapper.selectOne(Wrappers.<HostInfo>lambdaQuery().eq(HostInfo::getIp, serverAgentIp)));
-        if (hostInfoOptional.isEmpty()) {
-            throw new BadRequestException(String.format("未找到相关 IP: %s 匹配的宿主机信息", serverAgentIp));
-        }
+        Assert.isFalse(hostInfoOptional.isEmpty(), () -> new BadRequestException(String.format("未找到相关 IP: %s 匹配的宿主机信息", serverAgentIp)));
         String sharedStoragePath = hostInfoOptional.get().getSharedStoragePath();
 
         // 4.生成响应信息
@@ -86,9 +83,9 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
         imageUploadVO.setServerAgentIp(serverAgentIp);
         // 22002
         imageUploadVO.setServerAgentPort(serverAgentPort);
-        // /agent/sliceUpload
+        // /agent/file/sliceUpload
         imageUploadVO.setServerUploadUri(serverUploadUri);
-        // /agent/sliceMerge
+        // /agent/file/sliceMerge
         imageUploadVO.setServerMergeUri(serverMergeUri);
         // /root/vsp/share/share_iso/ubuntu-22.02.iso
         imageUploadVO.setServerFilePath(sharedStoragePath + ImageConstant.SUB_ISO_PATH_PREFIX + File.separator + imageUploadDTO.getIsoFileName());

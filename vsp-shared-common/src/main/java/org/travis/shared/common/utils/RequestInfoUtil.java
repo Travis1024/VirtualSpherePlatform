@@ -72,7 +72,7 @@ public class RequestInfoUtil {
      * @param key 响应头 Key
      * @param value 响应头 Value
      */
-    public static void setResponseHeader(String key, String value){
+    public static void setResponseHeader(String key, String value) {
         HttpServletResponse response = getResponse();
         if (response == null) {
             return;

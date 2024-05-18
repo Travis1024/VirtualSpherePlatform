@@ -1,6 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.travis.center.common.config.mvc.MvcAutoConfig,\
   org.travis.center.common.config.mybatis.MybatisAutoConfig,\
-  org.travis.center.common.config.redisson.RedissonAutoConfig,\
   org.travis.center.common.config.satoken.SaTokenConfig,\
   org.travis.center.common.config.zookeeper.ZookeeperConfig

@@ -3,6 +3,8 @@
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vsp-agent-web/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vsp-agent-web/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vsp-center-auth/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vsp-center-common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vsp-center-common/src/main/resources" charset="UTF-8" />
@@ -16,8 +18,6 @@
     <file url="file://$PROJECT_DIR$/vsp-center-web/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vsp-host-common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vsp-host-common/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/vsp-host-web/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/vsp-host-web/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vsp-shared-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vsp-shared-common/src/main/java" charset="UTF-8" />
   </component>

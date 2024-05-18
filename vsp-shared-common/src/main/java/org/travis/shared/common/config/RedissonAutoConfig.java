@@ -1,4 +1,4 @@
-package org.travis.center.common.config.redisson;
+package org.travis.shared.common.config;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;

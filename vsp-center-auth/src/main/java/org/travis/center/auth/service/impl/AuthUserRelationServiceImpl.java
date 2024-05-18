@@ -1,5 +1,6 @@
 package org.travis.center.auth.service.impl;
 
+import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -46,9 +47,7 @@ public class AuthUserRelationServiceImpl extends ServiceImpl<AuthUserRelationMap
     public void insertRelations(AuthUserInsertDTO authUserInsertDTO) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = userService.checkAdminUser(UserThreadLocalUtil.getUserId());
-        if (!checkedAdminUser) {
-            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
-        }
+        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
         // 2.循环处理并新增
         Long authGroupId = authUserInsertDTO.getAuthGroupId();
         List<Long> userIdList = authUserInsertDTO.getUserIdList();
@@ -70,9 +69,7 @@ public class AuthUserRelationServiceImpl extends ServiceImpl<AuthUserRelationMap
     public void deleteRelations(AuthUserDeleteDTO authUserDeleteDTO) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = userService.checkAdminUser(UserThreadLocalUtil.getUserId());
-        if (!checkedAdminUser) {
-            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
-        }
+        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
         // 2.处理数据库信息
         Long authGroupId = authUserDeleteDTO.getAuthGroupId();
         List<Long> userIdList = authUserDeleteDTO.getUserIdList();
@@ -83,9 +80,7 @@ public class AuthUserRelationServiceImpl extends ServiceImpl<AuthUserRelationMap
     public List<User> queryUserListByAuthGroup(Long authGroupId) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = userService.checkAdminUser(UserThreadLocalUtil.getUserId());
-        if (!checkedAdminUser) {
-            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
-        }
+        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
         // 2.查询数据库信息
         List<User> userList = new ArrayList<>();
         Optional<List<AuthUserRelation>> optionalAuthUserRelations = Optional.ofNullable(getBaseMapper().selectList(Wrappers.<AuthUserRelation>lambdaQuery().select(AuthUserRelation::getUserId).eq(AuthUserRelation::getAuthGroupId, authGroupId)));
