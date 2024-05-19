@@ -9,6 +9,7 @@
     <result column="SUB_PATH" jdbcType="VARCHAR" property="subPath" />
     <result column="IMAGE_PLATFORM" jdbcType="INTEGER" property="imagePlatform" />
     <result column="STATE" jdbcType="INTEGER" property="state" />
+    <result column="STATE_MESSAGE" jdbcType="VARCHAR" property="stateMessage" />
     <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
     <result column="UPDATER" jdbcType="BIGINT" property="updater" />
     <result column="CREATOR" jdbcType="BIGINT" property="creator" />
@@ -17,7 +18,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    ID, "NAME", DESCRIPTION, ARCHITECTURE, SUB_PATH, STATE,
+    ID, "NAME", DESCRIPTION, ARCHITECTURE, SUB_PATH, STATE, STATE_MESSAGE,
     IMAGE_PLATFORM, IS_DELETED, UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME
   </sql>
 </mapper>

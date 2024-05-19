@@ -80,6 +80,13 @@ public class ImageInfo extends com.baomidou.mybatisplus.extension.activerecord.M
     private ImageStateEnum state;
 
     /**
+     * 镜像状态消息
+     */
+    @TableField(value = "STATE_MESSAGE")
+    @Schema(description = "镜像状态消息")
+    private String stateMessage;
+
+    /**
      * 逻辑删除
      */
     @TableField(value = "IS_DELETED")
@@ -132,6 +139,8 @@ public class ImageInfo extends com.baomidou.mybatisplus.extension.activerecord.M
     public static final String COL_IMAGE_PLATFORM = "IMAGE_PLATFORM";
 
     public static final String COL_STATE = "STATE";
+
+    public static final String COL_STATE_MESSAGE = "STATE_MESSAGE";
 
     public static final String COL_IS_DELETED = "IS_DELETED";
 

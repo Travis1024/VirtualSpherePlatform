@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.travis.center.manage.pojo.dto.ImageUploadDTO;
 import org.travis.center.manage.pojo.vo.ImageUploadVO;
 
+import java.util.List;
+
 /**
  * @ClassName ImageInfoService
  * @Description ImageInfoService
@@ -15,4 +17,8 @@ import org.travis.center.manage.pojo.vo.ImageUploadVO;
 public interface ImageInfoService extends IService<ImageInfo>{
     ImageUploadVO getImageUploadInfo(ImageUploadDTO imageUploadDTO);
     void changeImageInfoSuccessState(Long imageId);
+    void changeImageInfoErrorState(Long imageId, String errorMessage);
+    List<ImageInfo> queryImageList();
+
+    ImageInfo queryOneImageById(Long imageId);
 }

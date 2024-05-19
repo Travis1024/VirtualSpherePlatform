@@ -35,15 +35,14 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping(SystemConstant.AGENT_REQUEST_PREFIX + SystemConstant.AGENT_FILE_CONTROLLER)
 public class FileController {
 
-
-    private static final String LOCK_FILE_PREFIX = "lock:file:";
+    public static final String LOCK_FILE_PREFIX = "lock:file:";
 
     @Resource
     private RedissonClient redissonClient;
 
     @Operation(summary = "切片文件上传")
     @PostMapping(ImageConstant.SLICE_UPLOAD)
-    private void imageSliceUpload(
+    public void imageSliceUpload(
             @Parameter(description = "切片文件", required = true) @RequestPart("sliceFile") MultipartFile multipartFile,
             @Parameter(description = "切片文件临时存储路径", required = true) @RequestParam("tempFilePath") String tempFilePath
         ) {
@@ -64,7 +63,7 @@ public class FileController {
 
     @Operation(summary = "切片文件合并")
     @PostMapping(ImageConstant.SLICE_MERGE)
-    private void imageSliceMerge(@Validated @RequestBody FileMergeDTO fileMergeDTO) {
+    public void imageSliceMerge(@Validated @RequestBody FileMergeDTO fileMergeDTO) {
         RLock lock = redissonClient.getLock(LOCK_FILE_PREFIX + fileMergeDTO.getImageId());
         try {
             // 1.根据切片文件 ID 加锁, 尝试拿锁 500ms 后停止重试 (自动续期)
@@ -104,11 +103,12 @@ public class FileController {
         }
     }
 
-    private void merge(List<String> sortTempFilePathList, String targetFilePath) throws IOException {
+    public static void merge(List<String> sortTempFilePathList, String targetFilePath) throws IOException {
         RandomAccessFile finalFile = null;
         RandomAccessFile readerFile = null;
         try {
             // 1.初始化 最终文件
+            FileUtil.touch(targetFilePath);
             finalFile = new RandomAccessFile(new File(targetFilePath), "rw");
             // 2.循环读取中间文件，并写入最终文件
             for (String tempFilePath : sortTempFilePathList) {

@@ -21,10 +21,10 @@ import java.util.Arrays;
 @Slf4j
 @EnableDubbo
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-public class VspHostApplication {
+public class VspAgentApplication {
     public static void main(String[] args) throws UnknownHostException {
         // Create Spring Application Instance
-        SpringApplication application = new SpringApplication(VspHostApplication.class);
+        SpringApplication application = new SpringApplication(VspAgentApplication.class);
 
         // Run and get environment variables
         ConfigurableEnvironment environment = application.run(args).getEnvironment();

@@ -6,7 +6,7 @@ import org.travis.center.common.entity.manage.VmwareXmlDetails;
 
 /**
  * @ClassName VmwareXmlDetailsMapper
- * @Description TODO
+ * @Description VmwareXmlDetailsMapper
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/5/14

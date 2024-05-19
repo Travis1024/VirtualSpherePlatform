@@ -14,6 +14,7 @@ import org.travis.center.common.enums.ImageStateEnum;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.center.common.mapper.manage.ImageInfoMapper;
 import org.travis.center.common.entity.manage.ImageInfo;
+import org.travis.center.common.service.AgentAssistService;
 import org.travis.center.manage.pojo.dto.ImageUploadDTO;
 import org.travis.center.manage.pojo.vo.ImageUploadVO;
 import org.travis.center.manage.service.ImageInfoService;
@@ -44,7 +45,7 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
     @Resource
     private HostInfoMapper hostInfoMapper;
     @Resource
-    private CuratorFramework curatorFramework;
+    private AgentAssistService agentAssistService;
 
     @Override
     public ImageUploadVO getImageUploadInfo(ImageUploadDTO imageUploadDTO) {
@@ -53,11 +54,12 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
         BeanUtils.copyProperties(imageUploadDTO, imageInfo);
         imageInfo.setId(SnowflakeIdUtil.nextId());
         imageInfo.setState(ImageStateEnum.UPLOADING);
+        imageInfo.setStateMessage(ImageStateEnum.UPLOADING.getDisplay());
         imageInfo.setSubPath(ImageConstant.SUB_ISO_PATH_PREFIX + File.separator + imageUploadDTO.getIsoFileName());
         save(imageInfo);
 
         // 2. 查询在线的 Agent 服务地址
-        List<String> agentIpList = getHealthyHostAgentIpList();
+        List<String> agentIpList = agentAssistService.getHealthyHostAgentIpList();
         Assert.isFalse(agentIpList.isEmpty(), () -> new BadRequestException("未查询到在线 Host-Agent 服务!"));
         String serverAgentIp = agentIpList.get(RandomUtil.randomInt(0, agentIpList.size()));
         String serverAgentPort = SystemConstant.HOST_SERVER_PORT;
@@ -97,20 +99,35 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
 
     @Override
     public void changeImageInfoSuccessState(Long imageId) {
-
+        boolean updated = update(
+                Wrappers.<ImageInfo>lambdaUpdate()
+                        .set(ImageInfo::getState, ImageStateEnum.READY)
+                        .set(ImageInfo::getStateMessage, ImageStateEnum.READY.getDisplay())
+                        .eq(ImageInfo::getId, imageId)
+        );
+        Assert.isTrue(updated, () -> new BadRequestException("更新失败, 未匹配到镜像文件, 请检查镜像文件信息!"));
     }
 
+    @Override
+    public void changeImageInfoErrorState(Long imageId, String errorMessage) {
+        boolean updated = update(
+                Wrappers.<ImageInfo>lambdaUpdate()
+                        .set(ImageInfo::getState, ImageStateEnum.ERROR)
+                        .set(ImageInfo::getStateMessage, ImageStateEnum.ERROR.getDisplay() + StrUtil.COLON + errorMessage)
+                        .eq(ImageInfo::getId, imageId)
+        );
+        Assert.isTrue(updated, () -> new BadRequestException("更新失败, 未匹配到镜像文件, 请检查镜像文件信息!"));
+    }
 
-    private List<String> getHealthyHostAgentIpList() {
-        List<String> ipList = new ArrayList<>();
-        try {
-            List<String> serverList = curatorFramework.getChildren().forPath(SystemConstant.ZOOKEEPER_HOST_SERVER_PATH);
-            if (serverList != null && !serverList.isEmpty()) {
-                ipList = serverList.stream().map(server -> server.split(StrUtil.COLON)[0]).collect(Collectors.toList());
-            }
-        } catch (Exception e) {
-            log.error("[GetHealthyHostAgentIpList] Error: {}", e.getMessage());
-        }
-        return ipList;
+    @Override
+    public List<ImageInfo> queryImageList() {
+        return getBaseMapper().selectList(null);
+    }
+
+    @Override
+    public ImageInfo queryOneImageById(Long imageId) {
+        // TODO 检测所有的 Optional orElseThrow 使用
+        Optional<ImageInfo> imageInfoOptional = Optional.ofNullable(getById(imageId));
+        return imageInfoOptional.orElseThrow(() -> new BadRequestException("未找到当前镜像文件!"));
     }
 }
