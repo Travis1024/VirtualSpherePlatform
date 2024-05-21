@@ -2,9 +2,7 @@ package org.travis.center.auth.service.impl;
 
 import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +39,6 @@ public class AuthUserRelationServiceImpl extends ServiceImpl<AuthUserRelationMap
     private UserService userService;
     @Resource
     private UserAssistService userAssistService;
-    @Resource
-    @Lazy
-    private AuthUserRelationService authUserRelationService;
 
     @Transactional
     @Override
@@ -64,7 +59,7 @@ public class AuthUserRelationServiceImpl extends ServiceImpl<AuthUserRelationMap
             authUserRelationList.add(authUserRelation);
         }
         if (!authUserRelationList.isEmpty()) {
-            authUserRelationService.saveBatch(authUserRelationList);
+            saveBatch(authUserRelationList);
         }
     }
 

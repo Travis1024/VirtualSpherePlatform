@@ -24,6 +24,7 @@ import org.travis.shared.common.utils.SnowflakeIdUtil;
 import org.travis.shared.common.utils.VspStrUtil;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -101,5 +102,10 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
                 session.disconnect();
             }
         }
+    }
+
+    @Override
+    public void delete(List<Long> hostIdList) {
+
     }
 }

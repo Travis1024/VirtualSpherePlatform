@@ -1,4 +1,5 @@
 package org.travis.center.manage.controller;
+import cn.hutool.core.lang.Assert;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.validation.annotation.Validated;
 import org.travis.center.common.entity.manage.HostInfo;
@@ -11,6 +12,7 @@ import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.utils.VspStrUtil;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -37,6 +39,14 @@ public class HostInfoController {
     public HostInfo insertOne(@Validated @RequestBody HostInsertDTO hostInsertDTO) {
         VspStrUtil.trimStr(hostInsertDTO);
         return hostInfoService.insertOne(hostInsertDTO);
+    }
+
+    @Operation(summary = "宿主机信息删除")
+    @DeleteMapping("/delete")
+    public void delete(@RequestParam("hostIds") List<Long> hostIdList) {
+        if (!hostIdList.isEmpty()) {
+            hostInfoService.delete(hostIdList);
+        }
     }
 
     @Operation(summary = "宿主机 SSH 连接预检测")
