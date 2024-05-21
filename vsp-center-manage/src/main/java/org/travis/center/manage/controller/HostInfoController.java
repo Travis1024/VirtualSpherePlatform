@@ -7,6 +7,7 @@ import org.travis.center.manage.pojo.dto.HostInsertDTO;
 import org.travis.center.manage.pojo.dto.HostSshCheckDTO;
 import org.travis.center.manage.service.HostInfoService;
 import org.travis.shared.common.domain.R;
+import org.travis.shared.common.exceptions.BadRequestException;
 
 import javax.annotation.Resource;
 import java.util.Optional;
@@ -23,17 +24,11 @@ public class HostInfoController {
     @Resource
     private HostInfoService hostInfoService;
 
-    /**
-    * 通过主键查询单条数据
-    *
-    * @param hostId 主键
-    * @return 单条数据
-    */
-    @Operation(summary = "通过主键查询单条数据")
+    @Operation(summary = "通过ID查询单条宿主机数据")
     @GetMapping("/selectOne")
     public HostInfo selectOne(Long hostId) {
         Optional<HostInfo> hostInfoOptional = Optional.ofNullable(hostInfoService.getById(hostId));
-        return hostInfoOptional.orElse(null);
+        return hostInfoOptional.orElseThrow(() -> new BadRequestException("未查询到宿主机信息!"));
     }
 
     @Operation(summary = "新增单条宿主机数据")

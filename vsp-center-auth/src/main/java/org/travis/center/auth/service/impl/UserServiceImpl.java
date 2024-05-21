@@ -52,7 +52,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         // 2.校验用户名是否存在
         Optional<User> userOptional = Optional.ofNullable(getOne(Wrappers.<User>lambdaQuery().select(User::getId).eq(User::getUsername, userRegisterDTO.getUsername())));
-        Assert.isFalse(userOptional.isPresent(), () -> new BadRequestException("当前用户名已存在!"));
+        userOptional.ifPresent(data -> {
+            throw new BadRequestException("当前用户名已存在!");
+        });
 
         // 3.数据库记录存储
         User user = new User();
@@ -66,14 +68,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public User queryById(Long userId) {
         Optional<User> userOptional = Optional.ofNullable(getById(userId));
-        Assert.isFalse(userOptional.isEmpty(), () -> new BadRequestException("未查询到用户信息!"));
+        userOptional.orElseThrow(() -> new BadRequestException("未查询到用户信息!"));
         return userOptional.get().setPassword(null);
     }
 
     @Override
     public boolean checkAdminUser(Long userId) {
         Optional<User> userOptional = Optional.ofNullable(getOne(Wrappers.<User>lambdaQuery().select(User::getRoleType).eq(User::getId, userId)));
-        Assert.isFalse(userOptional.isEmpty(), () -> new BadRequestException("未查询到用户信息!"));
+        userOptional.orElseThrow(() -> new BadRequestException("未查询到用户信息!"));
         return userOptional.get().getRoleType().getValue().equals(UserRoleEnum.ADMIN_USER.getValue());
     }
 

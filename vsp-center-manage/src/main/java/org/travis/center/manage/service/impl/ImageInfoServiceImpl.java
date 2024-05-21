@@ -68,8 +68,8 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
 
         // 3.查询 Agent-IP 对应宿主机的共享存储地址
         Optional<HostInfo> hostInfoOptional = Optional.ofNullable(hostInfoMapper.selectOne(Wrappers.<HostInfo>lambdaQuery().eq(HostInfo::getIp, serverAgentIp)));
-        Assert.isFalse(hostInfoOptional.isEmpty(), () -> new BadRequestException(String.format("未找到相关 IP: %s 匹配的宿主机信息", serverAgentIp)));
-        String sharedStoragePath = hostInfoOptional.get().getSharedStoragePath();
+        HostInfo hostInfo = hostInfoOptional.orElseThrow(() -> new BadRequestException(String.format("未找到相关 IP: %s 匹配的宿主机信息", serverAgentIp)));
+        String sharedStoragePath = hostInfo.getSharedStoragePath();
 
         // 4.生成响应信息
         List<String> serverTempFilePathList = new ArrayList<>(imageUploadDTO.getSliceNumber());
@@ -126,7 +126,6 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
 
     @Override
     public ImageInfo queryOneImageById(Long imageId) {
-        // TODO 检测所有的 Optional orElseThrow 使用
         Optional<ImageInfo> imageInfoOptional = Optional.ofNullable(getById(imageId));
         return imageInfoOptional.orElseThrow(() -> new BadRequestException("未找到当前镜像文件!"));
     }
