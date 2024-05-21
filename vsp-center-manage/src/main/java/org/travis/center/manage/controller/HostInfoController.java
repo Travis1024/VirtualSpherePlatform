@@ -8,6 +8,7 @@ import org.travis.center.manage.pojo.dto.HostSshCheckDTO;
 import org.travis.center.manage.service.HostInfoService;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.exceptions.BadRequestException;
+import org.travis.shared.common.utils.VspStrUtil;
 
 import javax.annotation.Resource;
 import java.util.Optional;
@@ -34,6 +35,7 @@ public class HostInfoController {
     @Operation(summary = "新增单条宿主机数据")
     @PostMapping("/insertOne")
     public HostInfo insertOne(@Validated @RequestBody HostInsertDTO hostInsertDTO) {
+        VspStrUtil.trimStr(hostInsertDTO);
         return hostInfoService.insertOne(hostInsertDTO);
     }
 

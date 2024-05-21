@@ -8,6 +8,7 @@ import org.travis.center.manage.pojo.dto.ImageUploadDTO;
 import org.travis.center.manage.pojo.vo.ImageUploadVO;
 import org.travis.center.manage.service.ImageInfoService;
 import org.travis.shared.common.exceptions.BadRequestException;
+import org.travis.shared.common.utils.VspStrUtil;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -24,9 +25,10 @@ public class ImageInfoController {
     @Resource
     private ImageInfoService imageInfoService;
 
-    @Operation(summary = "获取镜像文件上传地址及信息")
+    @Operation(summary = "上传新增镜像信息 & 获取镜像切片文件上传地址")
     @PostMapping("/preUpload")
     public ImageUploadVO getImageUploadInfo(@Validated @RequestBody ImageUploadDTO imageUploadDTO) {
+        VspStrUtil.trimStr(imageUploadDTO);
         return imageInfoService.getImageUploadInfo(imageUploadDTO);
     }
 

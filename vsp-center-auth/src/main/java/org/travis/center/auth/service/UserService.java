@@ -17,7 +17,6 @@ public interface UserService extends IService<User>{
     void login(String username, String password);
     void register(UserRegisterDTO userRegisterDTO);
     User queryById(Long userId);
-    boolean checkAdminUser(Long userId);
     void updateUserInfo(UserUpdateDTO userUpdateDTO);
     void updatePassword(UserModifyPasswordDTO userModifyPasswordDTO);
     void updateUserRole(UserModifyRoleDTO userModifyRoleDTO);

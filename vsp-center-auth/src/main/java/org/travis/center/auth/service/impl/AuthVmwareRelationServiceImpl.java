@@ -21,6 +21,7 @@ import org.travis.center.common.entity.manage.VmwareInfo;
 import org.travis.center.common.mapper.auth.AuthVmwareRelationMapper;
 import org.travis.center.auth.service.AuthVmwareRelationService;
 import org.travis.center.common.mapper.manage.VmwareInfoMapper;
+import org.travis.center.common.service.UserAssistService;
 import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.ForbiddenException;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
@@ -38,10 +39,7 @@ import javax.annotation.Resource;
 @Service
 public class AuthVmwareRelationServiceImpl extends ServiceImpl<AuthVmwareRelationMapper, AuthVmwareRelation> implements AuthVmwareRelationService{
     @Resource
-    private UserService userService;
-    @Resource
-    @Lazy
-    private AuthVmwareRelationService authVmwareRelationService;
+    private UserAssistService userAssistService;
     @Resource
     private VmwareInfoMapper vmwareInfoMapper;
 
@@ -49,7 +47,7 @@ public class AuthVmwareRelationServiceImpl extends ServiceImpl<AuthVmwareRelatio
     @Override
     public void insertRelations(AuthVmwareInsertDTO authVmwareInsertDTO) {
         // 1.校验当前登录用户是否为管理员
-        boolean checkedAdminUser = userService.checkAdminUser(UserThreadLocalUtil.getUserId());
+        boolean checkedAdminUser = userAssistService.checkAdminUser();
         Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
         // 2.循环处理并新增
         Long authGroupId = authVmwareInsertDTO.getAuthGroupId();
@@ -64,14 +62,14 @@ public class AuthVmwareRelationServiceImpl extends ServiceImpl<AuthVmwareRelatio
             authVmwareRelationList.add(authVmwareRelation);
         }
         if (!authVmwareRelationList.isEmpty()) {
-            authVmwareRelationService.saveBatch(authVmwareRelationList);
+            saveBatch(authVmwareRelationList);
         }
     }
 
     @Override
     public void deleteRelations(AuthVmwareDeleteDTO authVmwareDeleteDTO) {
         // 1.校验当前登录用户是否为管理员
-        boolean checkedAdminUser = userService.checkAdminUser(UserThreadLocalUtil.getUserId());
+        boolean checkedAdminUser = userAssistService.checkAdminUser();
         Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
         // 2.处理数据库信息
         Long authGroupId = authVmwareDeleteDTO.getAuthGroupId();
@@ -82,7 +80,7 @@ public class AuthVmwareRelationServiceImpl extends ServiceImpl<AuthVmwareRelatio
     @Override
     public List<VmwareInfo> queryVmwareListByAuthGroup(Long authGroupId) {
         // 1.校验当前登录用户是否为管理员
-        boolean checkedAdminUser = userService.checkAdminUser(UserThreadLocalUtil.getUserId());
+        boolean checkedAdminUser = userAssistService.checkAdminUser();
         Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
         // 2.查询数据库信息
         List<VmwareInfo> vmwareInfoList = new ArrayList<>();

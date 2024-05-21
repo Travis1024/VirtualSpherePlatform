@@ -4,11 +4,8 @@ import org.springframework.validation.annotation.Validated;
 import org.travis.center.auth.pojo.dto.AuthVmwareDeleteDTO;
 import org.travis.center.auth.pojo.dto.AuthVmwareInsertDTO;
 import org.travis.center.auth.service.AuthVmwareRelationService;
-import org.travis.center.common.entity.auth.AuthVmwareRelation;
-import org.travis.center.auth.service.impl.AuthVmwareRelationServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.travis.center.common.entity.manage.VmwareInfo;
 
 import javax.annotation.Resource;

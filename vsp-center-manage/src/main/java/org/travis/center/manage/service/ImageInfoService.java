@@ -19,6 +19,5 @@ public interface ImageInfoService extends IService<ImageInfo>{
     void changeImageInfoSuccessState(Long imageId);
     void changeImageInfoErrorState(Long imageId, String errorMessage);
     List<ImageInfo> selectImageList();
-
     ImageInfo selectOneImageById(Long imageId);
 }

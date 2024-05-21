@@ -21,6 +21,7 @@ import org.travis.center.common.entity.auth.AuthUserRelation;
 import org.travis.center.common.mapper.auth.AuthGroupMapper;
 import org.travis.center.auth.service.AuthGroupService;
 import org.travis.center.common.mapper.auth.AuthUserRelationMapper;
+import org.travis.center.common.service.UserAssistService;
 import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.ForbiddenException;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
@@ -39,7 +40,7 @@ import javax.annotation.Resource;
 @Service
 public class AuthGroupServiceImpl extends ServiceImpl<AuthGroupMapper, AuthGroup> implements AuthGroupService{
     @Resource
-    private UserService userService;
+    private UserAssistService userAssistService;
     @Resource
     private AuthUserRelationMapper authUserRelationMapper;
 
@@ -47,7 +48,7 @@ public class AuthGroupServiceImpl extends ServiceImpl<AuthGroupMapper, AuthGroup
     public List<AuthGroup> queryCurrentUserAuthGroup() {
         List<AuthGroup> authGroupList = new ArrayList<>();
         // 判断当前用户是否为管理员
-        boolean checkedAdminUser = userService.checkAdminUser(UserThreadLocalUtil.getUserId());
+        boolean checkedAdminUser = userAssistService.checkAdminUser();
         if (checkedAdminUser) {
             // 管理员返回所有权限组列表
             authGroupList = getBaseMapper().selectList(null);
@@ -65,7 +66,7 @@ public class AuthGroupServiceImpl extends ServiceImpl<AuthGroupMapper, AuthGroup
     @Override
     public AuthGroup insertOneAuthGroup(AuthGroupInsertDTO authGroupInsertDTO) {
         // 1.校验当前登录用户是否为管理员
-        boolean checkedAdminUser = userService.checkAdminUser(UserThreadLocalUtil.getUserId());
+        boolean checkedAdminUser = userAssistService.checkAdminUser();
         Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
         // 2.存储权限组信息
         AuthGroup authGroup = new AuthGroup();
@@ -79,7 +80,7 @@ public class AuthGroupServiceImpl extends ServiceImpl<AuthGroupMapper, AuthGroup
     @Override
     public void updateOneAuthGroup(AuthGroupUpdateDTO authGroupUpdateDTO) {
         // 1.校验当前登录用户是否为管理员
-        boolean checkedAdminUser = userService.checkAdminUser(UserThreadLocalUtil.getUserId());
+        boolean checkedAdminUser = userAssistService.checkAdminUser();
         Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
         // 2.修改权限组信息
         update(
