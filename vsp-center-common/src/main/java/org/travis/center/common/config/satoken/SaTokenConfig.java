@@ -1,5 +1,7 @@
 package org.travis.center.common.config.satoken;
 
+import cn.dev33.satoken.router.SaHttpMethod;
+import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +28,15 @@ public class SaTokenConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 添加登录鉴权拦截器
-        registry.addInterceptor(new MySaInterceptor(handle -> StpUtil.checkLogin()))
+        registry.addInterceptor(new MySaInterceptor(handle -> {
+                    SaRouter
+                            // 匹配需要鉴权的所有路径
+                            .match("/**")
+                            // 排除 Options 请求
+                            .notMatch(SaHttpMethod.OPTIONS)
+                            // 鉴权逻辑
+                            .check(r -> StpUtil.checkLogin());
+                }))
                 .addPathPatterns("/**")
                 // swagger
                 .excludePathPatterns("/favicon.ico")
