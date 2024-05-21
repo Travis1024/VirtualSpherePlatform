@@ -43,14 +43,14 @@ public class ImageInfoController {
     }
 
     @Operation(summary = "查询镜像文件列表信息")
-    @GetMapping("/query")
-    public List<ImageInfo> queryImageList() {
-        return imageInfoService.queryImageList();
+    @GetMapping("/select")
+    public List<ImageInfo> selectImageList() {
+        return imageInfoService.selectImageList();
     }
 
     @Operation(summary = "根据镜像ID查询镜像信息")
-    @GetMapping("/queryOne")
-    public ImageInfo queryOneImageById(@RequestParam("imageId") Long imageId) {
-        return imageInfoService.queryOneImageById(imageId);
+    @GetMapping("/selectOne")
+    public ImageInfo selectOneImageById(@RequestParam("imageId") Long imageId) {
+        return imageInfoService.selectOneImageById(imageId);
     }
 }

@@ -18,7 +18,7 @@ public interface ImageInfoService extends IService<ImageInfo>{
     ImageUploadVO getImageUploadInfo(ImageUploadDTO imageUploadDTO);
     void changeImageInfoSuccessState(Long imageId);
     void changeImageInfoErrorState(Long imageId, String errorMessage);
-    List<ImageInfo> queryImageList();
+    List<ImageInfo> selectImageList();
 
-    ImageInfo queryOneImageById(Long imageId);
+    ImageInfo selectOneImageById(Long imageId);
 }

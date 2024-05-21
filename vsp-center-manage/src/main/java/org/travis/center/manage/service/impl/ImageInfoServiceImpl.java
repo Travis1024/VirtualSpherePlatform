@@ -120,12 +120,12 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
     }
 
     @Override
-    public List<ImageInfo> queryImageList() {
+    public List<ImageInfo> selectImageList() {
         return getBaseMapper().selectList(null);
     }
 
     @Override
-    public ImageInfo queryOneImageById(Long imageId) {
+    public ImageInfo selectOneImageById(Long imageId) {
         Optional<ImageInfo> imageInfoOptional = Optional.ofNullable(getById(imageId));
         return imageInfoOptional.orElseThrow(() -> new BadRequestException("未找到当前镜像文件!"));
     }
