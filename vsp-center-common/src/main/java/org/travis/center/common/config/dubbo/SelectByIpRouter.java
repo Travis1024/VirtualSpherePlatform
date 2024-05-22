@@ -36,14 +36,14 @@ public class SelectByIpRouter<T> extends AbstractStateRouter<T> {
             return ipInvokers;
         }
         // 获取目标宿主机 IP 地址
-        String targetHostIp = (String) arguments[0];
-        log.warn("[Target Host Ip] -> {}", targetHostIp);
+        String targetAgentIp = (String) arguments[0];
+        log.warn("[Target Host Ip] -> {}", targetAgentIp);
 
         // 循环进行路由匹配
         for (Invoker<T> invoker : invokers) {
             String providerIp = invoker.getUrl().getHost();
             log.warn("[CurrentIp] -> {}", providerIp);
-            if (providerIp.equals(targetHostIp)) {
+            if (providerIp.equals(targetAgentIp)) {
                 ipInvokers.add(invoker);
             }
         }

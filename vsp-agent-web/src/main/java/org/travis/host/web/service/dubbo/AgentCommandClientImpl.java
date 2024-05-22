@@ -3,7 +3,7 @@ package org.travis.host.web.service.dubbo;
 import cn.hutool.core.util.RuntimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.travis.api.client.host.HostCommandClient;
+import org.travis.api.client.agent.AgentCommandClient;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
 
@@ -16,9 +16,9 @@ import org.travis.shared.common.enums.BizCodeEnum;
  */
 @Slf4j
 @DubboService
-public class HostCommandClientImpl implements HostCommandClient {
+public class AgentCommandClientImpl implements AgentCommandClient {
     @Override
-    public R<String> execSingleCommand(String targetHostIp, String command) {
+    public R<String> execSingleCommand(String targetAgentIp, String command) {
         try {
             String result = RuntimeUtil.execForStr(command);
             // TODO 执行单个命令

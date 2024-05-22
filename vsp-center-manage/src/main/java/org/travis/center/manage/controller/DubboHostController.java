@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.travis.api.client.host.HealthyClient;
+import org.travis.api.client.agent.AgentHealthyClient;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.CommonException;
@@ -27,14 +27,14 @@ import org.travis.shared.common.exceptions.DubboFunctionException;
 @RequestMapping("/dubbo")
 public class DubboHostController {
     @DubboReference
-    private HealthyClient healthyClient;
+    private AgentHealthyClient agentHealthyClient;
 
     @Operation(summary = "Dubbo-通信检测")
     @GetMapping("/check")
     public String healthyCheck(@RequestParam("ip") String ip) {
         // PING Dubbo 请求
         try {
-            R<String> healthyCheckR = healthyClient.healthyCheck(ip);
+            R<String> healthyCheckR = agentHealthyClient.healthyCheck(ip);
             Assert.isFalse(healthyCheckR.checkFail(), () -> new DubboFunctionException(healthyCheckR.getMsg()));
             return healthyCheckR.getData();
         } catch (Exception e) {

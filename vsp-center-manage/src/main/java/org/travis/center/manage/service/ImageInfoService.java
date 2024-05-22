@@ -4,6 +4,8 @@ import org.travis.center.common.entity.manage.ImageInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.travis.center.manage.pojo.dto.ImageUploadDTO;
 import org.travis.center.manage.pojo.vo.ImageUploadVO;
+import org.travis.shared.common.domain.PageQuery;
+import org.travis.shared.common.domain.PageResult;
 
 import java.util.List;
 
@@ -20,4 +22,5 @@ public interface ImageInfoService extends IService<ImageInfo>{
     void changeImageInfoErrorState(Long imageId, String errorMessage);
     List<ImageInfo> selectImageList();
     ImageInfo selectOneImageById(Long imageId);
+    PageResult<ImageInfo> pageSelectImageList(PageQuery pageQuery);
 }

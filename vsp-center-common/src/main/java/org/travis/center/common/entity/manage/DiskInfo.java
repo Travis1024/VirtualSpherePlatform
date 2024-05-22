@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.travis.center.common.enums.DiskTypeEnum;
 
 /**
  * @ClassName DiskInfo
@@ -74,7 +75,7 @@ public class DiskInfo extends com.baomidou.mybatisplus.extension.activerecord.Mo
      */
     @TableField(value = "DISK_TYPE")
     @Schema(description="磁盘类型（1-Data、2-Root）")
-    private Integer diskType;
+    private DiskTypeEnum diskType;
 
     /**
      * 逻辑删除

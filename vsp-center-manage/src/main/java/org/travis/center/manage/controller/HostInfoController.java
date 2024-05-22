@@ -83,8 +83,14 @@ public class HostInfoController {
     }
 
     @Operation(summary = "分页查询宿主机信息列表")
-    @GetMapping("/pageSelect")
+    @PostMapping("/pageSelect")
     public PageResult<HostInfo> pageSelectList(@Validated @RequestBody PageQuery pageQuery) {
         return hostInfoService.pageSelectList(pageQuery);
+    }
+
+    @Operation(summary = "查询宿主机信息列表")
+    @GetMapping("/select")
+    public List<HostInfo> selectList() {
+        return hostInfoService.selectList();
     }
 }

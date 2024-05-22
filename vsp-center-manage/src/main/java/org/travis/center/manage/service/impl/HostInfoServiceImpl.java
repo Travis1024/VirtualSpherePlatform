@@ -2,7 +2,6 @@ package org.travis.center.manage.service.impl;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Validator;
-import cn.hutool.core.net.Ipv4Util;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -14,7 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
-import org.travis.api.client.host.HealthyClient;
+import org.travis.api.client.agent.AgentHealthyClient;
 import org.travis.center.common.entity.manage.HostInfo;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.center.manage.pojo.dto.HostInsertDTO;
@@ -46,7 +45,7 @@ import java.util.Optional;
 public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> implements HostInfoService{
 
     @DubboReference
-    private HealthyClient healthyClient;
+    private AgentHealthyClient agentHealthyClient;
 
     @Override
     public HostInfo insertOne(HostInsertDTO hostInsertDTO) {
@@ -58,7 +57,7 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
         hostInfo.setId(SnowflakeIdUtil.nextId());
         // 删除最后的"/"符号
         if (hostInfo.getSharedStoragePath().endsWith(File.separator)) {
-            hostInfo.setSharedStoragePath(hostInfo.getSharedStoragePath().substring(0, hostInfo.getSharedStoragePath().length() - 1));
+            hostInfo.setSharedStoragePath(hostInfo.getSharedStoragePath().substring(0, hostInfo.getSharedStoragePath().length() - File.separator.length()));
         }
         VspStrUtil.trimStr(hostInfo);
         save(hostInfo);
@@ -94,7 +93,7 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
 
         // 3.PING Dubbo 请求
         try {
-            R<String> healthyCheckR = healthyClient.healthyCheck(hostIp);
+            R<String> healthyCheckR = agentHealthyClient.healthyCheck(hostIp);
             Assert.isFalse(healthyCheckR.checkFail(), () -> new DubboFunctionException(healthyCheckR.getMsg()));
         } catch (Exception e) {
             log.error("[HostInfoServiceImpl::insertOne] {} - Agent Healthy Check Error! -> {}", hostIp, e.getMessage());
@@ -159,5 +158,10 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
     public PageResult<HostInfo> pageSelectList(PageQuery pageQuery) {
         Page<HostInfo> hostInfoPage = getBaseMapper().selectPage(pageQuery.toMpPage(), null);
         return PageResult.of(hostInfoPage);
+    }
+
+    @Override
+    public List<HostInfo> selectList() {
+        return getBaseMapper().selectList(null);
     }
 }

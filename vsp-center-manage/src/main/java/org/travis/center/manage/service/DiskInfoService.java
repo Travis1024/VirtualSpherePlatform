@@ -2,7 +2,13 @@ package org.travis.center.manage.service;
 
 import org.travis.center.common.entity.manage.DiskInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
-    /**
+import org.travis.center.manage.pojo.dto.DiskInsertDTO;
+import org.travis.shared.common.domain.PageQuery;
+import org.travis.shared.common.domain.PageResult;
+
+import java.util.List;
+
+/**
  * @ClassName DiskInfoService
  * @Description DiskInfoService
  * @Author travis-wei
@@ -11,4 +17,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface DiskInfoService extends IService<DiskInfo>{
     DiskInfo selectOne(Long diskId);
+    List<DiskInfo> selectList();
+    PageResult<DiskInfo> pageSelectList(PageQuery pageQuery);
+    DiskInfo createDisk(DiskInsertDTO diskInsertDTO);
 }

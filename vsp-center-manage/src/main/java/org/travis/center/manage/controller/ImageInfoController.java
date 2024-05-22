@@ -7,6 +7,8 @@ import org.travis.center.common.entity.manage.ImageInfo;
 import org.travis.center.manage.pojo.dto.ImageUploadDTO;
 import org.travis.center.manage.pojo.vo.ImageUploadVO;
 import org.travis.center.manage.service.ImageInfoService;
+import org.travis.shared.common.domain.PageQuery;
+import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.utils.VspStrUtil;
 
@@ -48,6 +50,12 @@ public class ImageInfoController {
     @GetMapping("/select")
     public List<ImageInfo> selectImageList() {
         return imageInfoService.selectImageList();
+    }
+
+    @Operation(summary = "分页查询镜像文件列表信息")
+    @PostMapping("/pageSelect")
+    public PageResult<ImageInfo> pageSelectImageList(@Validated @RequestBody PageQuery pageQuery) {
+        return imageInfoService.pageSelectImageList(pageQuery);
     }
 
     @Operation(summary = "根据镜像ID查询镜像信息")

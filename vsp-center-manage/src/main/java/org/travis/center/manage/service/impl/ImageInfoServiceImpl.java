@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.springframework.beans.BeanUtils;
@@ -20,6 +21,8 @@ import org.travis.center.manage.pojo.vo.ImageUploadVO;
 import org.travis.center.manage.service.ImageInfoService;
 import org.travis.shared.common.constants.ImageConstant;
 import org.travis.shared.common.constants.SystemConstant;
+import org.travis.shared.common.domain.PageQuery;
+import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.utils.NetworkUtils;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
@@ -128,5 +131,11 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
     public ImageInfo selectOneImageById(Long imageId) {
         Optional<ImageInfo> imageInfoOptional = Optional.ofNullable(getById(imageId));
         return imageInfoOptional.orElseThrow(() -> new BadRequestException("未找到当前镜像文件!"));
+    }
+
+    @Override
+    public PageResult<ImageInfo> pageSelectImageList(PageQuery pageQuery) {
+        Page<ImageInfo> imageInfoPage = getBaseMapper().selectPage(pageQuery.toMpPage(), null);
+        return PageResult.of(imageInfoPage);
     }
 }

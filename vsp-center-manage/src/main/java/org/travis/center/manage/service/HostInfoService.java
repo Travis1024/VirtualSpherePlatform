@@ -25,4 +25,5 @@ public interface HostInfoService extends IService<HostInfo> {
     void updateHostIp(Long hostId, String hostIp);
     boolean validateHostAgentConnect(String ipAddr);
     PageResult<HostInfo> pageSelectList(PageQuery pageQuery);
+    List<HostInfo> selectList();
 }
