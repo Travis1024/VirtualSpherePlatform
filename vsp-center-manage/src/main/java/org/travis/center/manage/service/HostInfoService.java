@@ -17,8 +17,9 @@ import java.util.List;
  */
 public interface HostInfoService extends IService<HostInfo> {
     HostInfo insertOne(HostInsertDTO hostInsertDTO);
-    boolean checkHostSshConnect(String hostIp, Integer hostSshPort, String username, String password);
+    boolean validateHostSshConnect(String hostIp, Integer hostSshPort, String username, String password);
     void delete(List<Long> hostIdList);
     void updateOne(HostUpdateDTO hostUpdateDTO);
     void updateHostIp(Long hostId, String hostIp);
+    boolean validateHostAgentConnect(String ipAddr);
 }

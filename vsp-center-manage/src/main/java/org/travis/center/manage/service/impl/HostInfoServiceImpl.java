@@ -100,7 +100,7 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
     }
 
     @Override
-    public boolean checkHostSshConnect(String hostIp, Integer hostSshPort, String username, String password) {
+    public boolean validateHostSshConnect(String hostIp, Integer hostSshPort, String username, String password) {
         Session session = null;
         try {
             JSch jSch = new JSch();
@@ -144,5 +144,11 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
                         .set(HostInfo::getIp, hostIp)
                         .eq(HostInfo::getId, hostId)
         );
+    }
+
+    @Override
+    public boolean validateHostAgentConnect(String ipAddr) {
+        validateHostIp(ipAddr);
+        return true;
     }
 }

@@ -63,10 +63,16 @@ public class HostInfoController {
         hostInfoService.updateHostIp(hostId, hostIp);
     }
 
+    @Operation(summary = "校验新增宿主机 IP 及 Agent 健康状态")
+    @GetMapping("/ipPreCheck")
+    public boolean validateHostAgentConnect(@RequestParam("newIpAddr") String ipAddr) {
+        return hostInfoService.validateHostAgentConnect(ipAddr);
+    }
+
     @Operation(summary = "宿主机 SSH 连接预检测")
     @PostMapping("/sshPreCheck")
-    public boolean checkHostSshConnect(@Validated @RequestBody HostSshCheckDTO hostSshCheckDTO) {
-        return hostInfoService.checkHostSshConnect(
+    public boolean validateHostSshConnect(@Validated @RequestBody HostSshCheckDTO hostSshCheckDTO) {
+        return hostInfoService.validateHostSshConnect(
                 hostSshCheckDTO.getHostIp(),
                 hostSshCheckDTO.getHostSshPort(),
                 hostSshCheckDTO.getUsername(),
