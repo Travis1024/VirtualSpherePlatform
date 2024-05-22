@@ -1,6 +1,8 @@
 package org.travis.center.manage.service.impl;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.net.Ipv4Util;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jcraft.jsch.JSch;
@@ -10,10 +12,12 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.host.HealthyClient;
 import org.travis.center.common.entity.manage.HostInfo;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.center.manage.pojo.dto.HostInsertDTO;
+import org.travis.center.manage.pojo.dto.HostUpdateDTO;
 import org.travis.center.manage.service.HostInfoService;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
@@ -43,19 +47,9 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
 
     @Override
     public HostInfo insertOne(HostInsertDTO hostInsertDTO) {
-        // 1.检测 IP 地址是否已经存在
-        Assert.isFalse(checkHostIpUnique(hostInsertDTO.getIp()), () -> new BadRequestException("宿主机 IP 地址已存在!"));
-
-        // 2.PING Dubbo 请求
-        try {
-            R<String> healthyCheckR = healthyClient.healthyCheck(hostInsertDTO.getIp());
-            Assert.isFalse(healthyCheckR.checkFail(), () -> new DubboFunctionException(healthyCheckR.getMsg()));
-        } catch (Exception e) {
-            log.error("[HostInfoServiceImpl::insertOne] {} - Healthy Check Error! -> {}", hostInsertDTO.getIp(), e.getMessage());
-            throw new CommonException(BizCodeEnum.DUBBO_HEALTHY_CHECK_ERROR.getCode(), BizCodeEnum.DUBBO_HEALTHY_CHECK_ERROR.getMessage() + StrUtil.COLON + e.getMessage());
-        }
-
-        // 3.数据库记录存储
+        // 1.校验宿主机 IP
+        validateHostIp(hostInsertDTO.getIp());
+        // 2.数据库记录存储
         HostInfo hostInfo = new HostInfo();
         BeanUtils.copyProperties(hostInsertDTO, hostInfo);
         hostInfo.setId(SnowflakeIdUtil.nextId());
@@ -67,7 +61,6 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
         save(hostInfo);
         return hostInfo;
     }
-
 
     /**
      * @MethodName checkHostIpUnique
@@ -81,6 +74,30 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
         return Optional.ofNullable(getOne(Wrappers.<HostInfo>lambdaQuery().select(HostInfo::getName).eq(HostInfo::getIp, hostIp))).isPresent();
     }
 
+    /**
+     * @MethodName validateHostIp
+     * @Description 校验宿主机 IP 地址是否有效及 IP-Agent 健康状态
+     * @Author travis-wei
+     * @Data 2024/5/22
+     * @param hostIp    宿主机 IP
+     * @Return void
+     **/
+    private void validateHostIp(String hostIp) {
+        // 1.校验 IP 地址格式
+        Assert.isTrue(Validator.isIpv4(hostIp), () -> new BadRequestException("IPv4 地址格式非法!"));
+
+        // 2.检测 IP 地址是否已经存在
+        Assert.isFalse(checkHostIpUnique(hostIp), () -> new BadRequestException("宿主机 IP 地址已存在!"));
+
+        // 3.PING Dubbo 请求
+        try {
+            R<String> healthyCheckR = healthyClient.healthyCheck(hostIp);
+            Assert.isFalse(healthyCheckR.checkFail(), () -> new DubboFunctionException(healthyCheckR.getMsg()));
+        } catch (Exception e) {
+            log.error("[HostInfoServiceImpl::insertOne] {} - Agent Healthy Check Error! -> {}", hostIp, e.getMessage());
+            throw new CommonException(BizCodeEnum.DUBBO_HEALTHY_CHECK_ERROR.getCode(), BizCodeEnum.DUBBO_HEALTHY_CHECK_ERROR.getMessage() + StrUtil.COLON + e.getMessage());
+        }
+    }
 
     @Override
     public boolean checkHostSshConnect(String hostIp, Integer hostSshPort, String username, String password) {
@@ -104,8 +121,28 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
         }
     }
 
+    @Transactional
     @Override
     public void delete(List<Long> hostIdList) {
+        removeBatchByIds(hostIdList);
+    }
 
+    @Override
+    public void updateOne(HostUpdateDTO hostUpdateDTO) {
+        HostInfo hostInfo = new HostInfo();
+        BeanUtils.copyProperties(hostUpdateDTO, hostInfo);
+        updateById(hostInfo);
+    }
+
+    @Override
+    public void updateHostIp(Long hostId, String hostIp) {
+        // 1.校验宿主机 IP 地址
+        validateHostIp(hostIp);
+        // 2.更新 IP 地址
+        update(
+                Wrappers.<HostInfo>lambdaUpdate()
+                        .set(HostInfo::getIp, hostIp)
+                        .eq(HostInfo::getId, hostId)
+        );
     }
 }

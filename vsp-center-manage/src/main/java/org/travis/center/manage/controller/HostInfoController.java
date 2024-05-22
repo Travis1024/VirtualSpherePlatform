@@ -1,11 +1,13 @@
 package org.travis.center.manage.controller;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.Validator;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.validation.annotation.Validated;
 import org.travis.center.common.entity.manage.HostInfo;
 import org.springframework.web.bind.annotation.*;
 import org.travis.center.manage.pojo.dto.HostInsertDTO;
 import org.travis.center.manage.pojo.dto.HostSshCheckDTO;
+import org.travis.center.manage.pojo.dto.HostUpdateDTO;
 import org.travis.center.manage.service.HostInfoService;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.exceptions.BadRequestException;
@@ -47,6 +49,18 @@ public class HostInfoController {
         if (!hostIdList.isEmpty()) {
             hostInfoService.delete(hostIdList);
         }
+    }
+
+    @Operation(summary = "宿主机信息更新")
+    @PutMapping("/update")
+    public void updateOne(@Validated @RequestBody HostUpdateDTO hostUpdateDTO) {
+        hostInfoService.updateOne(hostUpdateDTO);
+    }
+
+    @Operation(summary = "更新宿主机 IP 地址")
+    @PutMapping("/updateIp")
+    public void updateHostIp(@RequestParam("hostId") Long hostId, @RequestParam("hostIp") String hostIp) {
+        hostInfoService.updateHostIp(hostId, hostIp);
     }
 
     @Operation(summary = "宿主机 SSH 连接预检测")
