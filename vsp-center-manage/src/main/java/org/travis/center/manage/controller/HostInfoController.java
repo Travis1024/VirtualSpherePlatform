@@ -9,6 +9,8 @@ import org.travis.center.manage.pojo.dto.HostInsertDTO;
 import org.travis.center.manage.pojo.dto.HostSshCheckDTO;
 import org.travis.center.manage.pojo.dto.HostUpdateDTO;
 import org.travis.center.manage.service.HostInfoService;
+import org.travis.shared.common.domain.PageQuery;
+import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.utils.VspStrUtil;
@@ -78,5 +80,11 @@ public class HostInfoController {
                 hostSshCheckDTO.getUsername(),
                 hostSshCheckDTO.getPassword()
         );
+    }
+
+    @Operation(summary = "分页查询宿主机信息列表")
+    @GetMapping("/pageSelect")
+    public PageResult<HostInfo> pageSelectList(@Validated @RequestBody PageQuery pageQuery) {
+        return hostInfoService.pageSelectList(pageQuery);
     }
 }

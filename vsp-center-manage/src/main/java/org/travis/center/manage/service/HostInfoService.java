@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.travis.center.manage.pojo.dto.HostInsertDTO;
 import org.travis.center.manage.pojo.dto.HostSshCheckDTO;
 import org.travis.center.manage.pojo.dto.HostUpdateDTO;
+import org.travis.shared.common.domain.PageQuery;
+import org.travis.shared.common.domain.PageResult;
 
 import java.util.List;
 
@@ -22,4 +24,5 @@ public interface HostInfoService extends IService<HostInfo> {
     void updateOne(HostUpdateDTO hostUpdateDTO);
     void updateHostIp(Long hostId, String hostIp);
     boolean validateHostAgentConnect(String ipAddr);
+    PageResult<HostInfo> pageSelectList(PageQuery pageQuery);
 }

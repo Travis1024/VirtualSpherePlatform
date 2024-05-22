@@ -130,7 +130,7 @@ public class PageResult<T> {
      */
     @Schema(hidden = true)
     @JsonIgnore
-    public boolean isEmpty(){
+    public boolean checkEmpty(){
         return list == null || list.isEmpty();
     }
 }

@@ -10,6 +10,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @Data 2024/5/13
  */
 public interface DiskInfoService extends IService<DiskInfo>{
-
-
+    DiskInfo selectOne(Long diskId);
 }

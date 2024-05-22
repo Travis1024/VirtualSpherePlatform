@@ -1,4 +1,5 @@
 package org.travis.center.manage.controller;
+import io.swagger.v3.oas.annotations.Operation;
 import org.travis.center.common.entity.manage.DiskInfo;
 import org.travis.center.manage.service.DiskInfoService;
 import org.springframework.web.bind.annotation.*;
@@ -13,21 +14,13 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/disk")
 public class DiskInfoController {
-/**
-* 服务对象
-*/
+
     @Resource
     private DiskInfoService diskInfoService;
 
-    /**
-    * 通过主键查询单条数据
-    *
-    * @param id 主键
-    * @return 单条数据
-    */
-    @GetMapping("selectOne")
-    public DiskInfo selectOne(Integer id) {
-        return null;
+    @Operation(summary = "根据磁盘ID查询磁盘信息")
+    @GetMapping("/selectOne")
+    public DiskInfo selectOne(@RequestParam("diskId") Long diskId) {
+        return diskInfoService.selectOne(diskId);
     }
-
 }

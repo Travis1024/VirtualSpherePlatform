@@ -36,8 +36,8 @@ public class PageQuery {
     @Schema(description = "排序字段", example = "id")
     private String sortBy;
 
-    @Schema(description = "是否升序", example = "true")
-    private Boolean isAsc = true;
+    @Schema(description = "是否升序", example = "false")
+    private Boolean isAsc = false;
 
 
     /**

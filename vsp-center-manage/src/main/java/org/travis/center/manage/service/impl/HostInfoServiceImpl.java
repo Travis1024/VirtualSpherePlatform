@@ -5,6 +5,7 @@ import cn.hutool.core.lang.Validator;
 import cn.hutool.core.net.Ipv4Util;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,8 @@ import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.center.manage.pojo.dto.HostInsertDTO;
 import org.travis.center.manage.pojo.dto.HostUpdateDTO;
 import org.travis.center.manage.service.HostInfoService;
+import org.travis.shared.common.domain.PageQuery;
+import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.BadRequestException;
@@ -150,5 +153,11 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
     public boolean validateHostAgentConnect(String ipAddr) {
         validateHostIp(ipAddr);
         return true;
+    }
+
+    @Override
+    public PageResult<HostInfo> pageSelectList(PageQuery pageQuery) {
+        Page<HostInfo> hostInfoPage = getBaseMapper().selectPage(pageQuery.toMpPage(), null);
+        return PageResult.of(hostInfoPage);
     }
 }

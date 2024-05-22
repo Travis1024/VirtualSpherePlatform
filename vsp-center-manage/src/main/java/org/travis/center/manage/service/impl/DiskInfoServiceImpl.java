@@ -15,4 +15,8 @@ import org.travis.center.manage.service.DiskInfoService;
 @Service
 public class DiskInfoServiceImpl extends ServiceImpl<DiskInfoMapper, DiskInfo> implements DiskInfoService{
 
+    @Override
+    public DiskInfo selectOne(Long diskId) {
+        return getById(diskId);
+    }
 }

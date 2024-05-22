@@ -16,15 +16,22 @@ public class SystemConstant {
      * 请求头中的用户 ID 信息
      */
     public static final String USER_ID_HEADER = "userId";
-
     /**
      * 数据库表字段 - 创建时间
      */
     public static final String DATA_FIELD_NAME_CREATE_TIME = "createTime";
     /**
+     * 数据库表字段 - 创建时间 - 原始字段
+     */
+    public static final String DATA_FIELD_NAME_CREATE_TIME_ORIGINAL = "CREATE_TIME";
+    /**
      * 数据库表字段 - 更新时间
      */
     public static final String DATA_FIELD_NAME_UPDATE_TIME = "updateTime";
+    /**
+     * 数据库表字段 - 更新时间 - 原始字段
+     */
+    public static final String DATA_FIELD_NAME_UPDATE_TIME_ORIGINAL = "UPDATE_TIME";
     /**
      * 数据库表字段 - 创建人（creator）
      */
