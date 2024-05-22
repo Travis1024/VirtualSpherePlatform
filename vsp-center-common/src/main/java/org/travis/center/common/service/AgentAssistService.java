@@ -1,14 +1,19 @@
 package org.travis.center.common.service;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.springframework.stereotype.Service;
+import org.travis.center.common.entity.manage.HostInfo;
+import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.shared.common.constants.SystemConstant;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -23,16 +28,34 @@ import java.util.stream.Collectors;
 public class AgentAssistService {
     @Resource
     private CuratorFramework curatorFramework;
+    @Resource
+    private HostInfoMapper hostInfoMapper;
 
     public List<String> getHealthyHostAgentIpList() {
         List<String> ipList = new ArrayList<>();
         try {
+            // 1.从 Zookeeper 获取 Agent 注册列表
             List<String> serverList = curatorFramework.getChildren().forPath(SystemConstant.ZOOKEEPER_HOST_SERVER_PATH);
-            if (serverList != null && !serverList.isEmpty()) {
-                ipList = serverList.stream().map(server -> server.split(StrUtil.COLON)[0]).collect(Collectors.toList());
+            Set<String> zookeeperAgentSet = serverList.stream().map(server -> server.split(StrUtil.COLON)[0].trim()).collect(Collectors.toSet());
+            if (zookeeperAgentSet.isEmpty()) {
+                return ipList;
             }
+            // 2.从数据库中获取有效的 HostInfo 列表
+            List<String> hostList = hostInfoMapper.selectList(
+                    Wrappers.<HostInfo>lambdaQuery()
+                            .select(HostInfo::getIp))
+                            .stream()
+                            .map(hostInfo -> hostInfo.getIp().trim())
+                            .collect(Collectors.toList()
+            );
+            if (hostList.isEmpty()) {
+                return ipList;
+            }
+            // 3.计算 Agent 注册列表与 HostInfo 列表的交集
+            ipList = hostList.stream().filter(zookeeperAgentSet::contains).collect(Collectors.toList());
+
         } catch (Exception e) {
-            log.error("[GetHealthyHostAgentIpList] Error: {}", e.getMessage());
+            log.error("[AgentAssistService::getHealthyHostAgentIpList] Error: {}", e.getMessage());
         }
         return ipList;
     }

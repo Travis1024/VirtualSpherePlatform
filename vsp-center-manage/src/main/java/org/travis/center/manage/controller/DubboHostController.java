@@ -38,7 +38,7 @@ public class DubboHostController {
             Assert.isFalse(healthyCheckR.checkFail(), () -> new DubboFunctionException(healthyCheckR.getMsg()));
             return healthyCheckR.getData();
         } catch (Exception e) {
-            log.error("[{} - Dubbo Check Error] -> {}", ip, e.getMessage());
+            log.error("[DubboHostController::healthyCheck] {} - Dubbo Check Error! -> {}", ip, e.getMessage());
             throw new CommonException(BizCodeEnum.DUBBO_HEALTHY_CHECK_ERROR.getCode(), BizCodeEnum.DUBBO_HEALTHY_CHECK_ERROR.getMessage() + StrUtil.COLON + e.getMessage());
         }
     }

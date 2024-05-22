@@ -20,10 +20,10 @@ public class HealthyClientImpl implements HealthyClient {
     @Override
     public R<String> healthyCheck(String targetHostIp) {
         try {
-            log.info("[Healthy Check Success] -> {}", DateUtil.date());
+            log.info("[HealthyClientImpl::healthyCheck] Healthy Check Success! -> {}", DateUtil.date());
             return R.ok(DateUtil.date().toString());
         } catch (Exception e) {
-            log.error("[Healthy Check Error] -> {}", e.getMessage());
+            log.error("[HealthyClientImpl::healthyCheck] Healthy Check Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
     }

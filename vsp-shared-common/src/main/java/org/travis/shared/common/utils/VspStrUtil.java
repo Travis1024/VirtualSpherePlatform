@@ -51,7 +51,7 @@ public class VspStrUtil {
                         field.set(object, value.trim());
                     }
                 } catch (IllegalAccessException e) {
-                    log.error("[VspStrUtil-Error] -> {}", e.getMessage());
+                    log.error("[VspStrUtil::trimStr] -> {}", e.getMessage());
                 }
             }
         }
@@ -107,7 +107,7 @@ public class VspStrUtil {
                     }
                 }
             } catch (IllegalAccessException e) {
-                log.error("[VspStrUtil-Error] -> {}", e.getMessage());
+                log.error("[VspStrUtil::trimStrRecursively] -> {}", e.getMessage());
             }
         }
     }

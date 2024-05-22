@@ -51,7 +51,7 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
             R<String> healthyCheckR = healthyClient.healthyCheck(hostInsertDTO.getIp());
             Assert.isFalse(healthyCheckR.checkFail(), () -> new DubboFunctionException(healthyCheckR.getMsg()));
         } catch (Exception e) {
-            log.error("[{} - Healthy Check Error] -> {}", hostInsertDTO.getIp(), e.getMessage());
+            log.error("[HostInfoServiceImpl::insertOne] {} - Healthy Check Error! -> {}", hostInsertDTO.getIp(), e.getMessage());
             throw new CommonException(BizCodeEnum.DUBBO_HEALTHY_CHECK_ERROR.getCode(), BizCodeEnum.DUBBO_HEALTHY_CHECK_ERROR.getMessage() + StrUtil.COLON + e.getMessage());
         }
 
@@ -95,7 +95,7 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
             session.connect();
             return true;
         } catch (Exception exception) {
-            log.error("[{}] SSH Connect Pre-Check Error: {}", hostIp, exception.getMessage());
+            log.error("[HostInfoServiceImpl::checkHostSshConnect] {} SSH Connect Pre-Check Error: {}", hostIp, exception.getMessage());
             return false;
         } finally {
             if (session != null) {

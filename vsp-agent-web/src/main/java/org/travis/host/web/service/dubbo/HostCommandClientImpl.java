@@ -21,11 +21,10 @@ public class HostCommandClientImpl implements HostCommandClient {
     public R<String> execSingleCommand(String targetHostIp, String command) {
         try {
             String result = RuntimeUtil.execForStr(command);
-            log.info("[{}] -> {}", command, result);
-            int a = 1 / 0;
+            // TODO 执行单个命令
             return R.ok(result);
         } catch (Exception e) {
-            log.error(e.toString());
+            log.error("[HostCommandClientImpl::execSingleCommand] -> {}", e.toString());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
     }
