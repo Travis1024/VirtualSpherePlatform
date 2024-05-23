@@ -39,7 +39,8 @@ public class AgentDiskClientImpl implements AgentDiskClient {
         try {
             // TODO 测试命令执行
             Assert.isTrue(FileUtil.isFile(absolutePath), () -> new DubboFunctionException(absolutePath + "->" + "非文件路径!"));
-            FileUtil.del(absolutePath);
+            boolean del = FileUtil.del(absolutePath);
+            return R.ok(String.valueOf(del));
         } catch (Exception e) {
             log.error("[AgentDiskClientImpl::deleteDisk] Delete Disk Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());

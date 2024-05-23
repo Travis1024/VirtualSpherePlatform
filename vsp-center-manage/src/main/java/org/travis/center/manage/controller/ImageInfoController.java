@@ -34,6 +34,12 @@ public class ImageInfoController {
         return imageInfoService.getImageUploadInfo(imageUploadDTO);
     }
 
+    @Operation(summary = "删除镜像信息及文件")
+    @DeleteMapping("/delete")
+    public void deleteImageInfo(@RequestParam("imageId") Long imageId) {
+        imageInfoService.deleteImageInfo(imageId);
+    }
+
     @Operation(summary = "修改镜像文件上传状态为[就绪]")
     @PutMapping("/success")
     public void changeImageInfoSuccessState(@RequestParam("imageId") Long imageId) {

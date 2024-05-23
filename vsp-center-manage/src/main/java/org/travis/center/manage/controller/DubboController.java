@@ -16,8 +16,8 @@ import org.travis.shared.common.exceptions.CommonException;
 import org.travis.shared.common.exceptions.DubboFunctionException;
 
 /**
- * @ClassName DubboHostController
- * @Description DubboHostController
+ * @ClassName DubboController
+ * @Description DubboController
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/5/13
@@ -25,7 +25,7 @@ import org.travis.shared.common.exceptions.DubboFunctionException;
 @Slf4j
 @RestController
 @RequestMapping("/dubbo")
-public class DubboHostController {
+public class DubboController {
     @DubboReference
     private AgentHealthyClient agentHealthyClient;
 

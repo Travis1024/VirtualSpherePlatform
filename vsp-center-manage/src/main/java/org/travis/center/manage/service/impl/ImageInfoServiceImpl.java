@@ -7,10 +7,13 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.transaction.annotation.Transactional;
+import org.travis.api.client.agent.AgentImageClient;
 import org.travis.center.common.entity.manage.HostInfo;
 import org.travis.center.common.enums.ImageStateEnum;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
@@ -24,7 +27,9 @@ import org.travis.shared.common.constants.ImageConstant;
 import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
+import org.travis.shared.common.domain.R;
 import org.travis.shared.common.exceptions.BadRequestException;
+import org.travis.shared.common.exceptions.DubboFunctionException;
 import org.travis.shared.common.utils.NetworkUtils;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
 
@@ -50,6 +55,8 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
     private HostInfoMapper hostInfoMapper;
     @Resource
     private AgentAssistService agentAssistService;
+    @DubboReference
+    private AgentImageClient agentImageClient;
 
     @Override
     public ImageUploadVO getImageUploadInfo(ImageUploadDTO imageUploadDTO) {
@@ -136,5 +143,24 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
     public PageResult<ImageInfo> pageSelectImageList(PageQuery pageQuery) {
         Page<ImageInfo> imageInfoPage = getBaseMapper().selectPage(pageQuery.toMpPage(), null);
         return PageResult.of(imageInfoPage);
+    }
+
+    @Transactional
+    @Override
+    public void deleteImageInfo(Long imageId) {
+        // 1.删除前校验
+        Optional<ImageInfo> imageInfoOptional = Optional.ofNullable(getById(imageId));
+        ImageInfo imageInfo = imageInfoOptional.orElseThrow(() -> new BadRequestException("未找到镜像文件!"));
+
+        // 2.删除数据库信息
+        removeById(imageId);
+
+        // 3.删除镜像文件
+        List<String> agentIpList = agentAssistService.getHealthyHostAgentIpList();
+        String serverAgentIp = agentIpList.get(RandomUtil.randomInt(0, agentIpList.size()));
+        String sharedStoragePath = agentAssistService.getHostSharedStoragePath();
+        // Dubbo 删除镜像文件
+        R<String> deleteImageR = agentImageClient.deleteImage(serverAgentIp, sharedStoragePath + imageInfo.getSubPath());
+        Assert.isTrue(deleteImageR.checkSuccess(), () -> new DubboFunctionException(deleteImageR.getMsg()));
     }
 }

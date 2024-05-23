@@ -23,4 +23,5 @@ public interface ImageInfoService extends IService<ImageInfo>{
     List<ImageInfo> selectImageList();
     ImageInfo selectOneImageById(Long imageId);
     PageResult<ImageInfo> pageSelectImageList(PageQuery pageQuery);
+    void deleteImageInfo(Long imageId);
 }
