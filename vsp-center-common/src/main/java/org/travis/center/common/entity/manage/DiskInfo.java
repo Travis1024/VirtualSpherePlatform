@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.travis.center.common.enums.DiskMountEnum;
 import org.travis.center.common.enums.DiskTypeEnum;
 
 /**
@@ -84,6 +85,13 @@ public class DiskInfo extends com.baomidou.mybatisplus.extension.activerecord.Mo
     @Schema(description="逻辑删除")
     @TableLogic
     private Integer isDeleted;
+
+    /**
+     * 磁盘是否挂载（0-未挂载、1-已挂载）
+     */
+    @TableField(value = "IS_MOUNT")
+    @Schema(description="磁盘是否挂载（0-未挂载、1-已挂载）")
+    private DiskMountEnum isMount;
 
     /**
      * 更新者

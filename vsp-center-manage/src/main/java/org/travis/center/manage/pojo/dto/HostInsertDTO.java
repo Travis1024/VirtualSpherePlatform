@@ -63,11 +63,4 @@ public class HostInsertDTO implements Serializable {
     @Schema(description="宿主机所属二层网络 ID")
     @NotNull(message = "宿主机所属二层网络 ID 不能为空!")
     private Long networkLayerId;
-
-    /**
-     * 宿主机共享存储路径
-     */
-    @Schema(description="宿主机共享存储路径")
-    @NotBlank(message = "宿主机共享存储路径不能为空!")
-    private String sharedStoragePath;
 }

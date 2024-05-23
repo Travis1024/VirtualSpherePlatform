@@ -4,12 +4,14 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.travis.center.common.entity.manage.HostInfo;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.shared.common.constants.SystemConstant;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +32,8 @@ public class AgentAssistService {
     private CuratorFramework curatorFramework;
     @Resource
     private HostInfoMapper hostInfoMapper;
+    @Value("${vsp.host.shared.storagePath}")
+    private String hostSharedStoragePath;
 
     public List<String> getHealthyHostAgentIpList() {
         List<String> ipList = new ArrayList<>();
@@ -42,12 +46,11 @@ public class AgentAssistService {
             }
             // 2.从数据库中获取有效的 HostInfo 列表
             List<String> hostList = hostInfoMapper.selectList(
-                    Wrappers.<HostInfo>lambdaQuery()
-                            .select(HostInfo::getIp))
-                            .stream()
-                            .map(hostInfo -> hostInfo.getIp().trim())
-                            .collect(Collectors.toList()
-            );
+                    Wrappers.<HostInfo>lambdaQuery().select(HostInfo::getIp)
+                    )
+                    .stream()
+                    .map(hostInfo -> hostInfo.getIp().trim())
+                    .collect(Collectors.toList());
             if (hostList.isEmpty()) {
                 return ipList;
             }
@@ -58,5 +61,9 @@ public class AgentAssistService {
             log.error("[AgentAssistService::getHealthyHostAgentIpList] Error: {}", e.getMessage());
         }
         return ipList;
+    }
+
+    public String getHostSharedStoragePath() {
+        return hostSharedStoragePath.endsWith(File.separator) ? hostSharedStoragePath.substring(0, hostSharedStoragePath.length() - File.separator.length()) : hostSharedStoragePath;
     }
 }

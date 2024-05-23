@@ -10,12 +10,14 @@ import com.jcraft.jsch.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentHealthyClient;
 import org.travis.center.common.entity.manage.HostInfo;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
+import org.travis.center.common.service.AgentAssistService;
 import org.travis.center.manage.pojo.dto.HostInsertDTO;
 import org.travis.center.manage.pojo.dto.HostUpdateDTO;
 import org.travis.center.manage.service.HostInfoService;
@@ -29,6 +31,7 @@ import org.travis.shared.common.exceptions.DubboFunctionException;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
 import org.travis.shared.common.utils.VspStrUtil;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +49,8 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
 
     @DubboReference
     private AgentHealthyClient agentHealthyClient;
+    @Resource
+    private AgentAssistService agentAssistService;
 
     @Override
     public HostInfo insertOne(HostInsertDTO hostInsertDTO) {
@@ -55,10 +60,9 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
         HostInfo hostInfo = new HostInfo();
         BeanUtils.copyProperties(hostInsertDTO, hostInfo);
         hostInfo.setId(SnowflakeIdUtil.nextId());
-        // 删除最后的"/"符号
-        if (hostInfo.getSharedStoragePath().endsWith(File.separator)) {
-            hostInfo.setSharedStoragePath(hostInfo.getSharedStoragePath().substring(0, hostInfo.getSharedStoragePath().length() - File.separator.length()));
-        }
+        // 3.宿主机共享存储路径赋值
+        hostInfo.setSharedStoragePath(agentAssistService.getHostSharedStoragePath());
+
         VspStrUtil.trimStr(hostInfo);
         save(hostInfo);
         return hostInfo;

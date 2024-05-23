@@ -21,7 +21,6 @@ public class AgentCommandClientImpl implements AgentCommandClient {
     public R<String> execSingleCommand(String targetAgentIp, String command) {
         try {
             String result = RuntimeUtil.execForStr(command);
-            // TODO 执行单个命令
             return R.ok(result);
         } catch (Exception e) {
             log.error("[HostCommandClientImpl::execSingleCommand] -> {}", e.toString());

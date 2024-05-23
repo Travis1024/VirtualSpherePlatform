@@ -41,10 +41,27 @@ public class DiskInfoController {
         return diskInfoService.pageSelectList(pageQuery);
     }
 
+    @Operation(summary = "根据虚拟机 ID 查询所属磁盘信息列表")
+    @GetMapping("/selectByVmwareId")
+    public List<DiskInfo> selectListByVmwareId(@RequestParam("vmwareId") Long vmwareId) {
+        return diskInfoService.selectListByVmwareId(vmwareId);
+    }
+
+    @Operation(summary = "根据虚拟机 ID 分页查询所属磁盘信息列表")
+    @PostMapping("/pageSelectByVmwareId")
+    public PageResult<DiskInfo> pageSelectListByVmwareId(@Validated @RequestBody PageQuery pageQuery, @RequestParam("vmwareId") Long vmwareId) {
+        return diskInfoService.pageSelectListByVmwareId(pageQuery, vmwareId);
+    }
+
     @Operation(summary = "创建新磁盘信息")
     @PostMapping("/create")
     public DiskInfo createDisk(@Validated @RequestBody DiskInsertDTO diskInsertDTO) {
-        return diskInfoService.createDisk(diskInsertDTO);
+        return diskInfoService.createDisk(diskInsertDTO, true);
     }
 
+    @Operation(summary = "删除磁盘信息")
+    @DeleteMapping("/delete")
+    public void deleteDisk(@RequestParam("diskId") Long diskId) {
+        diskInfoService.deleteDisk(diskId, true);
+    }
 }

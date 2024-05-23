@@ -10,5 +10,7 @@ import org.travis.shared.common.domain.R;
  * @Data 2024/5/22
  */
 public interface AgentDiskClient {
-    R<String> createDisk(String targetAgentIp);
+    R<String> createDisk(String targetAgentIp, String path, Long unitGbSize);
+
+    R<String> deleteDisk(String targetAgentIp, String absolutePath);
 }

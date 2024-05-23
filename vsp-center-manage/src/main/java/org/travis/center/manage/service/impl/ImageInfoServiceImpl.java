@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.travis.center.common.entity.manage.HostInfo;
@@ -69,10 +70,8 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
         String serverUploadUri = ImageConstant.HOST_SLICE_UPLOAD_URI;
         String serverMergeUri = ImageConstant.HOST_SLICE_MERGE_URI;
 
-        // 3.查询 Agent-IP 对应宿主机的共享存储地址
-        Optional<HostInfo> hostInfoOptional = Optional.ofNullable(hostInfoMapper.selectOne(Wrappers.<HostInfo>lambdaQuery().eq(HostInfo::getIp, serverAgentIp)));
-        HostInfo hostInfo = hostInfoOptional.orElseThrow(() -> new BadRequestException(String.format("未找到相关 IP: %s 匹配的宿主机信息", serverAgentIp)));
-        String sharedStoragePath = hostInfo.getSharedStoragePath();
+        // 3.获取宿主机共享存储地址
+        String sharedStoragePath = agentAssistService.getHostSharedStoragePath();
 
         // 4.生成响应信息
         List<String> serverTempFilePathList = new ArrayList<>(imageUploadDTO.getSliceNumber());

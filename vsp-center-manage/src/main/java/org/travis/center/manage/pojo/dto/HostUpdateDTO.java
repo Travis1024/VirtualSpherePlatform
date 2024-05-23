@@ -54,10 +54,4 @@ public class HostUpdateDTO implements Serializable {
      */
     @Schema(description="宿主机 SSH 连接端口号")
     private Integer sshPort;
-
-    /**
-     * 宿主机共享存储路径
-     */
-    @Schema(description="宿主机共享存储路径")
-    private String sharedStoragePath;
 }

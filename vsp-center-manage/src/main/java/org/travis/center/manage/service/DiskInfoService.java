@@ -19,5 +19,8 @@ public interface DiskInfoService extends IService<DiskInfo>{
     DiskInfo selectOne(Long diskId);
     List<DiskInfo> selectList();
     PageResult<DiskInfo> pageSelectList(PageQuery pageQuery);
-    DiskInfo createDisk(DiskInsertDTO diskInsertDTO);
+    DiskInfo createDisk(DiskInsertDTO diskInsertDTO, boolean isUserCreate);
+    void deleteDisk(Long diskId, boolean isUserDelete);
+    List<DiskInfo> selectListByVmwareId(Long vmwareId);
+    PageResult<DiskInfo> pageSelectListByVmwareId(PageQuery pageQuery, Long vmwareId);
 }
