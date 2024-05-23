@@ -9,6 +9,8 @@ import lombok.experimental.Accessors;
 import org.travis.shared.common.constants.SystemConstant;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @ClassName PageQuery
@@ -24,19 +26,20 @@ public class PageQuery {
 
     public static final Integer DEFAULT_PAGE_SIZE = 20;
     public static final Integer DEFAULT_PAGE_NUM = 1;
+    public static final String DEFAULT_SORT_ID = "ID";
 
-    @Schema(description = "页码", example = "1")
+    @Schema(description = "页码", example = "1", defaultValue = "1")
     @Min(value = 1, message = "页码不能小于1")
     private Integer pageNo = DEFAULT_PAGE_NUM;
 
-    @Schema(description = "每页大小", example = "10")
+    @Schema(description = "每页大小", example = "20", defaultValue = "20")
     @Min(value = 1, message = "每页查询数量不能小于1")
     private Integer pageSize = DEFAULT_PAGE_SIZE;
 
-    @Schema(description = "排序字段", example = "id")
-    private String sortBy;
+    @Schema(description = "排序字段", example = "ID", defaultValue = "ID")
+    private String sortBy = DEFAULT_SORT_ID;
 
-    @Schema(description = "是否升序", example = "false")
+    @Schema(description = "是否升序", example = "false", defaultValue = "false")
     private Boolean isAsc = false;
 
 

@@ -3,12 +3,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.validation.annotation.Validated;
 import org.travis.center.common.entity.manage.DiskInfo;
 import org.travis.center.manage.pojo.dto.DiskInsertDTO;
+import org.travis.center.manage.pojo.dto.DiskPageSelectByVmwareDTO;
 import org.travis.center.manage.service.DiskInfoService;
 import org.springframework.web.bind.annotation.*;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -49,8 +51,8 @@ public class DiskInfoController {
 
     @Operation(summary = "根据虚拟机 ID 分页查询所属磁盘信息列表")
     @PostMapping("/pageSelectByVmwareId")
-    public PageResult<DiskInfo> pageSelectListByVmwareId(@Validated @RequestBody PageQuery pageQuery, @RequestParam("vmwareId") Long vmwareId) {
-        return diskInfoService.pageSelectListByVmwareId(pageQuery, vmwareId);
+    public PageResult<DiskInfo> pageSelectListByVmwareId(@Validated @RequestBody DiskPageSelectByVmwareDTO diskPageSelectByVmwareDTO) {
+        return diskInfoService.pageSelectListByVmwareId(diskPageSelectByVmwareDTO.getPageQuery(), diskPageSelectByVmwareDTO.getVmwareId());
     }
 
     @Operation(summary = "创建新磁盘信息")
