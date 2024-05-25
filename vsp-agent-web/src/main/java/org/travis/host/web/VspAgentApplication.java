@@ -6,8 +6,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.travis.host.web.handler.ApplicationStartPreCheck;
+import org.travis.shared.common.utils.NetworkUtils;
 
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
@@ -22,7 +25,7 @@ import java.util.Arrays;
 @EnableDubbo
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class VspAgentApplication {
-    public static void main(String[] args) throws UnknownHostException {
+    public static void main(String[] args) throws UnknownHostException, SocketException {
         // Create Spring Application Instance
         SpringApplication application = new SpringApplication(VspAgentApplication.class);
 
@@ -52,7 +55,7 @@ public class VspAgentApplication {
                 protocol,
                 environment.getProperty("server.port"),
                 protocol,
-                InetAddress.getLocalHost().getHostAddress(),
+                NetworkUtils.getLocalHostAddress(),
                 environment.getProperty("server.port"),
                 Arrays.toString(environment.getActiveProfiles())
         );

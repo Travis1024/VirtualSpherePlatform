@@ -10,14 +10,20 @@ import com.jcraft.jsch.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentHealthyClient;
+import org.travis.api.client.agent.AgentHostClient;
+import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
+import org.travis.api.pojo.bo.HostDetailsBO;
 import org.travis.center.common.entity.manage.HostInfo;
+import org.travis.center.common.entity.manage.NetworkLayerInfo;
+import org.travis.center.common.enums.HostStateEnum;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
+import org.travis.center.common.mapper.manage.NetworkLayerInfoMapper;
 import org.travis.center.common.service.AgentAssistService;
+import org.travis.center.common.utils.ManageThreadPoolConfig;
 import org.travis.center.manage.pojo.dto.HostInsertDTO;
 import org.travis.center.manage.pojo.dto.HostUpdateDTO;
 import org.travis.center.manage.service.HostInfoService;
@@ -32,9 +38,10 @@ import org.travis.shared.common.utils.SnowflakeIdUtil;
 import org.travis.shared.common.utils.VspStrUtil;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @ClassName HostInfoServiceImpl
@@ -51,20 +58,59 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
     private AgentHealthyClient agentHealthyClient;
     @Resource
     private AgentAssistService agentAssistService;
+    @Resource
+    private NetworkLayerInfoMapper networkLayerInfoMapper;
+    @DubboReference
+    private AgentHostClient agentHostClient;
 
+    @Transactional
     @Override
     public HostInfo insertOne(HostInsertDTO hostInsertDTO) {
         // 1.校验宿主机 IP
         validateHostIp(hostInsertDTO.getIp());
-        // 2.数据库记录存储
+
+        // 2.校验宿主机 SSH 连接
+        boolean validateHostSshConnect = validateHostSshConnect(hostInsertDTO.getIp(), hostInsertDTO.getSshPort(), hostInsertDTO.getLoginUser(), hostInsertDTO.getLoginPassword());
+        Assert.isTrue(validateHostSshConnect, () -> new BadRequestException("SSH 连接校验未通过!"));
+
+        // 3.查询宿主机架构相关信息
+        R<HostDetailsBO> hostDetailsBOR = agentHostClient.queryHostInfoDetails(hostInsertDTO.getIp());
+        Assert.isTrue(hostDetailsBOR.checkSuccess(), () -> new DubboFunctionException(hostDetailsBOR.getMsg()));
+        HostDetailsBO hostDetailsBO = hostDetailsBOR.getData();
+
+        // 4.数据库记录存储
         HostInfo hostInfo = new HostInfo();
         BeanUtils.copyProperties(hostInsertDTO, hostInfo);
         hostInfo.setId(SnowflakeIdUtil.nextId());
-        // 3.宿主机共享存储路径赋值
+        hostInfo.setArchitecture(hostDetailsBO.getOsArch());
+        hostInfo.setCpuNumber(hostDetailsBO.getCpuNum());
+        hostInfo.setMemorySize(hostDetailsBO.getMemoryTotal());
+        hostInfo.setState(HostStateEnum.IN_PREPARATION);
+        // 4.1.宿主机共享存储路径赋值
         hostInfo.setSharedStoragePath(agentAssistService.getHostSharedStoragePath());
-
+        // 4.2.新增数据库数据
         VspStrUtil.trimStr(hostInfo);
         save(hostInfo);
+
+        // 5.查询二层网络信息
+        Optional<NetworkLayerInfo> networkLayerInfoOptional = Optional.ofNullable(networkLayerInfoMapper.selectOne(Wrappers.<NetworkLayerInfo>lambdaQuery().eq(NetworkLayerInfo::getId, hostInfo.getNetworkLayerId())));
+        NetworkLayerInfo networkLayerInfo = networkLayerInfoOptional.orElseThrow(() -> new BadRequestException("未查询二层网络信息!"));
+
+        // 6.异步向 Dubbo-Agent 发送信息 (执行网卡桥接命令)
+        CompletableFuture<Void> completableFuture = CompletableFuture.supplyAsync(() -> {
+                    HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO = new HostBridgedAdapterToAgentDTO();
+                    hostBridgedAdapterToAgentDTO.setId(hostInfo.getId());
+                    hostBridgedAdapterToAgentDTO.setNicName(networkLayerInfo.getNicName());
+                    hostBridgedAdapterToAgentDTO.setNicStartAddress(networkLayerInfo.getNicStartAddress());
+                    hostBridgedAdapterToAgentDTO.setNicMask(networkLayerInfo.getNicMask());
+                    return agentHostClient.execBridgedAdapter(hostInfo.getIp(), hostBridgedAdapterToAgentDTO);
+                }, ManageThreadPoolConfig.businessProcessExecutor)
+                .thenAccept((execBridgedAdapterR) -> {
+                    Assert.isTrue(execBridgedAdapterR.checkSuccess(), () -> new DubboFunctionException(execBridgedAdapterR.getMsg()));
+                });
+
+        // 等待异步消息发送结束
+        completableFuture.join();
         return hostInfo;
     }
 

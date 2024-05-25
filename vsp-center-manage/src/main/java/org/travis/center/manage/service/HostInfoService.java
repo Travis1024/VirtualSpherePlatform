@@ -9,6 +9,7 @@ import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @ClassName HostInfoService
@@ -18,7 +19,7 @@ import java.util.List;
  * @Data 2024/5/13
  */
 public interface HostInfoService extends IService<HostInfo> {
-    HostInfo insertOne(HostInsertDTO hostInsertDTO);
+    HostInfo insertOne(HostInsertDTO hostInsertDTO) throws ExecutionException, InterruptedException;
     boolean validateHostSshConnect(String hostIp, Integer hostSshPort, String username, String password);
     void delete(List<Long> hostIdList);
     void updateOne(HostUpdateDTO hostUpdateDTO);

@@ -61,7 +61,6 @@ public class VspCenterApplication {
                 protocol,
                 environment.getProperty("server.port"),
                 protocol,
-                // InetAddress.getLocalHost().getHostAddress(),
                 NetworkUtils.getLocalHostAddress(),
                 environment.getProperty("server.port"),
                 Arrays.toString(environment.getActiveProfiles())

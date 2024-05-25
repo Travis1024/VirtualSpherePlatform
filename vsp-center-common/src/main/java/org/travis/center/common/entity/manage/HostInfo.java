@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.travis.center.common.enums.HostStateEnum;
 
 /**
  * @ClassName HostInfo
@@ -75,7 +76,7 @@ public class HostInfo extends com.baomidou.mybatisplus.extension.activerecord.Mo
      */
     @TableField(value = "ARCHITECTURE")
     @Schema(description="宿主机架构信息")
-    private Integer architecture;
+    private String architecture;
 
     /**
      * 宿主机管理员登录用户
@@ -97,6 +98,34 @@ public class HostInfo extends com.baomidou.mybatisplus.extension.activerecord.Mo
     @TableField(value = "SSH_PORT")
     @Schema(description="宿主机 SSH 连接端口号")
     private Integer sshPort;
+
+    /**
+     * 宿主机所属二层网络 ID
+     */
+    @TableField(value = "NETWORK_LAYER_ID")
+    @Schema(description="宿主机所属二层网络 ID")
+    private Long networkLayerId;
+
+    /**
+     * 宿主机共享存储路径
+     */
+    @TableField(value = "SHARED_STORAGE_PATH")
+    @Schema(description="宿主机共享存储路径")
+    private String sharedStoragePath;
+
+    /**
+     * 宿主机状态 (0-准备中、1-就绪、2-异常、3-停用)
+     */
+    @TableField(value = "STATE")
+    @Schema(description="宿主机状态 (0-准备中、1-就绪、2-异常、3-停用)")
+    private HostStateEnum state;
+
+    /**
+     * 宿主机状态消息
+     */
+    @TableField(value = "STATE_MESSAGE")
+    @Schema(description="宿主机状态消息")
+    private String stateMessage;
 
     /**
      * 逻辑删除
@@ -134,20 +163,6 @@ public class HostInfo extends com.baomidou.mybatisplus.extension.activerecord.Mo
     @Schema(description="创建时间")
     private Date createTime;
 
-    /**
-     * 宿主机所属二层网络 ID
-     */
-    @TableField(value = "NETWORK_LAYER_ID")
-    @Schema(description="宿主机所属二层网络 ID")
-    private Long networkLayerId;
-
-    /**
-     * 宿主机共享存储路径
-     */
-    @TableField(value = "SHARED_STORAGE_PATH")
-    @Schema(description="宿主机共享存储路径")
-    private String sharedStoragePath;
-
     private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "ID";
@@ -183,4 +198,8 @@ public class HostInfo extends com.baomidou.mybatisplus.extension.activerecord.Mo
     public static final String COL_NETWORK_LAYER_ID = "NETWORK_LAYER_ID";
 
     public static final String COL_SHARED_STORAGE_PATH = "SHARED_STORAGE_PATH";
+
+    public static final String COL_STATE = "STATE";
+
+    public static final String COL_STATE_MESSAGE = "STATE_MESSAGE";
 }

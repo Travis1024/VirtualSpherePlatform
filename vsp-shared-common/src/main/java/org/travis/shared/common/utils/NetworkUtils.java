@@ -17,11 +17,11 @@ public class NetworkUtils {
     public static String getLocalHostAddress() throws UnknownHostException, SocketException {
         InetAddress candidateAddress = null;
         // 遍历所有的网络接口
-        for (Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements();) {
-            NetworkInterface networkInterface = ifaces.nextElement();
+        for (Enumeration<NetworkInterface> oneInterface = NetworkInterface.getNetworkInterfaces(); oneInterface.hasMoreElements();) {
+            NetworkInterface networkInterface = oneInterface.nextElement();
             // 在所有的接口下再遍历 IP
-            for (Enumeration<InetAddress> inetAddrs = networkInterface.getInetAddresses(); inetAddrs.hasMoreElements();) {
-                InetAddress inetAddr = inetAddrs.nextElement();
+            for (Enumeration<InetAddress> inetAddress = networkInterface.getInetAddresses(); inetAddress.hasMoreElements();) {
+                InetAddress inetAddr = inetAddress.nextElement();
                 // 排除回环地址
                 if (!inetAddr.isLoopbackAddress()) {
                     if (inetAddr.isSiteLocalAddress()) {
