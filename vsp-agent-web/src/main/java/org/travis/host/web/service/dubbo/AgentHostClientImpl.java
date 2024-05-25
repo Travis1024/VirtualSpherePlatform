@@ -50,12 +50,12 @@ public class AgentHostClientImpl implements AgentHostClient {
     }
 
     @Override
-    public R<Void> execBridgedAdapter(String targetAgentIp, HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO) {
+    public R<String> execBridgedAdapter(String targetAgentIp, HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO) {
         try {
             // TODO 测试命令执行
             // 异步执行网卡桥接命令
             CompletableFuture.runAsync(() -> bridgedAdapterHandler.execBridgedAdapter(hostBridgedAdapterToAgentDTO), AgentThreadPoolConfig.singleExecutor);
-            return R.ok();
+            return R.ok("桥接网卡及虚拟网络初始化中···");
         } catch (Exception e) {
             log.error("[AgentHostClientImpl::execBridgedAdapter] Agent Exec Bridged Adapter Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());

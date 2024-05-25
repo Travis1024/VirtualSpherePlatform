@@ -10,6 +10,7 @@ import org.travis.host.web.config.StartDependentConfig;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName ApplicationStartPreCheck
@@ -29,16 +30,17 @@ public class ApplicationStartPreCheck implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("[开始检查依赖文件列表]");
         String filePrefix = startDependentConfig.getFilePrefix();
-        List<String> files = startDependentConfig.getFiles();
+        Map<String, String> filesMap = startDependentConfig.getFiles();
 
-        if (files != null && !files.isEmpty()) {
+        if (filesMap != null && !filesMap.isEmpty()) {
             // 失败标识
             boolean successFlag = true;
-            for (String fileName : files) {
-                String absolutePath = filePrefix + File.separator + fileName;
+
+            for (Map.Entry<String, String> entry : filesMap.entrySet()) {
+                String absolutePath = filePrefix + File.separator + entry.getValue();
                 boolean checked = FileUtil.exist(absolutePath) && FileUtil.isFile(absolutePath);
                 successFlag = checked && successFlag;
-                log.info("{} -> {}", absolutePath, checked);
+                log.info("{} : {} -> {}", entry.getKey(), absolutePath, checked);
             }
             Assert.isTrue(successFlag, () -> {
                 log.error("[依赖文件列表检查-Error]");

@@ -13,5 +13,5 @@ import org.travis.shared.common.domain.R;
  */
 public interface AgentHostClient {
     R<HostDetailsBO> queryHostInfoDetails(String targetAgentIp);
-    R<Void> execBridgedAdapter(String targetAgentIp, HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO);
+    R<String> execBridgedAdapter(String targetAgentIp, HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO);
 }

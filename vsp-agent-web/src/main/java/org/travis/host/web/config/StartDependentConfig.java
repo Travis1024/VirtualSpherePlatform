@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName StartDependentConfig
@@ -26,10 +27,10 @@ public class StartDependentConfig {
     private String filePrefix;
 
     /**
-     * 依赖文件名称列表
+     * 依赖文件名称-Map
      */
     @Getter
-    private List<String> files;
+    private Map<String, String> files;
 
     /**
      * 自定义-依赖文件路径前缀处理
