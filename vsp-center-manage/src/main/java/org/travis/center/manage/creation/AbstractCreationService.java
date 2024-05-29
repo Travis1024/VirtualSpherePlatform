@@ -27,6 +27,7 @@ import org.travis.center.common.mapper.manage.ImageInfoMapper;
 import org.travis.center.common.mapper.manage.VmwareInfoMapper;
 import org.travis.center.common.service.AgentAssistService;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
+import org.travis.center.manage.service.DiskInfoService;
 import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.exceptions.BadRequestException;
@@ -35,6 +36,7 @@ import org.travis.shared.common.utils.SnowflakeIdUtil;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -56,6 +58,8 @@ public abstract class AbstractCreationService {
     public VmwareInfoMapper vmwareInfoMapper;
     @Resource
     public DiskInfoMapper diskInfoMapper;
+    @Resource
+    public DiskInfoService diskInfoService;
     @Resource
     public CreationHolder creationHolder;
     @Resource
@@ -91,7 +95,7 @@ public abstract class AbstractCreationService {
 
 
     @Transactional
-    public VmwareInfo build(VmwareInsertDTO vmwareInsertDTO) {
+    public VmwareInfo build(VmwareInsertDTO vmwareInsertDTO) throws IOException {
         this.vmwareInsertDTO = vmwareInsertDTO;
 
         // 1.查询宿主机信息并验证
@@ -132,7 +136,7 @@ public abstract class AbstractCreationService {
         this.vmwareInfo = vmwareInfo;
     }
 
-    public String stepFour() {
+    public String stepFour() throws IOException {
         XmlParamBO xmlParamBO = new XmlParamBO();
         xmlParamBO.setName(vmwareInfo.getName());
         xmlParamBO.setUuid(vmwareInfo.getUuid());
@@ -158,7 +162,7 @@ public abstract class AbstractCreationService {
         vmwareInfoMapper.update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.POWER_OFF).eq(VmwareInfo::getId, vmwareInfo.getId()));
     }
 
-    private String replaceXmlParams(XmlParamBO xmlParamBO) {
+    private String replaceXmlParams(XmlParamBO xmlParamBO) throws IOException {
         // 1.将 XmlParamBO 转为 Map
         Map<String, Object> beanToMap = BeanUtil.beanToMap(xmlParamBO, false, true);
         // 2.获取响应的配置文件
@@ -183,7 +187,7 @@ public abstract class AbstractCreationService {
 
     public abstract void createSystemDisk();
 
-    public abstract String getXmlTemplateContent();
+    public abstract String getXmlTemplateContent() throws IOException;
 
     @Data
     static class XmlParamBO {

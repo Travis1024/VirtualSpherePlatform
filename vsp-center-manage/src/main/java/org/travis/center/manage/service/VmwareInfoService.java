@@ -6,6 +6,7 @@ import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -22,5 +23,5 @@ public interface VmwareInfoService extends IService<VmwareInfo>{
 
     PageResult<VmwareInfo> pageSelectList(PageQuery pageQuery);
 
-    VmwareInfo createVmwareInfo(VmwareInsertDTO vmwareInsertDTO);
+    VmwareInfo createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) throws IOException;
 }

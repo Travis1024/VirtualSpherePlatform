@@ -1,10 +1,12 @@
 package org.travis.center.manage.creation;
 
 import cn.hutool.core.lang.Assert;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.center.common.entity.manage.DiskInfo;
 import org.travis.center.common.entity.manage.ImageInfo;
+import org.travis.center.common.enums.ArchEnum;
 import org.travis.center.common.enums.DiskMountEnum;
 import org.travis.center.common.enums.DiskTypeEnum;
 import org.travis.center.common.enums.VmwareCreateFormEnum;
@@ -16,6 +18,10 @@ import org.travis.shared.common.exceptions.DubboFunctionException;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
@@ -72,10 +78,22 @@ public class SystemDiskCreationService extends AbstractCreationService{
         // 设置磁盘默认为“未挂载”
         targetDiskInfo.setIsMount(DiskMountEnum.UN_MOUNTED);
         diskInfoMapper.insert(targetDiskInfo);
+
+        diskInfo = targetDiskInfo;
     }
 
     @Override
-    public String getXmlTemplateContent() {
-        return "";
+    public String getXmlTemplateContent() throws IOException {
+        String xmlTemplateContent = null;
+        if (vmwareInsertDTO.getVmwareArch().getValue().equals(ArchEnum.X86_64.getValue())) {
+            ClassPathResource resource = new ClassPathResource("template/template_kylin_amd64_image.xml");
+            Path path = Paths.get(resource.getURI());
+            xmlTemplateContent = new String(Files.readAllBytes(path));
+        } else if (vmwareInsertDTO.getVmwareArch().getValue().equals(ArchEnum.AARCH64.getValue())) {
+            ClassPathResource resource = new ClassPathResource("template/template_kylin_aarch64_image.xml");
+            Path path = Paths.get(resource.getURI());
+            xmlTemplateContent = new String(Files.readAllBytes(path));
+        }
+        return xmlTemplateContent;
     }
 }

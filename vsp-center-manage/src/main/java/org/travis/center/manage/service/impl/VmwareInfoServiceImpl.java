@@ -9,6 +9,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,7 +78,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Transactional
     @Override
-    public VmwareInfo createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) {
+    public VmwareInfo createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) throws IOException {
         AbstractCreationService creationService = creationHolder.getCreationService(vmwareInsertDTO.getCreateForm().getValue());
         return creationService.build(vmwareInsertDTO);
     }

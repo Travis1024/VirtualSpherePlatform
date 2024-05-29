@@ -10,6 +10,7 @@ import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public class VmwareInfoController {
 
     @Operation(summary = "创建虚拟机")
     @PostMapping("/create")
-    public VmwareInfo createVmwareInfo(@Validated @RequestBody VmwareInsertDTO vmwareInsertDTO) {
+    public VmwareInfo createVmwareInfo(@Validated @RequestBody VmwareInsertDTO vmwareInsertDTO) throws IOException {
         return vmwareInfoService.createVmwareInfo(vmwareInsertDTO);
     }
 }
