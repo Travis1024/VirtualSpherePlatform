@@ -64,4 +64,9 @@ public class SystemConstant {
      * Host Agent FileController http 请求前缀
      */
     public static final String AGENT_FILE_CONTROLLER = "/file";
+
+    /**
+     * GB
+     */
+    public static final Long GB_UNIT = 1024L * 1024L * 1024L;
 }

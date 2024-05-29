@@ -6,15 +6,12 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.framework.CuratorFramework;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentImageClient;
-import org.travis.center.common.entity.manage.HostInfo;
 import org.travis.center.common.enums.ImageStateEnum;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.center.common.mapper.manage.ImageInfoMapper;
@@ -30,7 +27,6 @@ import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.exceptions.DubboFunctionException;
-import org.travis.shared.common.utils.NetworkUtils;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
 
 import javax.annotation.Resource;
@@ -38,7 +34,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName ImageInfoServiceImpl
@@ -56,7 +51,7 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
     @Resource
     private AgentAssistService agentAssistService;
     @DubboReference
-    private AgentImageClient agentImageClient;
+    public AgentImageClient agentImageClient;
 
     @Override
     public ImageUploadVO getImageUploadInfo(ImageUploadDTO imageUploadDTO) {
@@ -66,7 +61,7 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
         imageInfo.setId(SnowflakeIdUtil.nextId());
         imageInfo.setState(ImageStateEnum.UPLOADING);
         imageInfo.setStateMessage(ImageStateEnum.UPLOADING.getDisplay());
-        imageInfo.setSubPath(ImageConstant.SUB_ISO_PATH_PREFIX + File.separator + imageUploadDTO.getIsoFileName());
+        imageInfo.setSubPath(ImageConstant.SUB_IMAGE_PATH_PREFIX + File.separator + imageUploadDTO.getImageFileName());
         save(imageInfo);
 
         // 2. 查询在线的 Agent 服务地址
@@ -83,9 +78,9 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
         // 4.生成响应信息
         List<String> serverTempFilePathList = new ArrayList<>(imageUploadDTO.getSliceNumber());
         for (int i = 0; i < imageUploadDTO.getSliceNumber(); i++) {
-            // /tmp/vsp/iso/1712678912389115_0
-            // /tmp/vsp/iso/1712678912389115_1
-            serverTempFilePathList.add(ImageConstant.TMP_ISO_PATH_PREFIX + File.separator + imageInfo.getId() + StrUtil.UNDERLINE + i);
+            // /tmp/vsp/image/1712678912389115_0
+            // /tmp/vsp/image/1712678912389115_1
+            serverTempFilePathList.add(ImageConstant.TMP_IMAGE_PATH_PREFIX + File.separator + imageInfo.getId() + StrUtil.UNDERLINE + i);
         }
         ImageUploadVO imageUploadVO = new ImageUploadVO();
         // 1712678912389115
@@ -98,10 +93,10 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
         imageUploadVO.setServerUploadUri(serverUploadUri);
         // /agent/file/sliceMerge
         imageUploadVO.setServerMergeUri(serverMergeUri);
-        // /root/vsp/share/share_iso/ubuntu-22.02.iso
-        imageUploadVO.setServerFilePath(sharedStoragePath + ImageConstant.SUB_ISO_PATH_PREFIX + File.separator + imageUploadDTO.getIsoFileName());
-        // /tmp/vsp/iso/1712678912389115_0
-        // /tmp/vsp/iso/1712678912389115_1
+        // /root/vsp/share/share_image/ubuntu-22.02.iso
+        imageUploadVO.setServerFilePath(sharedStoragePath + ImageConstant.SUB_IMAGE_PATH_PREFIX + File.separator + imageUploadDTO.getImageFileName());
+        // /tmp/vsp/image/1712678912389115_0
+        // /tmp/vsp/image/1712678912389115_1
         imageUploadVO.setServerTempFilePathList(serverTempFilePathList);
         return imageUploadVO;
     }

@@ -55,13 +55,13 @@ import java.util.concurrent.ExecutionException;
 public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> implements HostInfoService{
 
     @DubboReference
-    private AgentHealthyClient agentHealthyClient;
+    public AgentHealthyClient agentHealthyClient;
     @Resource
     private AgentAssistService agentAssistService;
     @Resource
     private NetworkLayerInfoMapper networkLayerInfoMapper;
     @DubboReference
-    private AgentHostClient agentHostClient;
+    public AgentHostClient agentHostClient;
 
     @Transactional
     @Override

@@ -10,9 +10,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.travis.center.common.enums.ImageArchEnum;
+import org.travis.center.common.enums.ArchEnum;
 import org.travis.center.common.enums.ImagePlatformEnum;
 import org.travis.center.common.enums.ImageStateEnum;
+import org.travis.center.common.enums.ImageTypeEnum;
 
 /**
  * @ClassName ImageInfo
@@ -56,7 +57,7 @@ public class ImageInfo extends com.baomidou.mybatisplus.extension.activerecord.M
      */
     @TableField(value = "ARCHITECTURE")
     @Schema(description="镜像 CPU 架构（1-x86_64、2-aarch64）")
-    private ImageArchEnum architecture;
+    private ArchEnum architecture;
 
     /**
      * 镜像存储路径（共享存储子路径）
@@ -71,6 +72,13 @@ public class ImageInfo extends com.baomidou.mybatisplus.extension.activerecord.M
     @TableField(value = "IMAGE_PLATFORM")
     @Schema(description="镜像平台（0-Other、1-Linux、2-Windows）")
     private ImagePlatformEnum imagePlatform;
+
+    /**
+     * 镜像类型（1-ISO镜像、2-系统镜像）
+     */
+    @TableField(value = "IMAGE_TYPE")
+    @Schema(description = "镜像类型（1-ISO镜像、2-系统镜像）")
+    private ImageTypeEnum imageType;
 
     /**
      * 镜像状态（0-上传中、1-异常、2-就绪）
@@ -137,6 +145,8 @@ public class ImageInfo extends com.baomidou.mybatisplus.extension.activerecord.M
     public static final String COL_LOAD_URL = "LOAD_URL";
 
     public static final String COL_IMAGE_PLATFORM = "IMAGE_PLATFORM";
+
+    public static final String COL_IMAGE_TYPE = "IMAGE_TYPE";
 
     public static final String COL_STATE = "STATE";
 

@@ -13,4 +13,8 @@ public interface AgentDiskClient {
     R<String> createDisk(String targetAgentIp, String path, Long unitGbSize);
 
     R<String> deleteDisk(String targetAgentIp, String absolutePath);
+
+    R<Integer> queryDiskSize(String targetAgentIp, String originImagePath);
+
+    R<Void> copyDiskFile(String targetAgentIp, String originImagePath, String targetDiskPath);
 }

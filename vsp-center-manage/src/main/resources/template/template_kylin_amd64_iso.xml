@@ -1,0 +1,100 @@
+<domain type='kvm'>
+    <!--虚拟机名称-->
+    <name>{name}</name>
+    <!--设置 uuid-->
+    <uuid>{uuid}</uuid>
+    <!--引导时分配的最大内存-->
+    <memory unit='KiB'>{maxMemory}</memory>
+    <!--设置当前内存-->
+    <currentMemory unit='KiB'>{curMemory}</currentMemory>
+    <!--设置 虚拟 cpu 个数-->
+    <vcpu placement='static' current='{curVcpu}'>{maxVcpu}</vcpu>
+
+    <os>
+        <!--machine：宿主机的操作系统，boot：指定启动设备，可以重复多行，指定不同的值，作为一个启动设备列表。-->
+        <type arch='x86_64' machine="pc-i440fx-4.0">hvm</type>
+        <!--硬盘启动-->
+        <boot dev="hd" />
+        <!--光盘启动-->
+        <boot dev='cdrom'/>
+    </os>
+
+    <!--默认虚拟 cpu 模式：host-passthrough：表示虚拟 cpu 的架构和特性与主机保持一致-->
+    <cpu mode='host-passthrough' check='none'/>
+
+    <!--处理器特性-->
+    <features>
+        <acpi/>     <!--高级配置与电源接口-->
+        <apic/>     <!--高级可编程中断控制器-->
+        <pae/>      <!--物理地址扩展-->
+    </features>
+
+    <!--使用本地时间-->
+    <clock offset='localtime'/>
+    <!--定义了在kvm环境中 powerOff，reboot，crash 时的默认的动作分别为 destroy、restart、restart-->
+    <on_poweroff>destroy</on_poweroff>
+    <on_reboot>restart</on_reboot>
+    <on_crash>restart</on_crash>
+
+    <!--配置磁盘镜像和光盘镜像-->
+    <devices>
+        <!--模拟元素，此处写法用于 kvm 的 guest-->
+        <emulator>/usr/libexec/qemu-kvm</emulator>
+
+        <disk type='file' device='disk'>
+            <!--磁盘镜像常用的有两种格式：raw、qcow2。 raw 支持扩容和缩减、qcow2 只能进行扩容，不支持缩减-->
+            <driver name='qemu' type='qcow2'/>
+            <!--磁盘镜像路径-->
+            <source file="{systemDiskPath}"/>
+            <target dev='vda' bus='virtio'/>
+        </disk>
+
+        <disk type="file" device="cdrom">
+            <source file="{isoPath}"/>
+            <target dev="sda" bus="scsi"/>
+        </disk>
+
+        <!--usb、scsi必须保留, 和后续的 3 个 input 相关-->
+        <controller type='usb' index='0' model='qemu-xhci'/>
+        <controller type='scsi' index='0' model='virtio-scsi'/>
+        <controller type='virtio-serial' index='0'/>
+
+
+        <!--虚拟网络配置，绑定到什么网桥上就是什么网络，注意：同一网段，网卡不能一样-->
+        <interface type='network'>
+            <!--当前主机网桥的名称-->
+            <source network="bridged-network"/>
+            <!--指定虚拟机网卡 mac 地址，可以不设置，自动分配-->
+            <!--<mac address="00:16:3e:5d:aa:a8"/>-->
+            <model type="virtio"/>
+            <!--配置带宽-->
+            <!--<bandwidth>-->
+            <!--    &lt;!&ndash;单位：KB/s&ndash;&gt;-->
+            <!--    <inbound average='2048'/>-->
+            <!--    <outbound average='1024'/>-->
+            <!--</bandwidth>-->
+        </interface>
+
+
+        <serial type='pty'>
+            <target type='isa-serial' port='0'>
+                <model name='isa-serial'/>
+            </target>
+        </serial>
+        <console type='pty'>
+            <target type='serial' port='0'/>
+        </console>
+        <channel type='unix'>
+            <target type='virtio' name='org.qemu.guest_agent.0'/>
+            <address type='virtio-serial' controller='0' bus='0' port='1'/>
+        </channel>
+
+        <input type='tablet' bus='usb'/>
+        <input type='keyboard' bus='usb'/>
+        <input type="mouse" bus="usb"/>
+
+        <!--vnc 端口号自动分配，自动+1，可以通过 virsh vncdisplay 进行查询-->
+        <graphics type='vnc' port='-1' autoport='yes' listen = '0.0.0.0' keymap='en-us'/>
+
+    </devices>
+</domain>

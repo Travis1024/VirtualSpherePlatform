@@ -8,8 +8,8 @@ package org.travis.shared.common.constants;
  * @Data 2024/5/14
  */
 public class ImageConstant {
-    public static final String TMP_ISO_PATH_PREFIX = "/tmp/vsp/iso";
-    public static final String SUB_ISO_PATH_PREFIX = "/share_iso";
+    public static final String TMP_IMAGE_PATH_PREFIX = "/tmp/vsp/image";
+    public static final String SUB_IMAGE_PATH_PREFIX = "/share_image";
 
     public static final String SLICE_UPLOAD = "/sliceUpload";
     public static final String SLICE_MERGE = "/sliceMerge";

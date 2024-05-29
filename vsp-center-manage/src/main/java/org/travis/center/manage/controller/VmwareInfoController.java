@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import org.springframework.web.bind.annotation.*;
+import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.service.VmwareInfoService;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
@@ -39,5 +40,11 @@ public class VmwareInfoController {
     @GetMapping("/pageSelect")
     public PageResult<VmwareInfo> pageSelectList(@Validated @RequestBody PageQuery pageQuery) {
         return vmwareInfoService.pageSelectList(pageQuery);
+    }
+
+    @Operation(summary = "创建虚拟机")
+    @PostMapping("/create")
+    public VmwareInfo createVmwareInfo(@Validated @RequestBody VmwareInsertDTO vmwareInsertDTO) {
+        return vmwareInfoService.createVmwareInfo(vmwareInsertDTO);
     }
 }

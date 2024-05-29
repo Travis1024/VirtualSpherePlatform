@@ -7,17 +7,17 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 /**
- * @ClassName ImageArchEnum
- * @Description ImageArchEnum
+ * @ClassName ImageTypeEnum
+ * @Description ImageTypeEnum
  * @Author travis-wei
  * @Version v1.0
- * @Data 2024/5/14
+ * @Data 2024/5/29
  */
 @Getter
-public enum ImageArchEnum {
+public enum ImageTypeEnum {
 
-    X86_64(1, "x86_64"),
-    AARCH64(2, "AArch64")
+    ISO(1, "ISO-镜像"),
+    SYSTEM(2, "系统镜像")
     ;
 
     @EnumValue
@@ -25,17 +25,17 @@ public enum ImageArchEnum {
     @JsonValue
     private final String display;
 
-    ImageArchEnum(Integer value, String display) {
+    ImageTypeEnum(Integer value, String display) {
         this.value = value;
         this.display = display;
     }
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static ImageArchEnum of(String display) {
+    public static ImageTypeEnum of(String display) {
         if (StrUtil.isEmpty(display)) {
             return null;
         }
-        for (ImageArchEnum anEnum : values()) {
+        for (ImageTypeEnum anEnum : values()) {
             if (anEnum.getDisplay().equals(display)) {
                 return anEnum;
             }

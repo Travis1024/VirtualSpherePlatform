@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class BridgedAdapterHandler {
 
     @DubboReference
-    private CenterHostClient centerHostClient;
+    public CenterHostClient centerHostClient;
     @Resource
     private StartDependentConfig startDependentConfig;
 

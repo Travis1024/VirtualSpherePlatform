@@ -27,6 +27,7 @@ public class ImageInfoController {
     @Resource
     private ImageInfoService imageInfoService;
 
+    // TODO（处理 acow2 磁盘复制）
     @Operation(summary = "上传新增镜像信息 & 获取镜像切片文件上传地址")
     @PostMapping("/preUpload")
     public ImageUploadVO getImageUploadInfo(@Validated @RequestBody ImageUploadDTO imageUploadDTO) {

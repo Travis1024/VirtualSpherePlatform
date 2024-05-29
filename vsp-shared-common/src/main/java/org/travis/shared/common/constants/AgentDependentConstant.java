@@ -18,7 +18,12 @@ public class AgentDependentConstant {
     public static final String INIT_VIRSH_NETWORK_KEY = "init-virsh-network";
 
     /**
-     * virsh 计算虚拟 CPU 核数
+     * virsh 计算虚拟 CPU 核数 key
      */
     public static final String INIT_VIRSH_CPU_NUMBER_KEY = "init-virsh-cpu-calc";
+
+    /**
+     * 查询磁盘大小 key
+     */
+    public static final String INIT_DISK_SIZE_CALC_KEY = "init-disk-size-calc";
 }

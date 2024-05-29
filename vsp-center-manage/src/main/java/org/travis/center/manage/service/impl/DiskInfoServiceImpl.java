@@ -21,6 +21,7 @@ import org.travis.center.common.service.AgentAssistService;
 import org.travis.center.manage.pojo.dto.DiskInsertDTO;
 import org.travis.center.manage.service.DiskInfoService;
 import org.travis.shared.common.constants.DiskConstant;
+import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.domain.R;
@@ -45,9 +46,8 @@ import java.util.Optional;
 @Service
 public class DiskInfoServiceImpl extends ServiceImpl<DiskInfoMapper, DiskInfo> implements DiskInfoService{
 
-    public static final Long GB_UNIT = 1024L * 1024L * 1024L;
     @DubboReference
-    private AgentDiskClient agentDiskClient;
+    public AgentDiskClient agentDiskClient;
     @Resource
     private AgentAssistService agentAssistService;
     @Resource
@@ -82,14 +82,14 @@ public class DiskInfoServiceImpl extends ServiceImpl<DiskInfoMapper, DiskInfo> i
         diskInfo.setIsMount(DiskMountEnum.UN_MOUNTED);
         BeanUtils.copyProperties(diskInsertDTO, diskInfo);
         // 组织磁盘名称及子路径
-        String diskName = (diskInfo.getDiskType().getValue().equals(DiskTypeEnum.ROOT.getValue()) ? DiskConstant.DISK_NAME_ROOT_PREFIX : DiskConstant.DISK_NAME_DATA_PREFIX) + diskInfo.getId();
+        String diskName = (diskInfo.getDiskType().getValue().equals(DiskTypeEnum.ROOT.getValue()) ? DiskConstant.DISK_NAME_ROOT_PREFIX : DiskConstant.DISK_NAME_DATA_PREFIX) + diskInfo.getId() + DiskConstant.DISK_NAME_SUFFIX;
         String subPath = DiskConstant.SUB_DISK_PATH_PREFIX + File.separator + diskName;
         // 设置磁盘名称
         diskInfo.setName(diskName);
         // 设置磁盘子路径（包含文件名）
         diskInfo.setSubPath(subPath);
         // 校验磁盘大小（必须以 GB 为整数单位）
-        Assert.isTrue(diskInfo.getSpaceSize() % GB_UNIT == 0, () -> new BadRequestException("磁盘大小必须为整-GB!"));
+        Assert.isTrue(diskInfo.getSpaceSize() % SystemConstant.GB_UNIT == 0, () -> new BadRequestException("磁盘大小必须为整-GB!"));
         VspStrUtil.trimStr(diskInfo);
         save(diskInfo);
 
@@ -101,9 +101,9 @@ public class DiskInfoServiceImpl extends ServiceImpl<DiskInfoMapper, DiskInfo> i
         String serverAgentIp = agentIpList.get(RandomUtil.randomInt(0, agentIpList.size()));
         String sharedStoragePath = agentAssistService.getHostSharedStoragePath();
         // Dubbo 创建磁盘
-        R<String> createDiskR = agentDiskClient.createDisk(serverAgentIp, sharedStoragePath + subPath, diskInfo.getId() / GB_UNIT);
+        R<String> createDiskR = agentDiskClient.createDisk(serverAgentIp, sharedStoragePath + subPath, diskInfo.getId() / SystemConstant.GB_UNIT);
         Assert.isTrue(createDiskR.checkSuccess(), () -> new DubboFunctionException(createDiskR.getMsg()));
-        log.debug("磁盘创建成功! -> {}", sharedStoragePath + subPath);
+        log.info("磁盘创建成功! -> {}", sharedStoragePath + subPath);
 
         return diskInfo;
     }

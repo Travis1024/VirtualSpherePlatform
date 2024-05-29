@@ -27,7 +27,7 @@ import org.travis.shared.common.exceptions.DubboFunctionException;
 @RequestMapping("/dubbo")
 public class DubboController {
     @DubboReference
-    private AgentHealthyClient agentHealthyClient;
+    public AgentHealthyClient agentHealthyClient;
 
     @Operation(summary = "Dubbo-通信检测")
     @GetMapping("/check")

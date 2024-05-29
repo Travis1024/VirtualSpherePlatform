@@ -25,8 +25,8 @@ public class ImageUploadVO implements Serializable {
     private String serverMergeUri;
     @Schema(description = "服务器预生成文件绝对路径")
     private List<String> serverTempFilePathList;
-    @Schema(description = "服务器-ISO-文件路径")
+    @Schema(description = "服务器-Image-文件路径")
     private String serverFilePath;
-    @Schema(description = "ISO-镜像ID")
+    @Schema(description = "Image-镜像ID")
     private Long imageId;
 }

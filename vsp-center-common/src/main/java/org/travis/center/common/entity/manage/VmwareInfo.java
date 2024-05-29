@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.travis.center.common.enums.VmwareCreateFormEnum;
+import org.travis.center.common.enums.VmwareStateEnum;
 
 /**
  * @ClassName VmwareInfo
@@ -68,14 +70,14 @@ public class VmwareInfo extends com.baomidou.mybatisplus.extension.activerecord.
      */
     @TableField(value = "\"STATE\"")
     @Schema(description="虚拟机当前状态")
-    private Integer state;
+    private VmwareStateEnum state;
 
     /**
      * 虚拟机创建形式（1-ISO安装介质、2-现有磁盘镜像）
      */
     @TableField(value = "CREATE_FORM")
     @Schema(description="虚拟机创建形式（1-ISO安装介质、2-现有磁盘镜像）")
-    private Integer createForm;
+    private VmwareCreateFormEnum createForm;
 
     /**
      * 虚拟机 vCPU 最大数量

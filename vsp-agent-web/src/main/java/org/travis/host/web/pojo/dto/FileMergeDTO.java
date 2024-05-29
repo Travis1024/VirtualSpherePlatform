@@ -18,12 +18,12 @@ import java.util.List;
  */
 @Data
 public class FileMergeDTO implements Serializable {
-    @Schema(description = "ISO-镜像ID")
-    @NotNull(message = "ISO-镜像ID不能为空!")
+    @Schema(description = "Image-镜像ID")
+    @NotNull(message = "Image-镜像ID不能为空!")
     private Long imageId;
 
-    @Schema(description = "服务器-ISO-文件路径")
-    @NotEmpty(message = "ISO-文件路径不能为空!")
+    @Schema(description = "服务器-Image-文件路径")
+    @NotEmpty(message = "Image-文件路径不能为空!")
     private String serverFilePath;
 
     @Schema(description = "完整文件-CRC32，用于合并后文件完整性校验")

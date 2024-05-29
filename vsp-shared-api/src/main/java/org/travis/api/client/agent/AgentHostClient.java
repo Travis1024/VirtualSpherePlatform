@@ -1,6 +1,7 @@
 package org.travis.api.client.agent;
 
 import org.travis.api.pojo.bo.HostDetailsBO;
+import org.travis.api.pojo.bo.HostResourceInfoBO;
 import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
 import org.travis.shared.common.domain.R;
 
@@ -14,4 +15,5 @@ import org.travis.shared.common.domain.R;
 public interface AgentHostClient {
     R<HostDetailsBO> queryHostInfoDetails(String targetAgentIp);
     R<String> execBridgedAdapter(String targetAgentIp, HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO);
+    R<HostResourceInfoBO> queryHostResourceInfo(String targetAgentIp);
 }

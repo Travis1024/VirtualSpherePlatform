@@ -6,11 +6,15 @@ import cn.hutool.core.util.RuntimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.travis.api.client.agent.AgentDiskClient;
+import org.travis.host.web.config.StartDependentConfig;
+import org.travis.shared.common.constants.AgentDependentConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.exceptions.CommonException;
 import org.travis.shared.common.exceptions.DubboFunctionException;
+
+import javax.annotation.Resource;
 
 /**
  * @ClassName AgentDiskClientImpl
@@ -22,6 +26,9 @@ import org.travis.shared.common.exceptions.DubboFunctionException;
 @Slf4j
 @DubboService
 public class AgentDiskClientImpl implements AgentDiskClient {
+    @Resource
+    private StartDependentConfig startDependentConfig;
+
     @Override
     public R<String> createDisk(String targetAgentIp, String path, Long unitGbSize) {
         try {
@@ -43,6 +50,30 @@ public class AgentDiskClientImpl implements AgentDiskClient {
             return R.ok(String.valueOf(del));
         } catch (Exception e) {
             log.error("[AgentDiskClientImpl::deleteDisk] Delete Disk Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<Integer> queryDiskSize(String targetAgentIp, String originImagePath) {
+        try {
+            // TODO 测试命令执行
+            String diskSizeStr = RuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_DISK_SIZE_CALC_KEY)).trim();
+            return R.ok(Integer.valueOf(diskSizeStr));
+        } catch (Exception e) {
+            log.error("[AgentDiskClientImpl::queryDiskSize] Query Disk Size Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<Void> copyDiskFile(String targetAgentIp, String originImagePath, String targetDiskPath) {
+        try {
+            // TODO 测试命令执行
+            RuntimeUtil.execForStr("cp " + originImagePath + " " + targetDiskPath);
+            return R.ok();
+        } catch (Exception e) {
+            log.error("[AgentDiskClientImpl::copyDiskFile] Copy Disk File Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
     }
