@@ -21,11 +21,13 @@
     <result column="SHARED_STORAGE_PATH" jdbcType="VARCHAR" property="sharedStoragePath" />
     <result column="STATE" jdbcType="INTEGER" property="state" />
     <result column="STATE_MESSAGE" jdbcType="VARCHAR" property="stateMessage" />
+    <result column="VIRTUAL_CPU_ALL_NUMBER" jdbcType="INTEGER" property="virtualCpuAllNumber" />
+    <result column="VIRTUAL_CPU_DEFINITION_NUMBER" jdbcType="INTEGER" property="virtualCpuDefinitionNumber" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     ID, "NAME", DESCRIPTION, IP, MEMORY_SIZE, CPU_NUMBER, ARCHITECTURE, LOGIN_USER, LOGIN_PASSWORD,
     SSH_PORT, IS_DELETED, UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME, NETWORK_LAYER_ID,
-    SHARED_STORAGE_PATH, STATE, STATE_MESSAGE
+    SHARED_STORAGE_PATH, STATE, STATE_MESSAGE, VIRTUAL_CPU_ALL_NUMBER, VIRTUAL_CPU_DEFINITION_NUMBER
   </sql>
 </mapper>

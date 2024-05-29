@@ -16,4 +16,9 @@ public class AgentDependentConstant {
      * virsh 虚拟网络初始化文件 key
      */
     public static final String INIT_VIRSH_NETWORK_KEY = "init-virsh-network";
+
+    /**
+     * virsh 计算虚拟 CPU 核数
+     */
+    public static final String INIT_VIRSH_CPU_NUMBER_KEY = "init-virsh-cpu-calc";
 }

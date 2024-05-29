@@ -23,4 +23,13 @@ public class HostDetailsBO implements Serializable {
 
     @Schema(description = "主机 CPU 核数")
     private Integer cpuNum;
+
+    @Schema(description = "虚拟 CPU 总核数")
+    private Integer vCpuAllNum;
+
+    @Schema(description = "虚拟 CPU 已定义核数")
+    private Integer vCpuDefinitionNum;
+
+    @Schema(description = "虚拟 CPU 活跃核数")
+    private Integer vCpuActiveNum;
 }

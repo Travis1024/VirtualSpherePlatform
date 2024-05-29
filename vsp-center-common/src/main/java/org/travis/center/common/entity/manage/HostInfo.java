@@ -128,6 +128,20 @@ public class HostInfo extends com.baomidou.mybatisplus.extension.activerecord.Mo
     private String stateMessage;
 
     /**
+     * 虚拟 CPU 已定义核数
+     */
+    @TableField(value = "VIRTUAL_CPU_DEFINITION_NUMBER")
+    @Schema(description = "虚拟 CPU 已定义核数")
+    private Integer virtualCpuDefinitionNumber;
+
+    /**
+     * 虚拟 CPU 总核数
+     */
+    @TableField(value = "VIRTUAL_CPU_ALL_NUMBER")
+    @Schema(description = "虚拟 CPU 总核数")
+    private Integer virtualCpuAllNumber;
+
+    /**
      * 逻辑删除
      */
     @TableField(value = "IS_DELETED")
@@ -202,4 +216,8 @@ public class HostInfo extends com.baomidou.mybatisplus.extension.activerecord.Mo
     public static final String COL_STATE = "STATE";
 
     public static final String COL_STATE_MESSAGE = "STATE_MESSAGE";
+
+    public static final String COL_VIRTUAL_CPU_ALL_NUMBER = "VIRTUAL_CPU_ALL_NUMBER";
+
+    public static final String COL_VIRTUAL_CPU_DEFINITION_NUMBER = "VIRTUAL_CPU_DEFINITION_NUMBER";
 }

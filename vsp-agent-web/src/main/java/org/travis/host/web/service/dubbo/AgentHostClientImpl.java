@@ -1,17 +1,22 @@
 package org.travis.host.web.service.dubbo;
 
+import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.system.oshi.OshiUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.travis.api.client.agent.AgentHostClient;
 import org.travis.api.pojo.bo.HostDetailsBO;
 import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
+import org.travis.host.web.config.StartDependentConfig;
 import org.travis.host.web.handler.BridgedAdapterHandler;
 import org.travis.host.web.utils.AgentThreadPoolConfig;
+import org.travis.shared.common.constants.AgentDependentConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
+import org.travis.shared.common.exceptions.DubboFunctionException;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -26,6 +31,8 @@ import java.util.concurrent.CompletableFuture;
 public class AgentHostClientImpl implements AgentHostClient {
     @Resource
     private BridgedAdapterHandler bridgedAdapterHandler;
+    @Resource
+    private StartDependentConfig startDependentConfig;
 
     @Override
     public R<HostDetailsBO> queryHostInfoDetails(String targetAgentIp) {
@@ -37,10 +44,24 @@ public class AgentHostClientImpl implements AgentHostClient {
             // 3.查询主机 CPU 核数
             Integer cpuNum = OshiUtil.getCpuInfo().getCpuNum();
 
+            // 4.查询主机总虚拟核数、已使用虚拟核数
+            // TODO 测试命令执行
+            List<String> execkedForLineList = RuntimeUtil.execForLines("/bin/sh " + startDependentConfig.getFilePrefix() + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_CPU_NUMBER_KEY));
+            if (execkedForLineList == null || execkedForLineList.isEmpty() || execkedForLineList.size() < 3) {
+                throw new DubboFunctionException("虚拟核数 Shell 脚本查询任务执行失败!");
+            }
+            int vCpuActiveNum = Integer.parseInt(execkedForLineList.get(0));
+            int vCpuDefinitionNum = Integer.parseInt(execkedForLineList.get(1));
+            int vCpuAllNum = Integer.parseInt(execkedForLineList.get(2));
+
+            // 5.封装响应信息
             HostDetailsBO hostDetailsBO = new HostDetailsBO();
             hostDetailsBO.setOsArch(osArch);
             hostDetailsBO.setMemoryTotal(memoryTotal);
             hostDetailsBO.setCpuNum(cpuNum);
+            hostDetailsBO.setVCpuActiveNum(vCpuActiveNum);
+            hostDetailsBO.setVCpuDefinitionNum(vCpuDefinitionNum);
+            hostDetailsBO.setVCpuAllNum(vCpuAllNum);
 
             return R.ok(hostDetailsBO);
         } catch (Exception e) {

@@ -85,6 +85,8 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
         hostInfo.setArchitecture(hostDetailsBO.getOsArch());
         hostInfo.setCpuNumber(hostDetailsBO.getCpuNum());
         hostInfo.setMemorySize(hostDetailsBO.getMemoryTotal());
+        hostInfo.setVirtualCpuAllNumber(hostDetailsBO.getVCpuAllNum());
+        hostInfo.setVirtualCpuDefinitionNumber(hostDetailsBO.getVCpuDefinitionNum());
         hostInfo.setState(HostStateEnum.IN_PREPARATION);
         // 4.1.宿主机共享存储路径赋值
         hostInfo.setSharedStoragePath(agentAssistService.getHostSharedStoragePath());
