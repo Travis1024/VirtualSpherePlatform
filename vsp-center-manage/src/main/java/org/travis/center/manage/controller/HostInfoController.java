@@ -15,6 +15,7 @@ import org.travis.shared.common.utils.VspStrUtil;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 /**
 * (VSP.VSP_HOST_INFO)表控制层
@@ -37,7 +38,7 @@ public class HostInfoController {
 
     @Operation(summary = "新增单条宿主机数据")
     @PostMapping("/insertOne")
-    public HostInfo insertOne(@Validated @RequestBody HostInsertDTO hostInsertDTO) {
+    public HostInfo insertOne(@Validated @RequestBody HostInsertDTO hostInsertDTO) throws ExecutionException, InterruptedException {
         VspStrUtil.trimStr(hostInsertDTO);
         return hostInfoService.insertOne(hostInsertDTO);
     }
