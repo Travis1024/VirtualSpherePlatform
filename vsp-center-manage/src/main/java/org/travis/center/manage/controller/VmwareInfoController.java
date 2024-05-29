@@ -1,6 +1,15 @@
 package org.travis.center.manage.controller;
+import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import org.springframework.web.bind.annotation.*;
+import org.travis.center.manage.service.VmwareInfoService;
+import org.travis.shared.common.domain.PageQuery;
+import org.travis.shared.common.domain.PageResult;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
 * (VSP.VSP_VMWARE_INFO)表控制层
@@ -11,14 +20,24 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/vmware")
 public class VmwareInfoController {
 
-    /**
-    * 通过主键查询单条数据
-    *
-    * @param id 主键
-    * @return 单条数据
-    */
-    @GetMapping("selectOne")
-    public VmwareInfo selectOne(Integer id) {
-        return null;
+    @Resource
+    private VmwareInfoService vmwareInfoService;
+
+    @Operation(summary = "通过主键查询单条虚拟机数据")
+    @GetMapping("/selectOne")
+    public VmwareInfo selectOne(@RequestParam("id") Long id) {
+        return vmwareInfoService.selectOne(id);
+    }
+
+    @Operation(summary = "查询虚拟机信息列表")
+    @GetMapping("/select")
+    public List<VmwareInfo> selectAll() {
+        return vmwareInfoService.selectAll();
+    }
+
+    @Operation(summary = "分页查询虚拟机信息列表")
+    @GetMapping("/pageSelect")
+    public PageResult<VmwareInfo> pageSelectList(@Validated @RequestBody PageQuery pageQuery) {
+        return vmwareInfoService.pageSelectList(pageQuery);
     }
 }
