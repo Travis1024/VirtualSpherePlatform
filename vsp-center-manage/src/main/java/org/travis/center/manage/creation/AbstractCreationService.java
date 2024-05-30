@@ -6,6 +6,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,7 @@ import java.util.Optional;
  * @Version v1.0
  * @Data 2024/5/29
  */
+@Slf4j
 public abstract class AbstractCreationService {
 
     @Resource
@@ -88,7 +90,7 @@ public abstract class AbstractCreationService {
     }
 
     @Transactional
-    public VmwareInfo build(VmwareInsertDTO vmwareInsertDTO) throws IOException {
+    public void build(VmwareInsertDTO vmwareInsertDTO) throws IOException {
         this.vmwareInsertDTO = vmwareInsertDTO;
 
         // 1.查询宿主机信息并验证
@@ -106,8 +108,6 @@ public abstract class AbstractCreationService {
         creationService.stepSix(xmlContent);
         // 7.修改系统磁盘状态、修改虚拟机状态
         creationService.stepSeven();
-
-        return vmwareInfo;
     }
 
     public void stepOne() {

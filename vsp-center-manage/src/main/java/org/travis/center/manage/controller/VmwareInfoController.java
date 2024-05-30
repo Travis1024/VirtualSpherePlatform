@@ -45,7 +45,7 @@ public class VmwareInfoController {
 
     @Operation(summary = "创建虚拟机")
     @PostMapping("/create")
-    public VmwareInfo createVmwareInfo(@Validated @RequestBody VmwareInsertDTO vmwareInsertDTO) throws IOException {
+    public String createVmwareInfo(@Validated @RequestBody VmwareInsertDTO vmwareInsertDTO) throws IOException {
         return vmwareInfoService.createVmwareInfo(vmwareInsertDTO);
     }
 
@@ -55,9 +55,27 @@ public class VmwareInfoController {
         return vmwareInfoService.startVmware(vmwareIds);
     }
 
+    @Operation(summary = "关闭虚拟机")
+    @PostMapping("/shutdown")
+    public List<VmwareErrorVO> shutdownVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+        return vmwareInfoService.shutdownVmware(vmwareIds);
+    }
+
+    @Operation(summary = "强制关闭虚拟机")
+    @PostMapping("/destroy")
+    public List<VmwareErrorVO> destroyVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+        return vmwareInfoService.destroyVmware(vmwareIds);
+    }
+
     @Operation(summary = "挂起虚拟机")
     @PostMapping("/suspend")
     public List<VmwareErrorVO> suspendVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
         return vmwareInfoService.suspendVmware(vmwareIds);
+    }
+
+    @Operation(summary = "恢复虚拟机")
+    @PostMapping("/resume")
+    public List<VmwareErrorVO> resumeVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+        return vmwareInfoService.resumeVmware(vmwareIds);
     }
 }

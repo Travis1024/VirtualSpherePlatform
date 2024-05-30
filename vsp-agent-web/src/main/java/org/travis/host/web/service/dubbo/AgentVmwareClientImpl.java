@@ -57,7 +57,7 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
             String execked = RuntimeUtil.execForStr("virsh suspend " + vmwareUuid);
             return R.ok(execked);
         } catch (Exception e) {
-            log.error("[AgentVmwareClientImpl::suspendVmware] Agent Vmware Start Error! -> {}", e.getMessage());
+            log.error("[AgentVmwareClientImpl::suspendVmware] Agent Vmware Suspend Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
     }
@@ -65,5 +65,41 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     @Override
     public R<String> complexVmware(String targetAgentIp, String vmwareUuid, String subParam) {
         return null;
+    }
+
+    @Override
+    public R<String> resumeVmware(String hostIp, String vmwareUuid) {
+        try {
+            // TODO 测试命令执行
+            String execked = RuntimeUtil.execForStr("virsh resume " + vmwareUuid);
+            return R.ok(execked);
+        } catch (Exception e) {
+            log.error("[AgentVmwareClientImpl::resumeVmware] Agent Vmware Resume Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<String> shutdownVmware(String hostIp, String vmwareUuid) {
+        try {
+            // TODO 测试命令执行
+            String execked = RuntimeUtil.execForStr("virsh shutdown " + vmwareUuid);
+            return R.ok(execked);
+        } catch (Exception e) {
+            log.error("[AgentVmwareClientImpl::shutdownVmware] Agent Vmware Shutdown Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<String> destroyVmware(String hostIp, String vmwareUuid) {
+        try {
+            // TODO 测试命令执行
+            String execked = RuntimeUtil.execForStr("virsh destroy " + vmwareUuid);
+            return R.ok(execked);
+        } catch (Exception e) {
+            log.error("[AgentVmwareClientImpl::destroyVmware] Agent Vmware Destroy Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
     }
 }

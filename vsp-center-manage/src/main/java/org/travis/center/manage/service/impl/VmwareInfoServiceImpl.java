@@ -1,7 +1,7 @@
 package org.travis.center.manage.service.impl;
 
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -26,9 +27,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentVmwareClient;
 import org.travis.center.common.entity.manage.HostInfo;
+import org.travis.center.common.enums.VmwareStateEnum;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.center.common.mapper.manage.VmwareInfoMapper;
 import org.travis.center.common.entity.manage.VmwareInfo;
+import org.travis.center.common.utils.ManageThreadPoolConfig;
 import org.travis.center.manage.creation.AbstractCreationService;
 import org.travis.center.manage.creation.CreationHolder;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
@@ -83,17 +86,34 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         return PageResult.of(vmwareInfoPage);
     }
 
-    @Transactional
     @Override
-    public VmwareInfo createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) throws IOException {
+    public String createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) {
+        // 异步创建虚拟机
         AbstractCreationService creationService = creationHolder.getCreationService(vmwareInsertDTO.getCreateForm().getValue());
-        return creationService.build(vmwareInsertDTO);
+        CompletableFuture.runAsync(() -> {
+            try {
+                creationService.build(vmwareInsertDTO);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }, ManageThreadPoolConfig.businessProcessExecutor)
+                .thenRun(() -> {
+                    // TODO 全局推送成功消息,记录日志
+
+                })
+                .exceptionally(ex -> {
+                    // TODO 全局推送异常消息,记录日志
+
+                    return null;
+                });
+        return "虚拟机异步创建中";
     }
 
     @Override
     public List<VmwareErrorVO> startVmware(List<Long> vmwareIds) {
         return commonVmwareOperation(
                 vmwareIds,
+                VmwareStateEnum.POWER_ON,
                 (vmwareInfo, hostInfo) -> new CommonOperateParams(hostInfo.getIp(), vmwareInfo.getUuid()),
                 commonOperateParams -> agentVmwareClient.startVmware(commonOperateParams.getHostIp(), commonOperateParams.getVmwareUuid())
         );
@@ -103,8 +123,39 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     public List<VmwareErrorVO> suspendVmware(List<Long> vmwareIds) {
         return commonVmwareOperation(
                 vmwareIds,
+                VmwareStateEnum.PAUSE,
                 (vmwareInfo, hostInfo) -> new CommonOperateParams(hostInfo.getIp(), vmwareInfo.getUuid()),
                 commonOperateParams -> agentVmwareClient.suspendVmware(commonOperateParams.getHostIp(), commonOperateParams.getVmwareUuid())
+        );
+    }
+
+    @Override
+    public List<VmwareErrorVO> resumeVmware(List<Long> vmwareIds) {
+        return commonVmwareOperation(
+                vmwareIds,
+                VmwareStateEnum.POWER_ON,
+                (vmwareInfo, hostInfo) -> new CommonOperateParams(hostInfo.getIp(), vmwareInfo.getUuid()),
+                commonOperateParams -> agentVmwareClient.resumeVmware(commonOperateParams.getHostIp(), commonOperateParams.getVmwareUuid())
+        );
+    }
+
+    @Override
+    public List<VmwareErrorVO> shutdownVmware(List<Long> vmwareIds) {
+        return commonVmwareOperation(
+                vmwareIds,
+                VmwareStateEnum.POWER_OFF,
+                (vmwareInfo, hostInfo) -> new CommonOperateParams(hostInfo.getIp(), vmwareInfo.getUuid()),
+                commonOperateParams -> agentVmwareClient.shutdownVmware(commonOperateParams.getHostIp(), commonOperateParams.getVmwareUuid())
+        );
+    }
+
+    @Override
+    public List<VmwareErrorVO> destroyVmware(List<Long> vmwareIds) {
+        return commonVmwareOperation(
+                vmwareIds,
+                VmwareStateEnum.POWER_OFF,
+                (vmwareInfo, hostInfo) -> new CommonOperateParams(hostInfo.getIp(), vmwareInfo.getUuid()),
+                commonOperateParams -> agentVmwareClient.destroyVmware(commonOperateParams.getHostIp(), commonOperateParams.getVmwareUuid())
         );
     }
 
@@ -114,20 +165,20 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     public List<VmwareErrorVO> complexVmware(List<Long> vmwareIds) {
         return commonVmwareOperation(
                 vmwareIds,
+                VmwareStateEnum.POWER_OFF,
                 (vmwareInfo, hostInfo) -> new SubOperateParams(hostInfo.getIp(), vmwareInfo.getUuid(), "subParam"),
                 (Function<SubOperateParams, R<String>>) subOperateParams -> agentVmwareClient.complexVmware(subOperateParams.getHostIp(), subOperateParams.getVmwareUuid(), subOperateParams.getSubParam())
         );
     }
 
-
     /**
      * 虚拟机通用操作封装
      *
      * @param vmwareIds 虚拟机 ID 列表
-     * @param function  虚拟机操作函数
+     * @param functionHandler  虚拟机操作函数
      * @return  List<VmwareErrorVO> 错误信息列表
      */
-    private <T extends CommonOperateParams> List<VmwareErrorVO> commonVmwareOperation(List<Long> vmwareIds, BiFunction<VmwareInfo, HostInfo, CommonOperateParams> functionParamsBuilder, Function<T, R<String>> function) {
+    private <T extends CommonOperateParams> List<VmwareErrorVO> commonVmwareOperation(List<Long> vmwareIds, VmwareStateEnum vmwareStateEnum, BiFunction<VmwareInfo, HostInfo, CommonOperateParams> functionParamsBuilder, Function<T, R<String>> functionHandler) {
         // 1.查询虚拟机相关信息
         List<VmwareInfo> vmwareInfoList = getBaseMapper().selectBatchIds(vmwareIds);
         Map<Long, HostInfo> hostInfoMap = queryHostInfoMap(vmwareInfoList);
@@ -138,11 +189,14 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             VmwareErrorVO vmwareErrorVO = singleVmwareOperate(
                     vmwareInfo.getId(),
                     functionParamsBuilder.apply(vmwareInfo, hostInfoMap.get(vmwareInfo.getHostId())),
-                    function
+                    functionHandler
             );
 
             if (vmwareErrorVO != null) {
                 errorInfoList.add(vmwareErrorVO);
+            } else {
+                // 修改虚拟机状态
+                getBaseMapper().update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, vmwareStateEnum).eq(VmwareInfo::getId, vmwareInfo.getId()));
             }
         }
         return errorInfoList;
@@ -183,7 +237,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends CommonOperateParams> VmwareErrorVO singleVmwareOperate(Long vmwareId, CommonOperateParams operateParams, Function<T, R<String>> function) {
+    private <T extends CommonOperateParams> VmwareErrorVO singleVmwareOperate(Long vmwareId, CommonOperateParams operateParams, Function<T, R<String>> functionHandler) {
         VmwareErrorVO vmwareErrorVO = null;
         RLock lock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareId);
         try {
@@ -191,7 +245,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             Assert.isTrue(lock.tryLock(0, TimeUnit.MILLISECONDS), () -> new CommonException(BizCodeEnum.LOCKED.getCode(), "虚拟机正在操作中，请稍后重试!"));
 
             // 2.Dubbo-操作
-            R<String> vmwareOperationR = function.apply((T) operateParams);
+            R<String> vmwareOperationR = functionHandler.apply((T) operateParams);
             Assert.isTrue(vmwareOperationR.checkSuccess(), () -> new DubboFunctionException(vmwareOperationR.getMsg()));
 
             // 3.操作成功则打印启动日志
@@ -199,6 +253,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
             return null;
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             // 启动失败则封装错误消息
             vmwareErrorVO = new VmwareErrorVO();
             vmwareErrorVO.setVmwareId(vmwareId);

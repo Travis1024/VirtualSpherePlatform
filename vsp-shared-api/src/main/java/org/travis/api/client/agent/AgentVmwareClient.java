@@ -17,4 +17,10 @@ public interface AgentVmwareClient {
     R<String> suspendVmware(String targetAgentIp, String vmwareUuid);
 
     R<String> complexVmware(String targetAgentIp, String vmwareUuid, String subParam);
+
+    R<String> resumeVmware(String targetAgentIp, String vmwareUuid);
+
+    R<String> shutdownVmware(String hostIp, String vmwareUuid);
+
+    R<String> destroyVmware(String hostIp, String vmwareUuid);
 }

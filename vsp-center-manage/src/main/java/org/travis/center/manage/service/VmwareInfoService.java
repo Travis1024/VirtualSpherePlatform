@@ -24,9 +24,15 @@ public interface VmwareInfoService extends IService<VmwareInfo>{
 
     PageResult<VmwareInfo> pageSelectList(PageQuery pageQuery);
 
-    VmwareInfo createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) throws IOException;
+    String createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) throws IOException;
 
     List<VmwareErrorVO> startVmware(List<Long> vmwareIds);
 
     List<VmwareErrorVO> suspendVmware(List<Long> vmwareIds);
+
+    List<VmwareErrorVO> resumeVmware(List<Long> vmwareIds);
+
+    List<VmwareErrorVO> shutdownVmware(List<Long> vmwareIds);
+
+    List<VmwareErrorVO> destroyVmware(List<Long> vmwareIds);
 }
