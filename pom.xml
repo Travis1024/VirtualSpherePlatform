@@ -10,15 +10,16 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>vsp-shared-api</module>
+        <module>vsp-shared-common</module>
         <module>vsp-agent-web</module>
         <module>vsp-center-common</module>
+        <module>vsp-center-message</module>
         <module>vsp-center-manage</module>
         <module>vsp-center-monitor</module>
         <module>vsp-center-script</module>
-        <module>vsp-center-web</module>
         <module>vsp-center-auth</module>
-        <module>vsp-shared-api</module>
-        <module>vsp-shared-common</module>
+        <module>vsp-center-web</module>
     </modules>
 
     <!-- 继承 SpringBoot 父工程 -->

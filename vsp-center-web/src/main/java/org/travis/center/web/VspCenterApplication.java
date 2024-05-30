@@ -11,6 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.travis.shared.common.utils.NetworkUtils;
 
 import java.net.InetAddress;
@@ -26,6 +27,7 @@ import java.util.Arrays;
  * @Data 2024/5/8
  */
 @EnableDubbo
+@EnableWebSocket
 @ComponentScan("org.travis.center.**.controller")
 @ComponentScan("org.travis.center.**.service")
 @MapperScan("org.travis.center.**.mapper")

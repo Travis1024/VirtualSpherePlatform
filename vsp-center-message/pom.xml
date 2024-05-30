@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>org.travis.center</groupId>
-    <artifactId>vsp-center-manage</artifactId>
+    <artifactId>vsp-center-message</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -26,9 +26,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.travis.center</groupId>
-            <artifactId>vsp-center-message</artifactId>
-            <version>1.0</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
     </dependencies>
 
