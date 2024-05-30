@@ -6,10 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.travis.host.web.handler.ApplicationStartPreCheck;
-import org.travis.shared.common.utils.NetworkUtils;
+import org.travis.shared.common.utils.NetworkUtil;
 
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -55,7 +53,7 @@ public class VspAgentApplication {
                 protocol,
                 environment.getProperty("server.port"),
                 protocol,
-                NetworkUtils.getLocalHostAddress(),
+                NetworkUtil.getLocalHostAddress(),
                 environment.getProperty("server.port"),
                 Arrays.toString(environment.getActiveProfiles())
         );

@@ -12,5 +12,4 @@ import org.travis.shared.common.domain.R;
 public interface AgentHealthyClient {
 
     R<String> healthyCheck(String targetAgentIp);
-
 }

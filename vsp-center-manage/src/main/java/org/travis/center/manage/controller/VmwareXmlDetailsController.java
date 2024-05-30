@@ -14,14 +14,4 @@ import org.springframework.beans.factory.annotation.Autowired;
 @RequestMapping("/vmwareXml")
 public class VmwareXmlDetailsController {
 
-    /**
-    * 通过主键查询单条数据
-    *
-    * @param id 主键
-    * @return 单条数据
-    */
-    @GetMapping("selectOne")
-    public VmwareXmlDetails selectOne(Integer id) {
-        return null;
-    }
 }

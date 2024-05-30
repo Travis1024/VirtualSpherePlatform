@@ -3,8 +3,8 @@ package org.travis.center.message.pojo.vo;
 import cn.dev33.satoken.error.SaErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.travis.center.message.enums.MsgModuleEnum;
-import org.travis.center.message.enums.MsgStateEnum;
+import org.travis.center.common.enums.MsgModuleEnum;
+import org.travis.center.common.enums.MsgStateEnum;
 
 /**
  * @ClassName WsMessageVO

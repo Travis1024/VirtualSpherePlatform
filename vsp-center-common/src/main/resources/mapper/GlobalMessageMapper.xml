@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.travis.center.common.mapper.message.GlobalMessageMapper">
+  <resultMap id="BaseResultMap" type="org.travis.center.common.entity.message.GlobalMessage">
+    <!--@mbg.generated-->
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="MESSAGE_STATE" jdbcType="INTEGER" property="messageState" />
+    <result column="MESSAGE_MODULE" jdbcType="INTEGER" property="messageModule" />
+    <result column="MESSAGE_CONTENT" jdbcType="LONGVARCHAR" property="messageContent" />
+    <result column="IS_CONFIRM" jdbcType="INTEGER" property="isConfirm" />
+    <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
+    <result column="UPDATER" jdbcType="BIGINT" property="updater" />
+    <result column="CREATOR" jdbcType="BIGINT" property="creator" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CONFIRM_USER_ID" jdbcType="BIGINT" property="confirmUserId" />
+    <result column="CONFIRM_TIME" jdbcType="TIMESTAMP" property="confirmTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    ID, MESSAGE_STATE, MESSAGE_MODULE, MESSAGE_CONTENT, IS_CONFIRM, IS_DELETED, UPDATER,
+    CREATOR, UPDATE_TIME, CREATE_TIME, CONFIRM_USER_ID, CONFIRM_TIME
+  </sql>
+</mapper>

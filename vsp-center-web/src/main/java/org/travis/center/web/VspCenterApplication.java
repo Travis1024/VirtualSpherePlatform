@@ -3,18 +3,12 @@ package org.travis.center.web;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.context.TypeExcludeFilter;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScans;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.travis.shared.common.utils.NetworkUtils;
+import org.travis.shared.common.utils.NetworkUtil;
 
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -63,7 +57,7 @@ public class VspCenterApplication {
                 protocol,
                 environment.getProperty("server.port"),
                 protocol,
-                NetworkUtils.getLocalHostAddress(),
+                NetworkUtil.getLocalHostAddress(),
                 environment.getProperty("server.port"),
                 Arrays.toString(environment.getActiveProfiles())
         );

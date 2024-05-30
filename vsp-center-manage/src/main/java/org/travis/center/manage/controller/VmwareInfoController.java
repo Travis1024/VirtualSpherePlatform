@@ -3,9 +3,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.validation.annotation.Validated;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import org.springframework.web.bind.annotation.*;
+import org.travis.center.common.enums.BusinessTypeEnum;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.center.manage.service.VmwareInfoService;
+import org.travis.center.message.aspect.Log;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
@@ -25,54 +27,63 @@ public class VmwareInfoController {
     @Resource
     private VmwareInfoService vmwareInfoService;
 
+    @Log(title = "通过主键查询单条虚拟机数据", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "通过主键查询单条虚拟机数据")
     @GetMapping("/selectOne")
     public VmwareInfo selectOne(@RequestParam("id") Long id) {
         return vmwareInfoService.selectOne(id);
     }
 
+    @Log(title = "查询虚拟机信息列表", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "查询虚拟机信息列表")
     @GetMapping("/select")
     public List<VmwareInfo> selectAll() {
         return vmwareInfoService.selectAll();
     }
 
+    @Log(title = "分页查询虚拟机信息列表", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "分页查询虚拟机信息列表")
     @GetMapping("/pageSelect")
     public PageResult<VmwareInfo> pageSelectList(@Validated @RequestBody PageQuery pageQuery) {
         return vmwareInfoService.pageSelectList(pageQuery);
     }
 
+    @Log(title = "创建虚拟机", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "创建虚拟机")
     @PostMapping("/create")
     public String createVmwareInfo(@Validated @RequestBody VmwareInsertDTO vmwareInsertDTO) throws IOException {
         return vmwareInfoService.createVmwareInfo(vmwareInsertDTO);
     }
 
+    @Log(title = "启动虚拟机")
     @Operation(summary = "启动虚拟机")
     @PostMapping("/start")
     public List<VmwareErrorVO> startVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
         return vmwareInfoService.startVmware(vmwareIds);
     }
 
+    @Log(title = "关闭虚拟机")
     @Operation(summary = "关闭虚拟机")
     @PostMapping("/shutdown")
     public List<VmwareErrorVO> shutdownVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
         return vmwareInfoService.shutdownVmware(vmwareIds);
     }
 
+    @Log(title = "强制关闭虚拟机")
     @Operation(summary = "强制关闭虚拟机")
     @PostMapping("/destroy")
     public List<VmwareErrorVO> destroyVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
         return vmwareInfoService.destroyVmware(vmwareIds);
     }
 
+    @Log(title = "挂起虚拟机")
     @Operation(summary = "挂起虚拟机")
     @PostMapping("/suspend")
     public List<VmwareErrorVO> suspendVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
         return vmwareInfoService.suspendVmware(vmwareIds);
     }
 
+    @Log(title = "恢复虚拟机")
     @Operation(summary = "恢复虚拟机")
     @PostMapping("/resume")
     public List<VmwareErrorVO> resumeVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
