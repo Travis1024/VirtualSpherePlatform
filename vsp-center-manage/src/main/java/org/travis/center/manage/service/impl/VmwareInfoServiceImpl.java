@@ -1,6 +1,7 @@
 package org.travis.center.manage.service.impl;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Builder;
@@ -27,6 +28,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentVmwareClient;
 import org.travis.center.common.entity.manage.HostInfo;
+import org.travis.center.common.enums.MsgModuleEnum;
+import org.travis.center.common.enums.MsgStateEnum;
 import org.travis.center.common.enums.VmwareStateEnum;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.center.common.mapper.manage.VmwareInfoMapper;
@@ -37,6 +40,8 @@ import org.travis.center.manage.creation.CreationHolder;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.center.manage.service.VmwareInfoService;
+import org.travis.center.message.pojo.vo.WsMessageVO;
+import org.travis.center.message.websocket.WsMessageHolder;
 import org.travis.shared.common.constants.LockConstant;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
@@ -67,6 +72,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     public AgentVmwareClient agentVmwareClient;
     @Resource
     private RedissonClient redissonClient;
+    @Resource
+    private WsMessageHolder wsMessageHolder;
 
     @Override
     public VmwareInfo selectOne(Long id) {
@@ -98,15 +105,28 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             }
         }, ManageThreadPoolConfig.businessProcessExecutor)
                 .thenRun(() -> {
-                    // TODO 全局推送成功消息,记录日志
-
+                    // 全局推送成功消息,记录日志
+                    wsMessageHolder.sendGlobalMessage(
+                            WsMessageVO.builder()
+                                    .msgModule(MsgModuleEnum.VMWARE)
+                                    .msgState(MsgStateEnum.INFO)
+                                    .msgContent("[VmwareInfoServiceImpl::createVmwareInfo] 虚拟机异步创建成功!")
+                                    .build()
+                    );
                 })
                 .exceptionally(ex -> {
-                    // TODO 全局推送异常消息,记录日志
+                    // 全局推送异常消息,记录日志
+                    wsMessageHolder.sendGlobalMessage(
+                            WsMessageVO.builder()
+                                    .msgModule(MsgModuleEnum.VMWARE)
+                                    .msgState(MsgStateEnum.ERROR)
+                                    .msgContent(StrUtil.format("[VmwareInfoServiceImpl::createVmwareInfo] 虚拟机异步创建失败:{}", ex.getMessage()))
+                                    .build()
+                    );
 
                     return null;
                 });
-        return "虚拟机异步创建中";
+        return "虚拟机异步创建中, 请注意全局消息!";
     }
 
     @Override

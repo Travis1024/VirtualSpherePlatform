@@ -1,4 +1,4 @@
-package org.travis.center.message.websocket;
+package org.travis.center.message.websocket.service;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.json.JSONUtil;
@@ -68,16 +68,16 @@ public class WsGlobalMsg {
     /**
      * 推送全局消息（双重锁检查）
      *
-     * @param wsMessageVO 消息实体类
+     * @param message json 消息
      */
-    public static void sendGlobalMsg(WsMessageVO wsMessageVO) {
+    public static void sendGlobalMsg(String message) {
         sessionPool.iterator().forEachRemaining(session -> {
             if (session.isOpen()) {
                 CompletableFuture.runAsync(() -> {
                     synchronized (session) {
                         if (session.isOpen()) {
                             try {
-                                session.getBasicRemote().sendText(JSONUtil.toJsonStr(wsMessageVO));
+                                session.getBasicRemote().sendText(JSONUtil.toJsonStr(message));
                             } catch (Exception e) {
                                 log.error("[WebSocketGlobalMsg::sendGlobalMsg] -> {} send global message error!", session.getId());
                                 log.error(e.getMessage(), e);

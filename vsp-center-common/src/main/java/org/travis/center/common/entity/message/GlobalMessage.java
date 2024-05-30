@@ -14,6 +14,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.travis.center.common.enums.MsgConfirmEnum;
+import org.travis.center.common.enums.MsgModuleEnum;
+import org.travis.center.common.enums.MsgStateEnum;
 
 /**
  * @ClassName GlobalMessage
@@ -43,14 +46,14 @@ public class GlobalMessage extends com.baomidou.mybatisplus.extension.activereco
      */
     @TableField(value = "MESSAGE_STATE")
     @Schema(description="消息状态")
-    private Integer messageState;
+    private MsgStateEnum messageState;
 
     /**
      * 消息所属模块
      */
     @TableField(value = "MESSAGE_MODULE")
     @Schema(description="消息所属模块")
-    private Integer messageModule;
+    private MsgModuleEnum messageModule;
 
     /**
      * 消息内容
@@ -64,7 +67,7 @@ public class GlobalMessage extends com.baomidou.mybatisplus.extension.activereco
      */
     @TableField(value = "IS_CONFIRM")
     @Schema(description="消息是否确认")
-    private Integer isConfirm;
+    private MsgConfirmEnum isConfirm;
 
     /**
      * 逻辑删除

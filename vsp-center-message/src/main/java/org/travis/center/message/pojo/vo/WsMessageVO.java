@@ -2,7 +2,10 @@ package org.travis.center.message.pojo.vo;
 
 import cn.dev33.satoken.error.SaErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.travis.center.common.enums.MsgModuleEnum;
 import org.travis.center.common.enums.MsgStateEnum;
 
@@ -14,6 +17,9 @@ import org.travis.center.common.enums.MsgStateEnum;
  * @Data 2024/5/30
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class WsMessageVO implements SaErrorCode {
     @Schema(description = "消息模块")
     private MsgModuleEnum msgModule;
