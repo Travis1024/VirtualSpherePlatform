@@ -3,6 +3,7 @@ package org.travis.center.manage.service;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
+import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
@@ -24,4 +25,8 @@ public interface VmwareInfoService extends IService<VmwareInfo>{
     PageResult<VmwareInfo> pageSelectList(PageQuery pageQuery);
 
     VmwareInfo createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) throws IOException;
+
+    List<VmwareErrorVO> startVmware(List<Long> vmwareIds);
+
+    List<VmwareErrorVO> suspendVmware(List<Long> vmwareIds);
 }

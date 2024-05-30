@@ -11,20 +11,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentDiskClient;
 import org.travis.api.client.agent.AgentHostClient;
-import org.travis.api.client.agent.AgentImageClient;
 import org.travis.api.client.agent.AgentVmwareClient;
 import org.travis.api.pojo.bo.HostResourceInfoBO;
-import org.travis.center.common.entity.manage.DiskInfo;
-import org.travis.center.common.entity.manage.HostInfo;
-import org.travis.center.common.entity.manage.ImageInfo;
-import org.travis.center.common.entity.manage.VmwareInfo;
+import org.travis.center.common.entity.manage.*;
 import org.travis.center.common.enums.DiskMountEnum;
 import org.travis.center.common.enums.VmwareCreateFormEnum;
 import org.travis.center.common.enums.VmwareStateEnum;
-import org.travis.center.common.mapper.manage.DiskInfoMapper;
-import org.travis.center.common.mapper.manage.HostInfoMapper;
-import org.travis.center.common.mapper.manage.ImageInfoMapper;
-import org.travis.center.common.mapper.manage.VmwareInfoMapper;
+import org.travis.center.common.mapper.manage.*;
 import org.travis.center.common.service.AgentAssistService;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.service.DiskInfoService;
@@ -49,7 +42,6 @@ import java.util.Optional;
  */
 public abstract class AbstractCreationService {
 
-
     @Resource
     public HostInfoMapper hostInfoMapper;
     @Resource
@@ -70,6 +62,8 @@ public abstract class AbstractCreationService {
     public AgentDiskClient agentDiskClient;
     @DubboReference
     public AgentVmwareClient agentVmwareClient;
+    @Resource
+    private VmwareXmlDetailsMapper vmwareXmlDetailsMapper;
 
     // step 0
     protected Integer vmwareCreateFormValue;
@@ -93,7 +87,6 @@ public abstract class AbstractCreationService {
         creationService = this;
     }
 
-
     @Transactional
     public VmwareInfo build(VmwareInsertDTO vmwareInsertDTO) throws IOException {
         this.vmwareInsertDTO = vmwareInsertDTO;
@@ -109,8 +102,10 @@ public abstract class AbstractCreationService {
         // 5.Dubbo-远程定义虚拟机
         R<Void> vmwareCreateR = agentVmwareClient.createVmware(hostInfo.getIp(), xmlContent, vmwareInfo.getId());
         Assert.isTrue(vmwareCreateR.checkSuccess(), () -> new DubboFunctionException("vmware create failed -> " + vmwareCreateR.getMsg()));
-        // 6.修改系统磁盘状态、修改虚拟机状态
-        creationService.stepSix();
+        // 6.xml 存储到数据库中
+        creationService.stepSix(xmlContent);
+        // 7.修改系统磁盘状态、修改虚拟机状态
+        creationService.stepSeven();
 
         return vmwareInfo;
     }
@@ -155,10 +150,18 @@ public abstract class AbstractCreationService {
     }
 
     @Transactional
-    public void stepSix() {
-        // 6.1.更新系统磁盘状态
+    public void stepSix(String xmlContent) {
+        VmwareXmlDetails vmwareXmlDetails = new VmwareXmlDetails();
+        vmwareXmlDetails.setId(vmwareInfo.getId());
+        vmwareXmlDetails.setInitXml(xmlContent);
+        vmwareXmlDetailsMapper.insert(vmwareXmlDetails);
+    }
+
+    @Transactional
+    public void stepSeven() {
+        // 7.1.更新系统磁盘状态
         diskInfoMapper.update(Wrappers.<DiskInfo>lambdaUpdate().set(DiskInfo::getIsMount, DiskMountEnum.MOUNTED).eq(DiskInfo::getId, diskInfo.getId()));
-        // 6.2.更新虚拟机状态
+        // 7.2.更新虚拟机状态
         vmwareInfoMapper.update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.POWER_OFF).eq(VmwareInfo::getId, vmwareInfo.getId()));
     }
 

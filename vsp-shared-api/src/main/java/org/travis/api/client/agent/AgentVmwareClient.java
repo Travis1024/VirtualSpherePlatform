@@ -11,4 +11,10 @@ import org.travis.shared.common.domain.R;
  */
 public interface AgentVmwareClient {
     R<Void> createVmware(String targetAgentIp, String xmlContent, Long vmwareId);
+
+    R<String> startVmware(String targetAgentIp, String vmwareUuid);
+
+    R<String> suspendVmware(String targetAgentIp, String vmwareUuid);
+
+    R<String> complexVmware(String targetAgentIp, String vmwareUuid, String subParam);
 }

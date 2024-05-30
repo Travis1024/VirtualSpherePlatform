@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.travis.host.web.pojo.dto.FileMergeDTO;
 import org.travis.shared.common.constants.ImageConstant;
+import org.travis.shared.common.constants.LockConstant;
 import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.BadRequestException;
@@ -35,8 +36,6 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping(SystemConstant.AGENT_REQUEST_PREFIX + SystemConstant.AGENT_FILE_CONTROLLER)
 public class FileController {
 
-    public static final String LOCK_FILE_PREFIX = "lock:file:";
-
     @Resource
     private RedissonClient redissonClient;
 
@@ -46,7 +45,7 @@ public class FileController {
             @Parameter(description = "切片文件", required = true) @RequestPart("sliceFile") MultipartFile multipartFile,
             @Parameter(description = "切片文件临时存储路径", required = true) @RequestParam("tempFilePath") String tempFilePath
         ) {
-        RLock lock = redissonClient.getLock(LOCK_FILE_PREFIX + tempFilePath);
+        RLock lock = redissonClient.getLock(LockConstant.LOCK_FILE_PREFIX + tempFilePath);
         try {
             // 1.根据存储临时路径加锁, 尝试拿锁 500ms 后停止重试 (自动续期)
             Assert.isTrue(lock.tryLock(500, TimeUnit.MILLISECONDS), () -> new CommonException(BizCodeEnum.LOCKED.getCode(), "当前切片文件正在处理中，请稍后重试!"));
@@ -64,7 +63,7 @@ public class FileController {
     @Operation(summary = "切片文件合并")
     @PostMapping(ImageConstant.SLICE_MERGE)
     public void imageSliceMerge(@Validated @RequestBody FileMergeDTO fileMergeDTO) {
-        RLock lock = redissonClient.getLock(LOCK_FILE_PREFIX + fileMergeDTO.getImageId());
+        RLock lock = redissonClient.getLock(LockConstant.LOCK_FILE_PREFIX + fileMergeDTO.getImageId());
         try {
             // 1.根据切片文件 ID 加锁, 尝试拿锁 500ms 后停止重试 (自动续期)
             Assert.isTrue(lock.tryLock(500, TimeUnit.MILLISECONDS), () -> new CommonException(BizCodeEnum.LOCKED.getCode(), "当前切片文件正在处理中，请稍后重试!"));

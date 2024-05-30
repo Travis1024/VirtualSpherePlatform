@@ -1,10 +1,10 @@
 package org.travis.center.manage.controller;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import org.springframework.web.bind.annotation.*;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
+import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.center.manage.service.VmwareInfoService;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
@@ -47,5 +47,17 @@ public class VmwareInfoController {
     @PostMapping("/create")
     public VmwareInfo createVmwareInfo(@Validated @RequestBody VmwareInsertDTO vmwareInsertDTO) throws IOException {
         return vmwareInfoService.createVmwareInfo(vmwareInsertDTO);
+    }
+
+    @Operation(summary = "启动虚拟机")
+    @PostMapping("/start")
+    public List<VmwareErrorVO> startVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+        return vmwareInfoService.startVmware(vmwareIds);
+    }
+
+    @Operation(summary = "挂起虚拟机")
+    @PostMapping("/suspend")
+    public List<VmwareErrorVO> suspendVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+        return vmwareInfoService.suspendVmware(vmwareIds);
     }
 }
