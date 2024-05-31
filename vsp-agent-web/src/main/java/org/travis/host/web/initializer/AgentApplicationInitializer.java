@@ -1,4 +1,4 @@
-package org.travis.host.web.handler;
+package org.travis.host.web.initializer;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
@@ -9,7 +9,6 @@ import org.travis.host.web.config.StartDependentConfig;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,7 +20,7 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public class ApplicationStartPreCheck implements CommandLineRunner {
+public class AgentApplicationInitializer implements CommandLineRunner {
 
     @Resource
     private StartDependentConfig startDependentConfig;

@@ -12,6 +12,8 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.redisson.api.RBlockingDeque;
+import org.redisson.api.RedissonClient;
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,7 @@ import org.travis.center.common.entity.message.OperationLog;
 import org.travis.center.common.enums.BusinessStateEnum;
 import org.travis.center.common.mapper.message.OperationLogMapper;
 import org.travis.center.message.filter.PropertyPreExcludeFilter;
+import org.travis.shared.common.constants.RedissonConstant;
 import org.travis.shared.common.utils.NetworkUtil;
 import org.travis.shared.common.utils.ServletUtil;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
@@ -46,6 +49,8 @@ public class LogAspect {
 
     @Resource
     private OperationLogMapper operationLogMapper;
+    @Resource
+    private RedissonClient redissonClient;
 
     /** 排除敏感属性字段 */
     public static final String[] EXCLUDE_PROPERTIES = {"password", "oldPassword", "newPassword", "confirmPassword"};
@@ -100,6 +105,8 @@ public class LogAspect {
             // 设置操作用户
             if (userId != null) {
                 operationLog.setUserId(userId);
+                operationLog.setCreator(userId);
+                operationLog.setUpdater(userId);
             }
             // 设置操作异常信息
             if (e != null) {
@@ -115,8 +122,9 @@ public class LogAspect {
             getControllerMethodDescription(joinPoint, controllerLog, operationLog, jsonResult);
             // 设置消耗时间
             operationLog.setCostTime(System.currentTimeMillis() - TIME_THREADLOCAL.get());
-            // 保存数据库
-            operationLogMapper.insert(operationLog);
+            // 保存到 redis 缓存
+            RBlockingDeque<OperationLog> blockingDeque = redissonClient.getBlockingDeque(RedissonConstant.LOG_CACHE_DATA_KEY);
+            blockingDeque.offer(operationLog);
 
         } catch (Exception exp) {
             log.error(exp.getMessage(), exp);

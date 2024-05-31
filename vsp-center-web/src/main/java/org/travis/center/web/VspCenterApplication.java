@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.travis.shared.common.utils.NetworkUtil;
@@ -24,6 +25,7 @@ import java.util.Arrays;
  */
 @EnableDubbo
 @EnableWebSocket
+@EnableScheduling
 @EnableAspectJAutoProxy
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"org.travis.center"})
