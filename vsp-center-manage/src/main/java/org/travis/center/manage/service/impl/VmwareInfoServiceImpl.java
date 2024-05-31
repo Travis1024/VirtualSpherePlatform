@@ -92,6 +92,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public void createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) {
+        // TODO 添加虚拟机与权限组关联关系
         // 获取虚拟机创建持有者
         AbstractCreationService creationService = creationHolder.getCreationService(vmwareInsertDTO.getCreateForm().getValue());
         // 异步创建虚拟机

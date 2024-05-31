@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectStorage">
+    <option name="folderId" value="db3a9d9b-332c-4aed-9315-fa62688cf0cf" />
+    <option name="path" value="travis的私有团队-&gt;VirtualSpherePlatform-&gt;vsp-center-message" />
+    <option name="prefixUrlList">
+      <list>
+        <PrefixUrl>
+          <option name="moduleName" value="vsp-agent-web" />
+          <option name="prefixUrl" value="http://localhost:22002" />
+          <option name="rowIndex" value="0" />
+        </PrefixUrl>
+        <PrefixUrl>
+          <option name="moduleName" value="vsp-center-auth" />
+          <option name="prefixUrl" value="http://localhost:22002" />
+          <option name="rowIndex" value="1" />
+        </PrefixUrl>
+        <PrefixUrl>
+          <option name="moduleName" value="vsp-center-message" />
+          <option name="prefixUrl" value="http://localhost:22002" />
+          <option name="rowIndex" value="2" />
+        </PrefixUrl>
+        <PrefixUrl>
+          <option name="moduleName" value="vsp-center-manage" />
+          <option name="prefixUrl" value="http://localhost:22002" />
+          <option name="rowIndex" value="3" />
+        </PrefixUrl>
+      </list>
+    </option>
+    <option name="profile" value="dev" />
+    <option name="projectId" value="713d8544-1b23-4aed-96a4-d0f4ef2c228e" />
+  </component>
+</project>
