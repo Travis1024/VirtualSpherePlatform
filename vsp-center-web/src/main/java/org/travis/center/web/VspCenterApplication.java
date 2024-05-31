@@ -22,8 +22,7 @@ import java.util.Arrays;
  */
 @EnableDubbo
 @EnableWebSocket
-@ComponentScan("org.travis.center.**.controller")
-@ComponentScan("org.travis.center.**.service")
+@ComponentScan("org.travis.center")
 @MapperScan("org.travis.center.**.mapper")
 @SpringBootApplication
 public class VspCenterApplication {

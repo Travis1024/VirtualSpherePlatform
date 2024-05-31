@@ -4,9 +4,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.redisson.api.RLock;
@@ -179,6 +177,15 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         );
     }
 
+    @Override
+    public List<VmwareErrorVO> deleteVmware(List<Long> vmwareIds) {
+        return deleteVmwareOperation(
+                vmwareIds,
+                (vmwareInfo, hostInfo) -> new CommonOperateParams(hostInfo.getIp(), vmwareInfo.getUuid()),
+                commonOperateParams -> agentVmwareClient.undefineVmware(commonOperateParams.getHostIp(), commonOperateParams.getVmwareUuid())
+        );
+    }
+
     /**
      * 复杂参数处理示例
      */
@@ -222,6 +229,39 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         return errorInfoList;
     }
 
+
+    /**
+     * 虚拟机删除操作封装
+     *
+     * @param vmwareIds 虚拟机 ID 列表
+     * @param functionHandler  虚拟机操作函数
+     * @return  List<VmwareErrorVO> 错误信息列表
+     */
+    private <T extends CommonOperateParams> List<VmwareErrorVO> deleteVmwareOperation(List<Long> vmwareIds, BiFunction<VmwareInfo, HostInfo, CommonOperateParams> functionParamsBuilder, Function<T, R<String>> functionHandler) {
+        // 1.查询虚拟机相关信息
+        List<VmwareInfo> vmwareInfoList = getBaseMapper().selectBatchIds(vmwareIds);
+        Map<Long, HostInfo> hostInfoMap = queryHostInfoMap(vmwareInfoList);
+
+        // 2.遍历虚拟机列表，执行相关操作
+        List<VmwareErrorVO> errorInfoList = new ArrayList<>();
+        for (VmwareInfo vmwareInfo : vmwareInfoList) {
+            VmwareErrorVO vmwareErrorVO = singleVmwareOperate(
+                    vmwareInfo.getId(),
+                    functionParamsBuilder.apply(vmwareInfo, hostInfoMap.get(vmwareInfo.getHostId())),
+                    functionHandler
+            );
+
+            if (vmwareErrorVO != null) {
+                errorInfoList.add(vmwareErrorVO);
+            } else {
+                // 删除虚拟机
+                getBaseMapper().deleteById(vmwareInfo.getId());
+            }
+        }
+        return errorInfoList;
+    }
+
+
     /**
      * 根据虚拟机信息列表查询宿主机信息
      *
@@ -237,7 +277,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     }
 
     @Data
-    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     static class CommonOperateParams {
         public String hostIp;
         public String vmwareUuid;
@@ -245,8 +286,15 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Data
     @EqualsAndHashCode(callSuper = true)
-    @Builder
     static class SubOperateParams extends CommonOperateParams{
+
+        public SubOperateParams(String subParam) {
+            this.subParam = subParam;
+        }
+
+        public SubOperateParams(String hostIp, String vmwareUuid) {
+            super(hostIp, vmwareUuid);
+        }
 
         public SubOperateParams(String hostIp, String vmwareUuid, String subParam) {
             super(hostIp, vmwareUuid);

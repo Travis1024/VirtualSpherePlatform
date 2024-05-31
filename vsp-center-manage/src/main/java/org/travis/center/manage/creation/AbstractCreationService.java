@@ -93,6 +93,7 @@ public abstract class AbstractCreationService {
     public void build(VmwareInsertDTO vmwareInsertDTO) throws IOException {
         this.vmwareInsertDTO = vmwareInsertDTO;
 
+        // TODO 更改为异步任务：磁盘复制耗时太长
         // 1.查询宿主机信息并验证
         creationService.stepOne();
         // 2.封装并保存虚拟机信息

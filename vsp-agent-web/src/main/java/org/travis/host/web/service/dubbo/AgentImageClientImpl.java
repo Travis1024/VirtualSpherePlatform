@@ -22,8 +22,7 @@ public class AgentImageClientImpl implements AgentImageClient {
     @Override
     public R<String> deleteImage(String targetAgentIp, String path) {
         try {
-            // TODO 测试命令执行
-            Assert.isTrue(FileUtil.isFile(path), () -> new DubboFunctionException(path + "->" + "非文件路径!"));
+            Assert.isTrue(FileUtil.isFile(path), () -> new DubboFunctionException(path + " -> " + "非文件路径!"));
             boolean del = FileUtil.del(path);
             return R.ok(String.valueOf(del));
         } catch (Exception e) {

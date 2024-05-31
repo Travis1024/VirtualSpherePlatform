@@ -1,6 +1,7 @@
 package org.travis.host.web.service.dubbo;
 
 import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.json.JSONUtil;
 import cn.hutool.system.oshi.OshiUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -69,10 +70,9 @@ public class AgentHostClientImpl implements AgentHostClient {
     }
 
     private List<String> execQueryCpuNumberInfo() {
-        // TODO 测试命令执行
         List<String> execkedForLineList = RuntimeUtil.execForLines("/bin/sh " + startDependentConfig.getFilePrefix() + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_CPU_NUMBER_KEY));
-        if (execkedForLineList == null || execkedForLineList.isEmpty() || execkedForLineList.size() < 3) {
-            throw new DubboFunctionException("虚拟核数 Shell 脚本查询任务执行失败!");
+        if (execkedForLineList == null || execkedForLineList.size() != 3) {
+            throw new DubboFunctionException("虚拟核数 Shell 脚本查询任务执行失败! -> " + JSONUtil.toJsonStr(execkedForLineList));
         }
         return execkedForLineList;
     }

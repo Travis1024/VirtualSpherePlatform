@@ -3,6 +3,7 @@ package org.travis.host.web.service.dubbo;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.travis.api.client.agent.AgentDiskClient;
@@ -32,8 +33,9 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     @Override
     public R<String> createDisk(String targetAgentIp, String path, Long unitGbSize) {
         try {
-            // TODO 测试命令执行
-            RuntimeUtil.execForStr("qemu-img create -f qcow2 -o preallocation=off " + path + " " + unitGbSize.toString() + "G");
+            checkFileSuffix(path);
+            String execked = RuntimeUtil.execForStr("qemu-img create -f qcow2 -o preallocation=off " + path + " " + unitGbSize.toString() + "G");
+            Assert.isTrue(execked.startsWith("Formatting"), () -> new DubboFunctionException("磁盘创建失败:" + execked));
             return R.ok("Disk Create Successfully");
         } catch (Exception e) {
             log.error("[AgentDiskClientImpl::createDisk] Create Disk Error! -> {}", e.getMessage());
@@ -44,7 +46,7 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     @Override
     public R<String> deleteDisk(String targetAgentIp, String absolutePath) {
         try {
-            // TODO 测试命令执行
+            checkFileSuffix(absolutePath);
             Assert.isTrue(FileUtil.isFile(absolutePath), () -> new DubboFunctionException(absolutePath + "->" + "非文件路径!"));
             boolean del = FileUtil.del(absolutePath);
             return R.ok(String.valueOf(del));
@@ -57,9 +59,9 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     @Override
     public R<Integer> queryDiskSize(String targetAgentIp, String originImagePath) {
         try {
-            // TODO 测试命令执行
-            String diskSizeStr = RuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_DISK_SIZE_CALC_KEY)).trim();
-            return R.ok(Integer.valueOf(diskSizeStr));
+            String diskSizeStr = RuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_DISK_SIZE_CALC_KEY)).trim() + StrUtil.SPACE + originImagePath;
+            Integer diskSize = Integer.parseInt(diskSizeStr);
+            return R.ok(diskSize);
         } catch (Exception e) {
             log.error("[AgentDiskClientImpl::queryDiskSize] Query Disk Size Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
@@ -76,5 +78,10 @@ public class AgentDiskClientImpl implements AgentDiskClient {
             log.error("[AgentDiskClientImpl::copyDiskFile] Copy Disk File Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
+    }
+
+    private void checkFileSuffix(String filePath) {
+        String lowerCase = filePath.substring(filePath.lastIndexOf(".") + 1).toLowerCase();
+        Assert.isTrue("qcow2".equals(lowerCase), () -> new BadRequestException("文件后缀校验失败, 非 'qcow2'!"));
     }
 }

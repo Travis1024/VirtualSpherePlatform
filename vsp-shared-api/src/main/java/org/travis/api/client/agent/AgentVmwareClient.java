@@ -20,7 +20,9 @@ public interface AgentVmwareClient {
 
     R<String> resumeVmware(String targetAgentIp, String vmwareUuid);
 
-    R<String> shutdownVmware(String hostIp, String vmwareUuid);
+    R<String> shutdownVmware(String targetAgentIp, String vmwareUuid);
 
-    R<String> destroyVmware(String hostIp, String vmwareUuid);
+    R<String> destroyVmware(String targetAgentIp, String vmwareUuid);
+
+    R<String> undefineVmware(String targetAgentIp, String vmwareUuid);
 }

@@ -55,6 +55,13 @@ public class VmwareInfoController {
         return vmwareInfoService.createVmwareInfo(vmwareInsertDTO);
     }
 
+    @Log(title = "删除虚拟机", businessType = BusinessTypeEnum.DELETE)
+    @Operation(summary = "删除虚拟机")
+    @DeleteMapping("/delete")
+    public List<VmwareErrorVO> deleteVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+        return vmwareInfoService.deleteVmware(vmwareIds);
+    }
+
     @Log(title = "启动虚拟机")
     @Operation(summary = "启动虚拟机")
     @PostMapping("/start")
