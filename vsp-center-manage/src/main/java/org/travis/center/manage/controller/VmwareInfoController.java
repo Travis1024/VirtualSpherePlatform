@@ -51,8 +51,8 @@ public class VmwareInfoController {
     @Log(title = "创建虚拟机", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "创建虚拟机")
     @PostMapping("/create")
-    public String createVmwareInfo(@Validated @RequestBody VmwareInsertDTO vmwareInsertDTO) throws IOException {
-        return vmwareInfoService.createVmwareInfo(vmwareInsertDTO);
+    public void createVmwareInfo(@Validated @RequestBody VmwareInsertDTO vmwareInsertDTO) throws IOException {
+        vmwareInfoService.createVmwareInfo(vmwareInsertDTO);
     }
 
     @Log(title = "删除虚拟机", businessType = BusinessTypeEnum.DELETE)

@@ -5,7 +5,6 @@ import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.travis.center.common.utils.MessageThreadPoolConfig;
-import org.travis.center.message.pojo.vo.WsMessageVO;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;

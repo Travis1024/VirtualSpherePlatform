@@ -23,11 +23,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentVmwareClient;
 import org.travis.center.common.entity.manage.HostInfo;
-import org.travis.center.common.enums.MsgModuleEnum;
-import org.travis.center.common.enums.MsgStateEnum;
+import org.travis.shared.common.enums.MsgModuleEnum;
+import org.travis.shared.common.enums.MsgStateEnum;
 import org.travis.center.common.enums.VmwareStateEnum;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.center.common.mapper.manage.VmwareInfoMapper;
@@ -38,7 +37,7 @@ import org.travis.center.manage.creation.CreationHolder;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.center.manage.service.VmwareInfoService;
-import org.travis.center.message.pojo.vo.WsMessageVO;
+import org.travis.shared.common.domain.WebSocketMessage;
 import org.travis.center.message.websocket.WsMessageHolder;
 import org.travis.shared.common.constants.LockConstant;
 import org.travis.shared.common.domain.PageQuery;
@@ -92,39 +91,47 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     }
 
     @Override
-    public String createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) {
-        // 异步创建虚拟机
+    public void createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) {
+        // 获取虚拟机创建持有者
         AbstractCreationService creationService = creationHolder.getCreationService(vmwareInsertDTO.getCreateForm().getValue());
+        // 异步创建虚拟机
         CompletableFuture.runAsync(() -> {
-            try {
-                creationService.build(vmwareInsertDTO);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }, ManageThreadPoolConfig.businessProcessExecutor)
+                    try {
+                        creationService.build(vmwareInsertDTO);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, ManageThreadPoolConfig.businessProcessExecutor)
                 .thenRun(() -> {
-                    // 全局推送成功消息,记录日志
+                    // 全局推送创建成功消息,记录日志
                     wsMessageHolder.sendGlobalMessage(
-                            WsMessageVO.builder()
+                            WebSocketMessage.builder()
                                     .msgModule(MsgModuleEnum.VMWARE)
                                     .msgState(MsgStateEnum.INFO)
-                                    .msgContent("[VmwareInfoServiceImpl::createVmwareInfo] 虚拟机异步创建成功!")
+                                    .msgContent(StrUtil.format("{} -> 虚拟机异步创建成功!", vmwareInsertDTO.getName()))
                                     .build()
                     );
                 })
                 .exceptionally(ex -> {
-                    // 全局推送异常消息,记录日志
+                    // 全局推送创建失败消息,记录日志
                     wsMessageHolder.sendGlobalMessage(
-                            WsMessageVO.builder()
+                            WebSocketMessage.builder()
                                     .msgModule(MsgModuleEnum.VMWARE)
                                     .msgState(MsgStateEnum.ERROR)
-                                    .msgContent(StrUtil.format("[VmwareInfoServiceImpl::createVmwareInfo] 虚拟机异步创建失败:{}", ex.getMessage()))
+                                    .msgContent(StrUtil.format("{} -> 虚拟机异步创建失败:{}", vmwareInsertDTO.getName(), ex))
                                     .build()
                     );
-
                     return null;
                 });
-        return "虚拟机异步创建中, 请注意全局消息!";
+
+
+        wsMessageHolder.sendGlobalMessage(
+                WebSocketMessage.builder()
+                        .msgModule(MsgModuleEnum.VMWARE)
+                        .msgState(MsgStateEnum.INFO)
+                        .msgContent(StrUtil.format("{} -> 虚拟机异步创建中, 请关注全局消息!", vmwareInsertDTO.getName()))
+                        .build()
+        );
     }
 
     @Override

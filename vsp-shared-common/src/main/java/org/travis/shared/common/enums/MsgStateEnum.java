@@ -1,4 +1,4 @@
-package org.travis.center.common.enums;
+package org.travis.shared.common.enums;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.EnumValue;

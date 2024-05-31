@@ -20,10 +20,15 @@ import org.travis.center.common.enums.VmwareCreateFormEnum;
 import org.travis.center.common.enums.VmwareStateEnum;
 import org.travis.center.common.mapper.manage.*;
 import org.travis.center.common.service.AgentAssistService;
+import org.travis.center.common.utils.ManageThreadPoolConfig;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.service.DiskInfoService;
+import org.travis.center.message.websocket.WsMessageHolder;
 import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.domain.R;
+import org.travis.shared.common.domain.WebSocketMessage;
+import org.travis.shared.common.enums.MsgModuleEnum;
+import org.travis.shared.common.enums.MsgStateEnum;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.exceptions.DubboFunctionException;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
@@ -33,6 +38,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @ClassName AbstractCreationService
@@ -93,7 +99,6 @@ public abstract class AbstractCreationService {
     public void build(VmwareInsertDTO vmwareInsertDTO) throws IOException {
         this.vmwareInsertDTO = vmwareInsertDTO;
 
-        // TODO 更改为异步任务：磁盘复制耗时太长
         // 1.查询宿主机信息并验证
         creationService.stepOne();
         // 2.封装并保存虚拟机信息

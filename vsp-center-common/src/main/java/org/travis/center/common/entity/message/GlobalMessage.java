@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.Date;
@@ -14,9 +13,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.travis.center.common.enums.MsgConfirmEnum;
-import org.travis.center.common.enums.MsgModuleEnum;
-import org.travis.center.common.enums.MsgStateEnum;
+import org.travis.shared.common.enums.MsgConfirmEnum;
+import org.travis.shared.common.enums.MsgModuleEnum;
+import org.travis.shared.common.enums.MsgStateEnum;
 
 /**
  * @ClassName GlobalMessage

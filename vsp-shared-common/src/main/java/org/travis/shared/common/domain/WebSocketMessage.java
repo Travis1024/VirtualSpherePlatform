@@ -1,13 +1,12 @@
-package org.travis.center.message.pojo.vo;
+package org.travis.shared.common.domain;
 
-import cn.dev33.satoken.error.SaErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.travis.center.common.enums.MsgModuleEnum;
-import org.travis.center.common.enums.MsgStateEnum;
+import org.travis.shared.common.enums.MsgModuleEnum;
+import org.travis.shared.common.enums.MsgStateEnum;
 
 /**
  * @ClassName WsMessageVO
@@ -20,7 +19,7 @@ import org.travis.center.common.enums.MsgStateEnum;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class WsMessageVO implements SaErrorCode {
+public class WebSocketMessage {
     @Schema(description = "消息模块")
     private MsgModuleEnum msgModule;
     @Schema(description = "消息状态")

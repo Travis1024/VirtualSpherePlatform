@@ -71,7 +71,6 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     @Override
     public R<Void> copyDiskFile(String targetAgentIp, String originImagePath, String targetDiskPath) {
         try {
-            // TODO 测试命令执行
             RuntimeUtil.execForStr("cp " + originImagePath + " " + targetDiskPath);
             return R.ok();
         } catch (Exception e) {
