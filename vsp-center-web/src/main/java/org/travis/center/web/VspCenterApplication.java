@@ -5,7 +5,9 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.travis.shared.common.utils.NetworkUtil;
 
@@ -22,7 +24,9 @@ import java.util.Arrays;
  */
 @EnableDubbo
 @EnableWebSocket
-@ComponentScan("org.travis.center")
+@EnableAspectJAutoProxy
+@EnableTransactionManagement
+@ComponentScan(basePackages = {"org.travis.center"})
 @MapperScan("org.travis.center.**.mapper")
 @SpringBootApplication
 public class VspCenterApplication {

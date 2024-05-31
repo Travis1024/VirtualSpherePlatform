@@ -7,15 +7,15 @@ import org.springframework.validation.annotation.Validated;
 import org.travis.center.auth.pojo.dto.*;
 import org.travis.center.auth.service.UserService;
 import org.travis.center.common.entity.auth.User;
-import org.travis.center.auth.service.impl.UserServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.travis.center.common.enums.BusinessTypeEnum;
+import org.travis.center.common.mapper.auth.UserMapper;
+import org.travis.center.message.aspect.Log;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.utils.UserThreadLocalUtil;
 
 import javax.annotation.Resource;
-import java.util.function.Supplier;
 
 /**
 * 用户信息表(VSP.VSP_USER)表控制层
@@ -26,56 +26,63 @@ import java.util.function.Supplier;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-
     @Resource
     private UserService userService;
 
+    @Log(title = "查询当前登录用户信息", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "查询当前登录用户信息")
     @GetMapping("/queryCur")
-    private User queryCurUserInfo() {
+    public User queryCurUserInfo() {
         return userService.queryById(UserThreadLocalUtil.getUserId());
     }
 
+    @Log(title = "用户登录")
     @Operation(summary = "用户登录")
     @PostMapping("/login")
-    private void login(@Validated @RequestBody UserLoginDTO userLoginDTO) {
+    public void login(@Validated @RequestBody UserLoginDTO userLoginDTO) {
         userService.login(userLoginDTO.getUsername(), userLoginDTO.getPassword());
     }
 
+    @Log(title = "用户退出登录")
     @Operation(summary = "用户退出登录")
     @GetMapping("/logout")
     public void logout() {
         StpUtil.logout();
     }
 
+    @Log(title = "用户信息删除", businessType = BusinessTypeEnum.DELETE)
     @Operation(summary = "用户信息删除")
     @DeleteMapping("/delete")
-    private void userDelete(@RequestParam("userId") Long userId) {
+    public void userDelete(@RequestParam("userId") Long userId) {
         Assert.notNull(userId, () -> new BadRequestException("用户-ID不能为空!"));
         userService.userDelete(userId);
     }
 
+    @Log(title = "新用户注册", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "新用户注册")
     @PostMapping("/register")
-    private void register(@Validated @RequestBody UserRegisterDTO userRegisterDTO) {
+    public void register(@Validated @RequestBody UserRegisterDTO userRegisterDTO) {
         userService.register(userRegisterDTO);
     }
 
+    @Log(title = "用户基础信息更新", businessType = BusinessTypeEnum.UPDATE)
     @Operation(summary = "用户基础信息更新")
     @PutMapping("/update")
-    private void updateUserInfo(@Validated @RequestBody UserUpdateDTO userUpdateDTO) {
+    public void updateUserInfo(@Validated @RequestBody UserUpdateDTO userUpdateDTO) {
         userService.updateUserInfo(userUpdateDTO);
     }
 
+    @Log(title = "用户密码修改", businessType = BusinessTypeEnum.UPDATE)
     @Operation(summary = "用户密码修改")
     @PutMapping("/modifyPw")
-    private void updatePassword(@Validated @RequestBody UserModifyPasswordDTO userModifyPasswordDTO) {
+    public void updatePassword(@Validated @RequestBody UserModifyPasswordDTO userModifyPasswordDTO) {
         userService.updatePassword(userModifyPasswordDTO);
     }
 
+    @Log(title = "用户角色修改", businessType = BusinessTypeEnum.UPDATE)
     @Operation(summary = "用户角色修改")
     @PutMapping("/modifyRole")
-    private void updateUserRole(@Validated @RequestBody UserModifyRoleDTO userModifyRoleDTO) {
+    public void updateUserRole(@Validated @RequestBody UserModifyRoleDTO userModifyRoleDTO) {
         userService.updateUserRole(userModifyRoleDTO);
     }
 }

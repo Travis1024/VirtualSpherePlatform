@@ -23,6 +23,7 @@ import org.travis.center.common.mapper.message.OperationLogMapper;
 import org.travis.center.message.filter.PropertyPreExcludeFilter;
 import org.travis.shared.common.utils.NetworkUtil;
 import org.travis.shared.common.utils.ServletUtil;
+import org.travis.shared.common.utils.SnowflakeIdUtil;
 import org.travis.shared.common.utils.UserThreadLocalUtil;
 
 import javax.annotation.Resource;
@@ -90,6 +91,7 @@ public class LogAspect {
 
             // 初始化日志记录
             OperationLog operationLog = new OperationLog();
+            operationLog.setId(SnowflakeIdUtil.nextId());
             operationLog.setOperationState(BusinessStateEnum.SUCCESS);
             // 设置请求的IP地址
             String ip = NetworkUtil.getIpAddr();

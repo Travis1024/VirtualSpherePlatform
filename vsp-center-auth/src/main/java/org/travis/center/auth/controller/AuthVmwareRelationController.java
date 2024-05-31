@@ -7,6 +7,8 @@ import org.travis.center.auth.service.AuthVmwareRelationService;
 import org.springframework.web.bind.annotation.*;
 
 import org.travis.center.common.entity.manage.VmwareInfo;
+import org.travis.center.common.enums.BusinessTypeEnum;
+import org.travis.center.message.aspect.Log;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -22,21 +24,24 @@ public class AuthVmwareRelationController {
     @Resource
     private AuthVmwareRelationService authVmwareRelationService;
 
+    @Log(title = "新增虚拟机-权限组关系", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "新增虚拟机-权限组关系")
     @PostMapping("/insert")
-    private void insertRelations(@Validated @RequestBody AuthVmwareInsertDTO authVmwareInsertDTO) {
+    public void insertRelations(@Validated @RequestBody AuthVmwareInsertDTO authVmwareInsertDTO) {
         authVmwareRelationService.insertRelations(authVmwareInsertDTO);
     }
 
+    @Log(title = "删除虚拟机-权限组关系", businessType = BusinessTypeEnum.DELETE)
     @Operation(summary = "删除虚拟机-权限组关系")
     @DeleteMapping("/delete")
-    private void deleteRelations(@Validated @RequestBody AuthVmwareDeleteDTO authVmwareDeleteDTO) {
+    public void deleteRelations(@Validated @RequestBody AuthVmwareDeleteDTO authVmwareDeleteDTO) {
         authVmwareRelationService.deleteRelations(authVmwareDeleteDTO);
     }
 
+    @Log(title = "查询权限组所关联的虚拟机信息列表", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "查询权限组所关联的虚拟机信息列表")
     @GetMapping("/queryVmByGroupId")
-    private List<VmwareInfo> queryVmwareListByAuthGroup(@RequestParam("authGroupId") Long authGroupId) {
+    public List<VmwareInfo> queryVmwareListByAuthGroup(@RequestParam("authGroupId") Long authGroupId) {
         return authVmwareRelationService.queryVmwareListByAuthGroup(authGroupId);
     }
 }

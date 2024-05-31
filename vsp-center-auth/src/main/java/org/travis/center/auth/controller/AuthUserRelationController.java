@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.travis.center.common.entity.auth.User;
+import org.travis.center.common.enums.BusinessTypeEnum;
+import org.travis.center.message.aspect.Log;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -28,21 +30,24 @@ public class AuthUserRelationController {
     @Resource
     private AuthUserRelationService authUserRelationService;
 
+    @Log(title = "新增用户-权限组关系", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "新增用户-权限组关系")
     @PostMapping("/insert")
-    private void insertRelations(@Validated @RequestBody AuthUserInsertDTO authUserInsertDTO) {
+    public void insertRelations(@Validated @RequestBody AuthUserInsertDTO authUserInsertDTO) {
         authUserRelationService.insertRelations(authUserInsertDTO);
     }
 
+    @Log(title = "删除用户-权限组关系", businessType = BusinessTypeEnum.DELETE)
     @Operation(summary = "删除用户-权限组关系")
     @DeleteMapping("/delete")
-    private void deleteRelations(@Validated @RequestBody AuthUserDeleteDTO authUserDeleteDTO) {
+    public void deleteRelations(@Validated @RequestBody AuthUserDeleteDTO authUserDeleteDTO) {
         authUserRelationService.deleteRelations(authUserDeleteDTO);
     }
 
+    @Log(title = "查询权限组所关联的用户信息列表", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "查询权限组所关联的用户信息列表")
     @GetMapping("/queryUserByGroupId")
-    private List<User> queryUserListByAuthGroup(@RequestParam("authGroupId") Long authGroupId) {
+    public List<User> queryUserListByAuthGroup(@RequestParam("authGroupId") Long authGroupId) {
         return authUserRelationService.queryUserListByAuthGroup(authGroupId);
     }
 }

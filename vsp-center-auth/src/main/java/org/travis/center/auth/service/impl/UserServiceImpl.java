@@ -5,17 +5,14 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-import java.util.List;
 import java.util.Optional;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
 import org.travis.center.auth.pojo.dto.UserModifyPasswordDTO;
 import org.travis.center.auth.pojo.dto.UserModifyRoleDTO;
 import org.travis.center.auth.pojo.dto.UserRegisterDTO;
 import org.travis.center.auth.pojo.dto.UserUpdateDTO;
-import org.travis.center.common.enums.UserRoleEnum;
 import org.travis.center.common.mapper.auth.UserMapper;
 import org.travis.center.common.entity.auth.User;
 import org.travis.center.auth.service.UserService;
@@ -38,6 +35,7 @@ import javax.annotation.Resource;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService{
+
     @Resource
     private UserAssistService userAssistService;
 
