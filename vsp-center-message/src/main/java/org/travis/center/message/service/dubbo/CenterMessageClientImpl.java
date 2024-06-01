@@ -34,4 +34,9 @@ public class CenterMessageClientImpl implements CenterMessageClient {
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
     }
+
+    @Override
+    public R<String> dubboHealthyCheck() {
+        return R.ok("Center Health Check OK!");
+    }
 }
