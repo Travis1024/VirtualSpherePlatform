@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-@Order(0)
+@Order(2)
 public class LogDatabaseInitializer implements CommandLineRunner {
 
     @Resource
@@ -47,7 +47,7 @@ public class LogDatabaseInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("Initializing database...");
+        log.info("[2] Initializing CrontabInfo Records");
         Set<Long> initIds = CRONTAB_INFOS.stream().map(CrontabInfo::getId).collect(Collectors.toSet());
         Set<Long> existIds = crontabInfoMapper.selectBatchIds(initIds).stream().map(CrontabInfo::getId).collect(Collectors.toSet());
         initIds.removeAll(existIds);
@@ -57,6 +57,6 @@ public class LogDatabaseInitializer implements CommandLineRunner {
                crontabInfoMapper.insert(crontabInfo);
            }
         });
-        log.info("Initializing database completed.");
+        log.info("[2] Initializing CrontabInfo Records Completed.");
     }
 }

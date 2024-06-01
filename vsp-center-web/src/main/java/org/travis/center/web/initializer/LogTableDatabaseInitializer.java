@@ -21,7 +21,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Component
-@Order(-1)
+@Order(1)
 public class LogTableDatabaseInitializer implements CommandLineRunner {
 
     @Value("${vsp.database.schema}")
@@ -31,11 +31,11 @@ public class LogTableDatabaseInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("Initializing 「OperationLog」 table...");
+        log.info("[1]「OperationLog」Table Initializing");
         String tableName = DatabaseConstant.OPERATION_LOG_TABLE_NAME_PREFIX + StrUtil.UNDERLINE + TimeUtil.getCurrentYearMonth();
         String schemaTableName = schema + StrUtil.DOT + tableName;
         tableMapper.createOperationLogTable(tableName, schemaTableName);
-        log.info("「OperationLog」 table created.");
+        log.info("[1]「OperationLog」Table created.");
 
     }
 }

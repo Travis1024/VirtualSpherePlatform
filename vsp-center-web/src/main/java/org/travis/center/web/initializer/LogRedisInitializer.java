@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-@Order(1)
+@Order(3)
 public class LogRedisInitializer implements CommandLineRunner {
 
     @Resource
@@ -33,7 +33,7 @@ public class LogRedisInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        log.info("Initializing redis cache...");
+        log.info("[3] Initializing CrontabInfo Redis Cache Data");
         // 查询所有定时任务 ID 列表
         List<Long> cronIds = LogDatabaseInitializer.CRONTAB_INFOS.stream().map(CrontabInfo::getId).collect(Collectors.toList());
         // 根据 ID 列表查询定时任务
@@ -42,6 +42,6 @@ public class LogRedisInitializer implements CommandLineRunner {
         Map<Long, CrontabInfo> crontabInfoMap = crontabInfoList.stream().collect(Collectors.toMap(CrontabInfo::getId, crontabInfo -> crontabInfo));
         RMap<Object, Object> rMap = redissonClient.getMap(RedissonConstant.CRONTAB_CACHE_KEY);
         rMap.putAll(crontabInfoMap);
-        log.info("Initializing redis cache completed.");
+        log.info("[3] Initializing CrontabInfo Redis Cache Data Completed.");
     }
 }
