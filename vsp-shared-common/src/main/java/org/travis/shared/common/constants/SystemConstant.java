@@ -53,7 +53,7 @@ public class SystemConstant {
     /**
      * Zookeeper Agent 服务注册路径
      */
-    public static final String ZOOKEEPER_HOST_SERVER_PATH = "/services/dubbo-vsp-host-service";
+    public static final String ZOOKEEPER_HOST_SERVER_PATH = "/services/dubbo-vsp-agent-service";
 
     /**
      * Host Agent http 请求前缀
