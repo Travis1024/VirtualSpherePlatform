@@ -4,11 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="modify">
-      <change afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/controller/DubboController.java" afterDir="false" />
+    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="Dubbo修改">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/service/dubbo/CenterMessageClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/service/dubbo/CenterMessageClientImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/center/CenterMessageClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/center/CenterMessageClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/VspAgentApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/VspAgentApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/service/dubbo/CenterMessageClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/dubbo/CenterMessageClientImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/VspCenterApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/VspCenterApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-shared-common/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/config/MvcAutoConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/config/SharedMvcAutoConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/resources/META-INF/spring.factories" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/resources/META-INF/spring.factories" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +75,8 @@
     "RequestMappingsPanelWidth0": "75",
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.VspAgentApplication.executor": "Run",
     "Spring Boot.VspCenterApplication.executor": "Run",
     "git-widget-placeholder": "dev-version-1",
     "kotlin-language-version-configured": "true",
@@ -86,6 +92,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.travis.center.web" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="configurationTypes">
       <set>
@@ -125,7 +136,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1717232794845</updated>
-      <workItem from="1717232796725" duration="2020000" />
+      <workItem from="1717232796725" duration="5334000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -143,14 +154,25 @@
       <option name="project" value="LOCAL" />
       <updated>1717234204539</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Dubbo修改">
+      <option name="closed" value="true" />
+      <created>1717234841542</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1717234841542</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="modify" />
-    <option name="LAST_COMMIT_MESSAGE" value="modify" />
+    <MESSAGE value="Dubbo修改" />
+    <option name="LAST_COMMIT_MESSAGE" value="Dubbo修改" />
   </component>
 </project>

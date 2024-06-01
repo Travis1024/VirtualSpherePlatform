@@ -1,4 +1,4 @@
-package org.travis.center.manage.service.dubbo;
+package org.travis.center.web.dubbo;
 
 import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;

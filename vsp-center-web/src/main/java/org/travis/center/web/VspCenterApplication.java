@@ -1,6 +1,7 @@
 package org.travis.center.web;
 
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
+import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,7 +29,7 @@ import java.util.Arrays;
 @EnableScheduling
 @EnableAspectJAutoProxy
 @EnableTransactionManagement
-@ComponentScan(basePackages = {"org.travis.center"})
+@ComponentScan(basePackages = {"org.travis.center", "org.travis.shared", "org.travis.api"})
 @MapperScan("org.travis.center.**.mapper")
 @SpringBootApplication
 public class VspCenterApplication {

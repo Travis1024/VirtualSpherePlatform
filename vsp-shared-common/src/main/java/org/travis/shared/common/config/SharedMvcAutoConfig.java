@@ -18,7 +18,7 @@ import javax.servlet.Filter;
  */
 @Configuration
 @ConditionalOnClass({Filter.class})
-public class MvcAutoConfig implements WebMvcConfigurer {
+public class SharedMvcAutoConfig implements WebMvcConfigurer {
 
     /**
      * 将「请求 ID 过滤器」注入 Bean 容器

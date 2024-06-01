@@ -5,6 +5,7 @@ import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.travis.shared.common.utils.NetworkUtil;
 
@@ -21,6 +22,7 @@ import java.util.Arrays;
  */
 @Slf4j
 @EnableDubbo
+@ComponentScan(basePackages = {"org.travis.agent", "org.travis.shared", "org.travis.api"})
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class VspAgentApplication {
     public static void main(String[] args) throws UnknownHostException, SocketException {
