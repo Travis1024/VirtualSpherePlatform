@@ -10,6 +10,11 @@ package org.travis.shared.common.constants;
 public class CrontabConstant {
 
     /**
+     * cron 描述模版
+     */
+    public static final String CRON_DESCRIPTION_TEMPLATE = "执行间隔秒数:{}";
+
+    /**
      * 日志持久化任务固定 ID
      */
     public static final Long LOG_TASK_INDEX_ID = 1L;
@@ -27,12 +32,12 @@ public class CrontabConstant {
     /**
      * 执行周期：20s
      */
-    public static final String CRON_20_S = "0/20 * * * ?";
+    public static final String CRON_20_S = "0/20 * * * * ?";
 
     /**
      * 执行周期：30s
      */
-    public static final String CRON_30_S = "0/30 * * * ?";
+    public static final String CRON_30_S = "0/30 * * * * ?";
 
     /**
      * 执行周期：1 minute

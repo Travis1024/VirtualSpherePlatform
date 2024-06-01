@@ -38,8 +38,8 @@ public class LogDatabaseInitializer implements CommandLineRunner {
         CrontabInfo logCrontabInfo = CrontabInfo.builder()
                 .id(CrontabConstant.LOG_TASK_INDEX_ID)
                 .cronName("日志持久化任务")
-                .cronExpression(CrontabConstant.CRON_10_S)
-                .cronDescription(StrUtil.format("执行间隔秒数:{}", CrontabUtil.getCrontabIntervalInSeconds(CrontabConstant.CRON_10_S)))
+                .cronExpression(CrontabConstant.CRON_30_S)
+                .cronDescription(StrUtil.format(CrontabConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(CrontabConstant.CRON_30_S)))
                 .build();
 
         CRONTAB_INFOS.add(logCrontabInfo);

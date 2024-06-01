@@ -2,10 +2,8 @@ package org.travis.center.message.crontab;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBlockingDeque;
-import org.redisson.api.RList;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
@@ -15,11 +13,11 @@ import org.springframework.stereotype.Component;
 import org.travis.center.common.entity.message.CrontabInfo;
 import org.travis.center.common.entity.message.OperationLog;
 import org.travis.center.common.mapper.message.CrontabInfoMapper;
-import org.travis.center.message.service.CrontabInfoService;
 import org.travis.center.message.service.OperationLogService;
 import org.travis.shared.common.constants.CrontabConstant;
 import org.travis.shared.common.constants.RedissonConstant;
-import org.travis.shared.common.exceptions.CommonException;
+import org.travis.shared.common.utils.TableMonthThreadLocalUtil;
+import org.travis.shared.common.utils.TimeUtil;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -52,27 +50,40 @@ public class CrontabScheduleService implements SchedulingConfigurer {
         // 日志数据定时持久化定时任务
         taskRegistrar.addTriggerTask(
                 // 1.获取所有缓存操作日志列表
-                () -> {
-                    log.info("[Crontab-Task] Operation Log persistence crontab schedule started");
-                    RBlockingDeque<OperationLog> blockingDeque = redissonClient.getBlockingDeque(RedissonConstant.LOG_CACHE_DATA_KEY);
-                    List<OperationLog> operationLogs = new ArrayList<>();
-                    blockingDeque.drainTo(operationLogs);
-                    operationLogService.saveBatch(operationLogs);
-                    log.info("[Crontab-Task] Operation Log persistence crontab schedule finished -> " + operationLogs.size());
-                },
+                this::operateLogHandleMethod,
                 // 2.设置任务执行周期
                 triggerContext -> {
                     // 2.1.从缓存或数据库中获取执行周期
                     String cronExpression = queryCronExpression(CrontabConstant.LOG_TASK_INDEX_ID);
                     // 2.2.cron 合法性校验
                     if (StrUtil.isBlank(cronExpression)) {
-                        cronExpression = CrontabConstant.CRON_10_S;
+                        log.warn("[Crontab-Operation-Log] No related expression is found, the default expression is used!");
+                        cronExpression = CrontabConstant.CRON_30_S;
                     }
                     // 2.3.返回执行周期
                     return new CronTrigger(cronExpression).nextExecutionTime(triggerContext);
                 }
         );
 
+    }
+
+    private void operateLogHandleMethod() {
+        try {
+            log.info("[Crontab-Task-Start] Operation Log persistence crontab schedule started");
+            RBlockingDeque<OperationLog> blockingDeque = redissonClient.getBlockingDeque(RedissonConstant.LOG_CACHE_DATA_KEY);
+            List<OperationLog> operationLogs = new ArrayList<>();
+            blockingDeque.drainTo(operationLogs);
+            // 如果缓存中有数据，进行持久化
+            if (!operationLogs.isEmpty()) {
+                TableMonthThreadLocalUtil.setData(TimeUtil.getCurrentYearMonth());
+                operationLogService.saveBatch(operationLogs);
+            }
+            log.info("[Crontab-Task-Finish] Operation Log Count -> {}", operationLogs.size());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            TableMonthThreadLocalUtil.removeData();
+        }
     }
 
     /**

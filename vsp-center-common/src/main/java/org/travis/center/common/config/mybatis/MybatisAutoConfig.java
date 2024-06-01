@@ -3,11 +3,17 @@ package org.travis.center.common.config.mybatis;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.travis.shared.common.constants.DatabaseConstant;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @ClassName MybatisAutoConfig
@@ -19,6 +25,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnClass({MybatisPlusInterceptor.class, BaseMapper.class})
 public class MybatisAutoConfig {
+
+    /**
+     * 目标月份分表表名
+     */
+    public static final List<String> TABLE_NAMES = List.of(
+            DatabaseConstant.OPERATION_LOG_TABLE_NAME_PREFIX
+    );
 
     @Bean
     @ConditionalOnMissingBean
@@ -37,6 +50,11 @@ public class MybatisAutoConfig {
 
         // 3.添加「字段填充」插件
         interceptor.addInnerInterceptor(new MybatisAutoCompleteInterceptor());
+
+        // 4.增加「动态表名」插件
+        DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
+        dynamicTableNameInnerInterceptor.setTableNameHandler(new MybatisMonthTableNameHandler(TABLE_NAMES));
+        interceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
 
         return interceptor;
     }

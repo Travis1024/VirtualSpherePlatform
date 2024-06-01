@@ -24,7 +24,7 @@ public enum BizCodeEnum {
     BAD_REQUEST(400, "请求参数错误"),
     MISSING_TOKEN(401, "未能读取到有效-Token"),
     FORBIDDEN(403, "没有操作权限"),
-    NOT_FOUND(404, "请求未找到"),
+    NOT_FOUND(404, "资源或请求未找到"),
     METHOD_NOT_ALLOWED(405, "请求方法不正确"),
     LOCKED(423, "请求失败, 请稍后重试"),
     TOO_MANY_REQUESTS(429, "请求过于频繁, 请稍后重试"),
