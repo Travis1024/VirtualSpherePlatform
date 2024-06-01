@@ -9,7 +9,7 @@
         <version>1.0</version>
     </parent>
 
-    <groupId>org.travis.host</groupId>
+    <groupId>org.travis.agent</groupId>
     <artifactId>vsp-agent-web</artifactId>
 
     <properties>

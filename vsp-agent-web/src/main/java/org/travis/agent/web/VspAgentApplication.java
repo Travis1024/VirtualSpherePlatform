@@ -41,7 +41,7 @@ public class VspAgentApplication {
                 "|___/_/_/   \\__/\\__,_/\\__,_/_/   /____/ .___/_/ /_/\\___/_/   \\___/  /_/   /_/\\__,_/\\__/_/  \\____/_/  /_/ /_/ /_/ \n" +
                 "                                     /_/                                                                         \n"
         );
-        System.out.println("(♥◠‿◠)ﾉﾞ  VSP-Host Run Successfully!   ლ(´ڡ`ლ)ﾞ  ");
+        System.out.println("(♥◠‿◠)ﾉﾞ  VSP-Agent Run Successfully!   ლ(´ڡ`ლ)ﾞ  ");
         System.out.printf(
                 "\n---------------------------------------------------------------------------------------\n\t" +
                         "Application '%s' is running! Access URLs:\n\t" +
