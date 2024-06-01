@@ -1,4 +1,4 @@
-package org.travis.host.web.service.dubbo;
+package org.travis.agent.web.service.dubbo;
 
 import cn.hutool.core.date.DateUtil;
 import lombok.extern.slf4j.Slf4j;

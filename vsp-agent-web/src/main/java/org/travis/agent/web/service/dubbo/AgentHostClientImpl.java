@@ -1,4 +1,4 @@
-package org.travis.host.web.service.dubbo;
+package org.travis.agent.web.service.dubbo;
 
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.json.JSONUtil;
@@ -9,9 +9,9 @@ import org.travis.api.client.agent.AgentHostClient;
 import org.travis.api.pojo.bo.HostDetailsBO;
 import org.travis.api.pojo.bo.HostResourceInfoBO;
 import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
-import org.travis.host.web.config.StartDependentConfig;
-import org.travis.host.web.handler.BridgedAdapterHandler;
-import org.travis.host.web.utils.AgentThreadPoolConfig;
+import org.travis.agent.web.config.StartDependentConfig;
+import org.travis.agent.web.handler.BridgedAdapterHandler;
+import org.travis.agent.web.utils.AgentThreadPoolConfig;
 import org.travis.shared.common.constants.AgentDependentConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;

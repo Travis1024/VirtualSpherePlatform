@@ -1,4 +1,4 @@
-package org.travis.host.web.config;
+package org.travis.agent.web.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;

@@ -58,7 +58,7 @@
                 <configuration>
                     <includeSystemScope>true</includeSystemScope>
                     <!-- 指定该Main Class为全局的唯一入口 -->
-                    <mainClass>org.travis.host.web.VspAgentApplication</mainClass>
+                    <mainClass>org.travis.agent.web.VspAgentApplication</mainClass>
                     <layout>ZIP</layout>
                 </configuration>
                 <executions>

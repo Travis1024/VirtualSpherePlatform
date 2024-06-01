@@ -1,4 +1,4 @@
-package org.travis.host.web.config;
+package org.travis.agent.web.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,7 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 
 /**

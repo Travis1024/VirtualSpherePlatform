@@ -1,4 +1,4 @@
-package org.travis.host.web.controller;
+package org.travis.agent.web.controller;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
@@ -10,7 +10,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.travis.host.web.pojo.dto.FileMergeDTO;
+import org.travis.agent.web.pojo.dto.FileMergeDTO;
 import org.travis.shared.common.constants.ImageConstant;
 import org.travis.shared.common.constants.LockConstant;
 import org.travis.shared.common.constants.SystemConstant;

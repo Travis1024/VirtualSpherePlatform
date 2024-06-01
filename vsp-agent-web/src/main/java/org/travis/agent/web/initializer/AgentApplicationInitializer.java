@@ -1,11 +1,11 @@
-package org.travis.host.web.initializer;
+package org.travis.agent.web.initializer;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import org.travis.host.web.config.StartDependentConfig;
+import org.travis.agent.web.config.StartDependentConfig;
 
 import javax.annotation.Resource;
 import java.io.File;

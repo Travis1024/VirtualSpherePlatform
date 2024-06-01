@@ -1,4 +1,4 @@
-package org.travis.host.web.utils;
+package org.travis.agent.web.utils;
 
 import cn.hutool.core.thread.ExecutorBuilder;
 import org.travis.shared.common.constants.ThreadPoolConstant;

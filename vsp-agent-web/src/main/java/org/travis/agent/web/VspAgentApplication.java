@@ -1,4 +1,4 @@
-package org.travis.host.web;
+package org.travis.agent.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;

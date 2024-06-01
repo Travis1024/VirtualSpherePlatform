@@ -1,4 +1,4 @@
-package org.travis.host.web.pojo.dto;
+package org.travis.agent.web.pojo.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
