@@ -19,8 +19,8 @@ import java.io.Serializable;
 public class DiskPageSelectByVmwareDTO implements Serializable {
 
     @Valid
-    @NotNull(message = "分页查询实体不能为空!")
-    @Schema(description = "分页查询实体")
+    @NotNull(message = "分页查询对象不能为空!")
+    @Schema(description = "分页查询对象")
     private PageQuery pageQuery;
 
     @Schema(description = "虚拟机 ID")

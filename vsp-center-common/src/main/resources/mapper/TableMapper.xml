@@ -2,27 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.travis.center.common.mapper.table.TableMapper">
 
-    <update id="createOperationLogTable" parameterType="java.lang.String">
-        CREATE TABLE IF NOT EXISTS ${schemaTableName} (
-                ID BIGINT NOT NULL,
-                OPERATION_STATE INT NOT NULL,
-                IP_ADDRESS VARCHAR(32) NOT NULL,
-                REQUEST_URL VARCHAR(256) NULL,
-                USER_ID BIGINT NULL,
-                "METHOD" VARCHAR(128) NULL,
-                REQUEST_METHOD VARCHAR(128) NULL,
-                TITLE VARCHAR(64) NULL,
-                BUSINESS_TYPE INT NULL,
-                REQUEST_PARAMS LONGVARCHAR NULL,
-                RESPONSE_INFO LONGVARCHAR NULL,
-                IS_DELETED INT DEFAULT 0 NOT NULL,
-                UPDATER BIGINT NULL,
-                CREATOR BIGINT NULL,
-                UPDATE_TIME TIMESTAMP NULL,
-                CREATE_TIME TIMESTAMP NULL,
-                ERROR_MESSAGE LONGVARCHAR NULL,
-                COST_TIME BIGINT NULL,
-                CONSTRAINT ${tableName}_PK PRIMARY KEY (ID)
-        );
-    </update>
+        <select id="checkTableExistence" resultType="java.lang.String">
+                SELECT TABLE_NAME from dba_tables WHERE TABLE_NAME LIKE #{tableName}
+        </select>
+
+        <update id="createOperationLogTable" parameterType="java.lang.String">
+                CREATE TABLE IF NOT EXISTS ${schemaTableName} (
+                        ID BIGINT NOT NULL,
+                        OPERATION_STATE INT NOT NULL,
+                        IP_ADDRESS VARCHAR(32) NOT NULL,
+                        REQUEST_URL VARCHAR(256) NULL,
+                        USER_ID BIGINT NULL,
+                        "METHOD" VARCHAR(128) NULL,
+                        REQUEST_METHOD VARCHAR(128) NULL,
+                        TITLE VARCHAR(64) NULL,
+                        BUSINESS_TYPE INT NULL,
+                        REQUEST_PARAMS LONGVARCHAR NULL,
+                        RESPONSE_INFO LONGVARCHAR NULL,
+                        IS_DELETED INT DEFAULT 0 NOT NULL,
+                        UPDATER BIGINT NULL,
+                        CREATOR BIGINT NULL,
+                        UPDATE_TIME TIMESTAMP NULL,
+                        CREATE_TIME TIMESTAMP NULL,
+                        ERROR_MESSAGE LONGVARCHAR NULL,
+                        COST_TIME BIGINT NULL,
+                        CONSTRAINT ${tableName}_PK PRIMARY KEY (ID)
+                );
+        </update>
 </mapper>

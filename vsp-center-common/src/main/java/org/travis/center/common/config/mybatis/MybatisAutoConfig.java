@@ -39,7 +39,12 @@ public class MybatisAutoConfig {
         // 1.定义 MybatisPlus 插件主体类
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
 
-        // 2.添加「分页」插件
+        // 2.增加「动态表名」插件
+        DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
+        dynamicTableNameInnerInterceptor.setTableNameHandler(new MybatisMonthTableNameHandler(TABLE_NAMES));
+        interceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
+
+        // 3.添加「分页」插件
         PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();
         paginationInnerInterceptor.setDbType(DbType.DM);
         // 设置溢出总页数时默认跳到第一页
@@ -48,13 +53,8 @@ public class MybatisAutoConfig {
         paginationInnerInterceptor.setMaxLimit(200L);
         interceptor.addInnerInterceptor(paginationInnerInterceptor);
 
-        // 3.添加「字段填充」插件
+        // 4.添加「字段填充」插件
         interceptor.addInnerInterceptor(new MybatisAutoCompleteInterceptor());
-
-        // 4.增加「动态表名」插件
-        DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
-        dynamicTableNameInnerInterceptor.setTableNameHandler(new MybatisMonthTableNameHandler(TABLE_NAMES));
-        interceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
 
         return interceptor;
     }

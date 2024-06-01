@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 /**
  * @ClassName TableMapper
  * @Description TableMapper
@@ -15,8 +17,7 @@ import org.apache.ibatis.annotations.Update;
 @Mapper
 public interface TableMapper {
 
-    @Select("SELECT COUNT(*)  from dba_tables WHERE TABLE_NAME = #{tableName}")
-    int checkTableExistence(String tableName);
+    List<String> checkTableExistence(@Param("tableName") String tableName);
 
     void createOperationLogTable(@Param("tableName") String tableName, @Param("schemaTableName") String schemaTableName);
 }
