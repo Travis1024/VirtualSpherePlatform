@@ -33,20 +33,18 @@ public class CrontabInfoDatabaseInitializer implements CommandLineRunner {
     @Resource
     private CrontabInfoMapper crontabInfoMapper;
 
-    private static final AtomicLong INDEX_START_NUMBER = new AtomicLong(1L);
-
     public static final List<CrontabInfo> CRONTAB_INFOS = new ArrayList<>();
 
     static {
         CrontabInfo logCrontabInfo = CrontabInfo.builder()
-                .id(INDEX_START_NUMBER.getAndIncrement())
+                .id(CrontabConstant.LOG_TASK_INDEX_ID)
                 .cronName("日志持久化定时任务")
                 .cronExpression(CrontabConstant.CRON_30_S)
                 .cronDescription(StrUtil.format(CrontabConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(CrontabConstant.CRON_30_S)))
                 .build();
 
         CrontabInfo logTableCreateCrontabInfo = CrontabInfo.builder()
-                .id(INDEX_START_NUMBER.getAndIncrement())
+                .id(CrontabConstant.LOG_TABLE_CREATE_INDEX_ID)
                 .cronName("操作日志月份数据表定时创建任务")
                 .cronExpression(CrontabConstant.CRON_26_27_28_PER_MONTH)
                 .cronDescription("执行周期：每月 26-28 号 2:00 各执行一次")

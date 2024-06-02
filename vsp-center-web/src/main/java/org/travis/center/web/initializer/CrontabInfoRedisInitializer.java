@@ -40,7 +40,7 @@ public class CrontabInfoRedisInitializer implements CommandLineRunner {
         List<CrontabInfo> crontabInfoList = crontabInfoMapper.selectBatchIds(cronIds);
         // 缓存到 redis
         Map<Long, CrontabInfo> crontabInfoMap = crontabInfoList.stream().collect(Collectors.toMap(CrontabInfo::getId, crontabInfo -> crontabInfo));
-        RMap<Object, Object> rMap = redissonClient.getMap(RedissonConstant.CRONTAB_CACHE_KEY);
+        RMap<Long, CrontabInfo> rMap = redissonClient.getMap(RedissonConstant.CRONTAB_CACHE_KEY);
         rMap.putAll(crontabInfoMap);
         log.info("[3] Initializing CrontabInfo Redis Cache Data Completed.");
     }

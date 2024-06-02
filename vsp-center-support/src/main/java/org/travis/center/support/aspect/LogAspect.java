@@ -48,8 +48,6 @@ import java.util.Map;
 public class LogAspect {
 
     @Resource
-    private OperationLogMapper operationLogMapper;
-    @Resource
     private RedissonClient redissonClient;
 
     /** 排除敏感属性字段 */

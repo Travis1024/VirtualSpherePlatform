@@ -41,7 +41,6 @@ public class DynamicConfigDatabaseInitializer implements CommandLineRunner {
                 .id(INDEX_START_NUMBER.getAndIncrement())
                 .configName("监控周期(s)")
                 .configDescription("集群内主机指标监控周期-单位秒")
-                .configKey("monitor.period")
                 .configValue("5")
                 .configExample("5")
                 .configType(DynamicConfigTypeEnum.MONITOR)

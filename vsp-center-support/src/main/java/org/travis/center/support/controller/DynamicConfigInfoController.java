@@ -10,6 +10,7 @@ import org.travis.center.support.pojo.dto.DynamicConfigUpdateDTO;
 import org.travis.center.support.service.DynamicConfigInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.travis.center.support.utils.DynamicConfigUtil;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
@@ -25,6 +26,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/dynamic")
 public class DynamicConfigInfoController {
+
+    @Resource
+    private DynamicConfigUtil dynamicConfigUtil;
 
     @Resource
     private DynamicConfigInfoService dynamicConfigInfoService;
@@ -50,5 +54,10 @@ public class DynamicConfigInfoController {
         dynamicConfigInfoService.updateConfigValue(dynamicConfigUpdateDTO);
     }
 
-
+    @Log(title = "查询缓存中动态配置VALUE", businessType = BusinessTypeEnum.QUERY)
+    @Operation(summary = "查询缓存中动态配置VALUE")
+    @GetMapping("/selectCacheValue")
+    public String selectCacheValue(@RequestParam("configId") Long configId) {
+        return dynamicConfigUtil.getConfigValue(configId);
+    }
 }

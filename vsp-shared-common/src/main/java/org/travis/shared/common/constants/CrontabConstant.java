@@ -10,6 +10,16 @@ package org.travis.shared.common.constants;
 public class CrontabConstant {
 
     /**
+     * 操作日志持久化定时任务 ID
+     */
+    public static final Long LOG_TASK_INDEX_ID = 1L;
+
+    /**
+     * 操作日志月份表创建定时任务 ID
+     */
+    public static final Long LOG_TABLE_CREATE_INDEX_ID = 2L;
+
+    /**
      * cron 描述模版
      */
     public static final String CRON_DESCRIPTION_TEMPLATE = "执行间隔秒数:{}";
