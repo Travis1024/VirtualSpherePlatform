@@ -15,11 +15,6 @@ public class CrontabConstant {
     public static final String CRON_DESCRIPTION_TEMPLATE = "执行间隔秒数:{}";
 
     /**
-     * 日志持久化任务固定 ID
-     */
-    public static final Long LOG_TASK_INDEX_ID = 1L;
-
-    /**
      * 执行周期：5s
      */
     public static final String CRON_5_S = "0/5 * * * * ?";
@@ -48,4 +43,9 @@ public class CrontabConstant {
      * 执行周期：1 hour
      */
     public static final String CRON_1_H = "0 0 0/1 * * ?";
+
+    /**
+     * 执行周期：每个月 26—28 号各执行一次
+     */
+    public static final String CRON_26_27_28_PER_MONTH = "0 0 2 26-28 * ?";
 }

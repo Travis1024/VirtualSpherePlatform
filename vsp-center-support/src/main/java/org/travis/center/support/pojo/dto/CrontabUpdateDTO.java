@@ -23,4 +23,8 @@ public class CrontabUpdateDTO implements Serializable {
     @Schema(description="定时任务 CRON 表达式")
     @NotBlank(message = "定时任务 CRON 表达式不能为空!")
     private String cronExpression;
+
+    @Schema(description="定时任务 CRON 描述信息")
+    @NotBlank(message = "定时任务 CRON 描述信息不能为空!")
+    private String cronDescription;
 }

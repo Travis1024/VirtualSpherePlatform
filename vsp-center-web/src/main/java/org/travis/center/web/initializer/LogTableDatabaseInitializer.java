@@ -36,7 +36,7 @@ public class LogTableDatabaseInitializer implements CommandLineRunner {
     private RedissonClient redissonClient;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         log.info("[1.1]「OperationLog」Table Initializing");
         String tableName = DatabaseConstant.OPERATION_LOG_TABLE_NAME_PREFIX + StrUtil.UNDERLINE + TimeUtil.getCurrentYearMonth();
         String schemaTableName = schema + StrUtil.DOT + tableName;

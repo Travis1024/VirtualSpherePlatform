@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @Order(3)
-public class LogRedisInitializer implements CommandLineRunner {
+public class CrontabInfoRedisInitializer implements CommandLineRunner {
 
     @Resource
     private RedissonClient redissonClient;
@@ -35,7 +35,7 @@ public class LogRedisInitializer implements CommandLineRunner {
     public void run(String... args) {
         log.info("[3] Initializing CrontabInfo Redis Cache Data");
         // 查询所有定时任务 ID 列表
-        List<Long> cronIds = LogDatabaseInitializer.CRONTAB_INFOS.stream().map(CrontabInfo::getId).collect(Collectors.toList());
+        List<Long> cronIds = CrontabInfoDatabaseInitializer.CRONTAB_INFOS.stream().map(CrontabInfo::getId).collect(Collectors.toList());
         // 根据 ID 列表查询定时任务
         List<CrontabInfo> crontabInfoList = crontabInfoMapper.selectBatchIds(cronIds);
         // 缓存到 redis

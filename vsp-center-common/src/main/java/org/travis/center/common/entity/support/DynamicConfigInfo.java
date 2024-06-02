@@ -14,6 +14,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.travis.center.common.enums.DynamicConfigTypeEnum;
 
 /**
  * @ClassName DynamicConfigInfo
@@ -71,7 +72,7 @@ public class DynamicConfigInfo extends com.baomidou.mybatisplus.extension.active
      */
     @TableField(value = "CONFIG_TYPE")
     @Schema(description="配置类型")
-    private Integer configType;
+    private DynamicConfigTypeEnum configType;
 
     /**
      * 逻辑删除

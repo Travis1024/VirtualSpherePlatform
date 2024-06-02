@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 /**
@@ -27,26 +28,36 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @Order(2)
-public class LogDatabaseInitializer implements CommandLineRunner {
+public class CrontabInfoDatabaseInitializer implements CommandLineRunner {
 
     @Resource
     private CrontabInfoMapper crontabInfoMapper;
+
+    private static final AtomicLong INDEX_START_NUMBER = new AtomicLong(1L);
 
     public static final List<CrontabInfo> CRONTAB_INFOS = new ArrayList<>();
 
     static {
         CrontabInfo logCrontabInfo = CrontabInfo.builder()
-                .id(CrontabConstant.LOG_TASK_INDEX_ID)
-                .cronName("日志持久化任务")
+                .id(INDEX_START_NUMBER.getAndIncrement())
+                .cronName("日志持久化定时任务")
                 .cronExpression(CrontabConstant.CRON_30_S)
                 .cronDescription(StrUtil.format(CrontabConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(CrontabConstant.CRON_30_S)))
                 .build();
 
+        CrontabInfo logTableCreateCrontabInfo = CrontabInfo.builder()
+                .id(INDEX_START_NUMBER.getAndIncrement())
+                .cronName("操作日志月份数据表定时创建任务")
+                .cronExpression(CrontabConstant.CRON_26_27_28_PER_MONTH)
+                .cronDescription("执行周期：每月 26-28 号 2:00 各执行一次")
+                .build();
+
         CRONTAB_INFOS.add(logCrontabInfo);
+        CRONTAB_INFOS.add(logTableCreateCrontabInfo);
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         log.info("[2] Initializing CrontabInfo Records");
         Set<Long> initIds = CRONTAB_INFOS.stream().map(CrontabInfo::getId).collect(Collectors.toSet());
         Set<Long> existIds = crontabInfoMapper.selectBatchIds(initIds).stream().map(CrontabInfo::getId).collect(Collectors.toSet());

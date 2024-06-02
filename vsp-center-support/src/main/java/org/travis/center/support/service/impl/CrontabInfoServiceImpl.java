@@ -44,20 +44,18 @@ public class CrontabInfoServiceImpl extends ServiceImpl<CrontabInfoMapper, Cront
     public void updateCronExpression(CrontabUpdateDTO crontabUpdateDTO) {
         // 1.校验 CronExpression 表达式是否合法
         Assert.isTrue(CronExpression.isValidExpression(crontabUpdateDTO.getCronExpression()), () -> new BadRequestException("Crontab 表达式校验失败!"));
-        // 2.获取执行周期
-        long intervalInSeconds = CrontabUtil.getCrontabIntervalInSeconds(crontabUpdateDTO.getCronExpression());
-        // 3.查询目前定时任务信息，并进行替换
+        // 2.查询目前定时任务信息，并进行替换
         CrontabInfo crontabInfo = getById(crontabUpdateDTO.getId());
         Assert.isTrue(ObjectUtil.isNotEmpty(crontabInfo), () -> new NotFoundException("未找到定时任务信息!"));
-        // 4.更新表达式
-        // 4.1.更新数据库
+        // 3.更新表达式
+        // 3.1.更新数据库
         getBaseMapper().update(
                 Wrappers.<CrontabInfo>lambdaUpdate()
                         .set(CrontabInfo::getCronExpression, crontabUpdateDTO.getCronExpression())
-                        .set(CrontabInfo::getCronDescription, StrUtil.format(CrontabConstant.CRON_DESCRIPTION_TEMPLATE, intervalInSeconds))
+                        .set(CrontabInfo::getCronDescription, crontabUpdateDTO.getCronDescription())
                         .eq(CrontabInfo::getId, crontabUpdateDTO.getId())
         );
-        // 4.2.删除 redis 缓存
+        // 3.2.删除 redis 缓存
         RMap<Long, CrontabInfo> rMap = redissonClient.getMap(RedissonConstant.CRONTAB_CACHE_KEY);
         rMap.remove(crontabUpdateDTO.getId());
     }
