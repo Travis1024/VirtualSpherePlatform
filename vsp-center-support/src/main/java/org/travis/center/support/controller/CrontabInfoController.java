@@ -32,7 +32,7 @@ public class CrontabInfoController {
 
     @Log(title = "更新定时任务Crontab表达式", businessType = BusinessTypeEnum.UPDATE)
     @Operation(summary = "更新定时任务Crontab表达式")
-    @PostMapping("/updateCron")
+    @PutMapping("/updateCron")
     public void updateCronExpression(@Valid @RequestBody CrontabUpdateDTO crontabUpdateDTO) {
         crontabInfoService.updateCronExpression(crontabUpdateDTO);
     }
