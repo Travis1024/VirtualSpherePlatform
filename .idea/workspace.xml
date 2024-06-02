@@ -5,16 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="完善动态配置特性">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/aspect/LogAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/aspect/LogAspect.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/controller/DynamicConfigInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/controller/DynamicConfigInfoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/crontab/CrontabScheduleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/crontab/CrontabScheduleService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/initializer/CrontabInfoDatabaseInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/initializer/CrontabInfoDatabaseInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/initializer/CrontabInfoRedisInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/initializer/CrontabInfoRedisInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/initializer/DynamicConfigDatabaseInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/initializer/DynamicConfigDatabaseInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/constants/CrontabConstant.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/constants/CrontabConstant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/utils/TimeUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/utils/TimeUtil.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -172,7 +164,7 @@
       <workItem from="1717232796725" duration="6941000" />
       <workItem from="1717248826486" duration="6254000" />
       <workItem from="1717317448945" duration="288000" />
-      <workItem from="1717319435826" duration="16047000" />
+      <workItem from="1717319435826" duration="17870000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -246,7 +238,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717334529364</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="完善动态配置特性">
+      <option name="closed" value="true" />
+      <created>1717339861337</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1717339861337</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -54,8 +54,8 @@ public class DynamicConfigInfoController {
         dynamicConfigInfoService.updateConfigValue(dynamicConfigUpdateDTO);
     }
 
-    @Log(title = "查询缓存中动态配置VALUE", businessType = BusinessTypeEnum.QUERY)
-    @Operation(summary = "查询缓存中动态配置VALUE")
+    @Log(title = "「测试使用」查询缓存中动态配置VALUE", businessType = BusinessTypeEnum.QUERY)
+    @Operation(summary = "「测试使用」查询缓存中动态配置VALUE")
     @GetMapping("/selectCacheValue")
     public String selectCacheValue(@RequestParam("configId") Long configId) {
         return dynamicConfigUtil.getConfigValue(configId);
