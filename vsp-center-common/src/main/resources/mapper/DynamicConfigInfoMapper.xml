@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.travis.center.common.mapper.support.DynamicConfigInfoMapper">
+  <resultMap id="BaseResultMap" type="org.travis.center.common.entity.support.DynamicConfigInfo">
+    <!--@mbg.generated-->
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="CONFIG_NAME" jdbcType="VARCHAR" property="configName" />
+    <result column="CONFIG_KEY" jdbcType="VARCHAR" property="configKey" />
+    <result column="CONFIG_VALUE" jdbcType="VARCHAR" property="configValue" />
+    <result column="CONFIG_DESCRIPTION" jdbcType="VARCHAR" property="configDescription" />
+    <result column="CONFIG_TYPE" jdbcType="INTEGER" property="configType" />
+    <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
+    <result column="UPDATER" jdbcType="BIGINT" property="updater" />
+    <result column="CREATOR" jdbcType="BIGINT" property="creator" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CONFIG_EXAMPLE" jdbcType="VARCHAR" property="configExample" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    ID, CONFIG_NAME, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION, CONFIG_TYPE, IS_DELETED,
+    UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME, CONFIG_EXAMPLE
+  </sql>
+</mapper>
