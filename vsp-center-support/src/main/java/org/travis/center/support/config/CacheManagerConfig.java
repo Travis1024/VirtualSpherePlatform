@@ -1,9 +1,8 @@
 package org.travis.center.support.config;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,16 +20,11 @@ public class CacheManagerConfig {
     /**
      * Caffeine 永久缓存
      */
-    @Bean("permanentCacheManager")
-    public CacheManager getPermanentCacheManager() {
-        CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
-        caffeineCacheManager.setCaffeine(
-                Caffeine.newBuilder()
-                        // 初始化缓存空间大小
-                        .initialCapacity(100)
-                        // 最大缓存条数
-                        .maximumSize(200)
-        );
-        return caffeineCacheManager;
+    @Bean("permanentCache")
+    public Cache<Long, String> getPermanentCache() {
+        return Caffeine.newBuilder()
+                .initialCapacity(200)
+                .maximumSize(400)
+                .build();
     }
 }

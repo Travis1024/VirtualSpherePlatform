@@ -5,7 +5,6 @@
     <!--@mbg.generated-->
     <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="CONFIG_NAME" jdbcType="VARCHAR" property="configName" />
-    <result column="CONFIG_KEY" jdbcType="VARCHAR" property="configKey" />
     <result column="CONFIG_VALUE" jdbcType="VARCHAR" property="configValue" />
     <result column="CONFIG_DESCRIPTION" jdbcType="VARCHAR" property="configDescription" />
     <result column="CONFIG_TYPE" jdbcType="INTEGER" property="configType" />
@@ -18,7 +17,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    ID, CONFIG_NAME, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION, CONFIG_TYPE, IS_DELETED,
+    ID, CONFIG_NAME, CONFIG_VALUE, CONFIG_DESCRIPTION, CONFIG_TYPE, IS_DELETED,
     UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME, CONFIG_EXAMPLE
   </sql>
 </mapper>

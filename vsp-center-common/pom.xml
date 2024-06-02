@@ -24,10 +24,6 @@
             <artifactId>vsp-shared-common</artifactId>
             <version>1.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
         <!--本地缓存依赖-->
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>

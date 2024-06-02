@@ -47,13 +47,6 @@ public class DynamicConfigInfo extends com.baomidou.mybatisplus.extension.active
     private String configName;
 
     /**
-     * 动态配置 KEY
-     */
-    @TableField(value = "CONFIG_KEY")
-    @Schema(description="动态配置 KEY")
-    private String configKey;
-
-    /**
      * 动态配置 VALUE
      */
     @TableField(value = "CONFIG_VALUE")
@@ -121,8 +114,6 @@ public class DynamicConfigInfo extends com.baomidou.mybatisplus.extension.active
     public static final String COL_ID = "ID";
 
     public static final String COL_CONFIG_NAME = "CONFIG_NAME";
-
-    public static final String COL_CONFIG_KEY = "CONFIG_KEY";
 
     public static final String COL_CONFIG_VALUE = "CONFIG_VALUE";
 
