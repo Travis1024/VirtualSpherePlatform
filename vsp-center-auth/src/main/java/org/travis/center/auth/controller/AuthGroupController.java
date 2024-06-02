@@ -8,7 +8,7 @@ import org.travis.center.auth.service.AuthGroupService;
 import org.travis.center.common.entity.auth.AuthGroup;
 import org.springframework.web.bind.annotation.*;
 import org.travis.center.common.enums.BusinessTypeEnum;
-import org.travis.center.message.aspect.Log;
+import org.travis.center.support.aspect.Log;
 
 import javax.annotation.Resource;
 import java.util.List;

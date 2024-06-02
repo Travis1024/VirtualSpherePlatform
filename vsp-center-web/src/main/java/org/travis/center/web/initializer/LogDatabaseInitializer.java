@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.travis.center.common.entity.message.CrontabInfo;
-import org.travis.center.common.mapper.message.CrontabInfoMapper;
+import org.travis.center.common.entity.support.CrontabInfo;
+import org.travis.center.common.mapper.support.CrontabInfoMapper;
 import org.travis.shared.common.constants.CrontabConstant;
 import org.travis.shared.common.utils.CrontabUtil;
 

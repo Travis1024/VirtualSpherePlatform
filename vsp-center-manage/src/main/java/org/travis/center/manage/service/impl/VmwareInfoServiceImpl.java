@@ -38,7 +38,7 @@ import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.center.manage.service.VmwareInfoService;
 import org.travis.shared.common.domain.WebSocketMessage;
-import org.travis.center.message.websocket.WsMessageHolder;
+import org.travis.center.support.websocket.WsMessageHolder;
 import org.travis.shared.common.constants.LockConstant;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;

@@ -7,12 +7,11 @@ import org.travis.center.manage.pojo.dto.DiskInsertDTO;
 import org.travis.center.manage.pojo.dto.DiskPageSelectByVmwareDTO;
 import org.travis.center.manage.service.DiskInfoService;
 import org.springframework.web.bind.annotation.*;
-import org.travis.center.message.aspect.Log;
+import org.travis.center.support.aspect.Log;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.List;
 
 /**

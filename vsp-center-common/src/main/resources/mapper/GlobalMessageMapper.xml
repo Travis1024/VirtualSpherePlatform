@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.travis.center.common.mapper.message.GlobalMessageMapper">
-  <resultMap id="BaseResultMap" type="org.travis.center.common.entity.message.GlobalMessage">
+<mapper namespace="org.travis.center.common.mapper.support.GlobalMessageMapper">
+  <resultMap id="BaseResultMap" type="org.travis.center.common.entity.support.GlobalMessage">
     <!--@mbg.generated-->
     <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="MESSAGE_STATE" jdbcType="INTEGER" property="messageState" />

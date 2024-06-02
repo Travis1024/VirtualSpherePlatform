@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.travis.center.common.enums.BusinessTypeEnum;
 import org.travis.center.manage.pojo.dto.NetworkInsertDTO;
 import org.travis.center.manage.service.NetworkLayerInfoService;
-import org.travis.center.message.aspect.Log;
+import org.travis.center.support.aspect.Log;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.exceptions.BadRequestException;

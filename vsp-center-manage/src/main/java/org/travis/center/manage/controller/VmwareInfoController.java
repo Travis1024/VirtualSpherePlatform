@@ -7,7 +7,7 @@ import org.travis.center.common.enums.BusinessTypeEnum;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.center.manage.service.VmwareInfoService;
-import org.travis.center.message.aspect.Log;
+import org.travis.center.support.aspect.Log;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 

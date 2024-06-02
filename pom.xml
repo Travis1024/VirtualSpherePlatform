@@ -14,7 +14,7 @@
         <module>vsp-shared-common</module>
         <module>vsp-agent-web</module>
         <module>vsp-center-common</module>
-        <module>vsp-center-message</module>
+        <module>vsp-center-support</module>
         <module>vsp-center-manage</module>
         <module>vsp-center-monitor</module>
         <module>vsp-center-script</module>
@@ -45,6 +45,7 @@
         <curator.version>5.6.0</curator.version>
         <jsch.version>0.2.17</jsch.version>
         <oshi.version>6.6.0</oshi.version>
+        <caffeine.version>3.1.8</caffeine.version>
     </properties>
 
     <dependencyManagement>
@@ -132,6 +133,12 @@
                 <groupId>com.github.oshi</groupId>
                 <artifactId>oshi-core</artifactId>
                 <version>${oshi.version}</version>
+            </dependency>
+            <!--本地缓存依赖-->
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

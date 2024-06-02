@@ -4,15 +4,61 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="Dubbo修改">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="修改Dubbo配置">
+      <change afterPath="$PROJECT_DIR$/.idea/MyBatisCodeHelperDatasource.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/config/CacheManagerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/VspAgentApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/VspAgentApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/service/dubbo/CenterMessageClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/dubbo/CenterMessageClientImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/VspCenterApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/VspCenterApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-common/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/config/MvcAutoConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/config/SharedMvcAutoConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/resources/META-INF/spring.factories" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/resources/META-INF/spring.factories" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-auth/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-auth/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/controller/AuthGroupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/controller/AuthGroupController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/controller/AuthUserRelationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/controller/AuthUserRelationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/controller/AuthVmwareRelationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/controller/AuthVmwareRelationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/entity/message/CrontabInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/entity/support/CrontabInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/entity/message/GlobalMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/entity/support/GlobalMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/entity/message/OperationLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/entity/support/OperationLog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/mapper/message/CrontabInfoMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/mapper/support/CrontabInfoMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/mapper/message/GlobalMessageMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/mapper/support/GlobalMessageMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/mapper/message/OperationLogMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/mapper/support/OperationLogMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/resources/mapper/CrontabInfoMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/resources/mapper/CrontabInfoMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/resources/mapper/GlobalMessageMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/resources/mapper/GlobalMessageMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/resources/mapper/OperationLogMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/resources/mapper/OperationLogMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/DiskInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/DiskInfoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/DubboController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/DubboController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/HostInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/HostInfoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/ImageInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/ImageInfoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/NetworkLayerInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/NetworkLayerInfoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/VmwareInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/VmwareInfoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/aspect/Log.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/aspect/Log.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/aspect/LogAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/aspect/LogAspect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/config/WebSocketConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/controller/CrontabInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/controller/CrontabInfoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/controller/GlobalMessageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/controller/GlobalMessageController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/controller/OperationLogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/controller/OperationLogController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/crontab/CrontabScheduleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/crontab/CrontabScheduleService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/filter/PropertyPreExcludeFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/filter/PropertyPreExcludeFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/pojo/dto/CrontabUpdateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/pojo/dto/CrontabUpdateDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/pojo/dto/OperationLogQueryDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/pojo/dto/OperationLogQueryDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/service/CrontabInfoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/service/CrontabInfoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/service/GlobalMessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/service/GlobalMessageService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/service/OperationLogService.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/service/OperationLogService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/service/impl/CrontabInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/service/impl/CrontabInfoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/service/impl/GlobalMessageServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/service/impl/GlobalMessageServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/service/impl/OperationLogServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/service/impl/OperationLogServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/websocket/WsMessageHolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/websocket/WsMessageHolder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-message/src/main/java/org/travis/center/message/websocket/service/WsGlobalMsg.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-support/src/main/java/org/travis/center/support/websocket/service/WsGlobalMsg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-web/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/dubbo/CenterMessageClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/dubbo/CenterMessageClientImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/initializer/LogDatabaseInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/initializer/LogDatabaseInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/initializer/LogRedisInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/initializer/LogRedisInitializer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,22 +75,22 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Travis1024"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Travis1024&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:Travis1024/VirtualSpherePlatform.git",
-    "accountId": "94a716d9-85e1-4caa-90c2-20d5dc45edda"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:Travis1024/VirtualSpherePlatform.git&quot;,
+    &quot;accountId&quot;: &quot;94a716d9-85e1-4caa-90c2-20d5dc45edda&quot;
   }
-}]]></component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -58,10 +104,10 @@
   <component name="MavenRunner">
     <option name="skipTests" value="true" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="2hGuZqFijYTme9f7mrLbA9KbdUs" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
@@ -88,8 +134,13 @@
     "project.structure.last.edited": "SDKs",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.31144464",
-    "settings.editor.selected.configurable": "reference.settings.project.maven.runner",
+    "settings.editor.selected.configurable": "com.ccnode.codegenerator.I.b",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "java.sql.Driver"
+    ]
   }
 }]]></component>
   <component name="RecentsManager">
@@ -136,7 +187,10 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1717232794845</updated>
-      <workItem from="1717232796725" duration="5334000" />
+      <workItem from="1717232796725" duration="6941000" />
+      <workItem from="1717248826486" duration="6254000" />
+      <workItem from="1717317448945" duration="288000" />
+      <workItem from="1717319435826" duration="4732000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -162,7 +216,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717234841542</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="修改Dubbo配置">
+      <option name="closed" value="true" />
+      <created>1717238419963</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1717238419963</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -173,6 +235,11 @@
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="modify" />
     <MESSAGE value="Dubbo修改" />
-    <option name="LAST_COMMIT_MESSAGE" value="Dubbo修改" />
+    <MESSAGE value="修改Dubbo配置" />
+    <option name="LAST_COMMIT_MESSAGE" value="修改Dubbo配置" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

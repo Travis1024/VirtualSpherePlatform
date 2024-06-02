@@ -10,8 +10,7 @@ import org.travis.center.common.entity.auth.User;
 import org.springframework.web.bind.annotation.*;
 
 import org.travis.center.common.enums.BusinessTypeEnum;
-import org.travis.center.common.mapper.auth.UserMapper;
-import org.travis.center.message.aspect.Log;
+import org.travis.center.support.aspect.Log;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.utils.UserThreadLocalUtil;
 

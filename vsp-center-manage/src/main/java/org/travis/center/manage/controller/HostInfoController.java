@@ -8,7 +8,7 @@ import org.travis.center.manage.pojo.dto.HostInsertDTO;
 import org.travis.center.manage.pojo.dto.HostSshCheckDTO;
 import org.travis.center.manage.pojo.dto.HostUpdateDTO;
 import org.travis.center.manage.service.HostInfoService;
-import org.travis.center.message.aspect.Log;
+import org.travis.center.support.aspect.Log;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.exceptions.BadRequestException;

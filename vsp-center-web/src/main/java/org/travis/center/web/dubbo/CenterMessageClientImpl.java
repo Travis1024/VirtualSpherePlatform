@@ -3,7 +3,7 @@ package org.travis.center.web.dubbo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.travis.api.client.center.CenterMessageClient;
-import org.travis.center.message.websocket.WsMessageHolder;
+import org.travis.center.support.websocket.WsMessageHolder;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.domain.WebSocketMessage;
 import org.travis.shared.common.enums.BizCodeEnum;

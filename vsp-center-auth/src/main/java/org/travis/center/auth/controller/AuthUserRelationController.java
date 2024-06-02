@@ -5,14 +5,11 @@ import org.springframework.validation.annotation.Validated;
 import org.travis.center.auth.pojo.dto.AuthUserDeleteDTO;
 import org.travis.center.auth.pojo.dto.AuthUserInsertDTO;
 import org.travis.center.auth.service.AuthUserRelationService;
-import org.travis.center.common.entity.auth.AuthUserRelation;
-import org.travis.center.auth.service.impl.AuthUserRelationServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.travis.center.common.entity.auth.User;
 import org.travis.center.common.enums.BusinessTypeEnum;
-import org.travis.center.message.aspect.Log;
+import org.travis.center.support.aspect.Log;
 
 import javax.annotation.Resource;
 import java.util.List;
