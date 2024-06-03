@@ -69,4 +69,14 @@ public class SystemConstant {
      * GB
      */
     public static final Long GB_UNIT = 1024L * 1024L * 1024L;
+
+    /**
+     * MB
+     */
+    public static final Long MB_UNIT = 1024L * 1024L;
+
+    /**
+     * KB
+     */
+    public static final Long KB_UNIT = 1024L;
 }

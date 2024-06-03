@@ -37,4 +37,8 @@ public interface VmwareInfoService extends IService<VmwareInfo>{
     List<VmwareErrorVO> destroyVmware(List<Long> vmwareIds);
 
     List<VmwareErrorVO> deleteVmware(List<Long> vmwareIds);
+
+    void modifyVmwareMemory(Long vmwareId, Long memory);
+
+    void modifyVmwareVcpuNumber(Long vmwareId, Integer vcpuNumber);
 }

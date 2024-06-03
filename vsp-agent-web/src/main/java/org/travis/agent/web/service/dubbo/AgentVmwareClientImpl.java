@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.travis.api.client.agent.AgentVmwareClient;
+import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.constants.VmwareConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
@@ -114,6 +115,36 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
             return R.ok(execked);
         } catch (Exception e) {
             log.error("[AgentVmwareClientImpl::undefineVmware] Agent Vmware Undefine Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<Void> modifyVmwareMemory(String targetAgentIp, String vmwareUuid, Long memory) {
+        try {
+            // TODO 测试命令执行
+            // 内存临时生效（TODO 测试虚拟机关机时临时生效命令是否报错）
+            RuntimeUtil.execForStr("virsh setmem " + vmwareUuid + " " + memory / SystemConstant.KB_UNIT);
+            // 下次启动失效并持久化
+            RuntimeUtil.execForStr("virsh setmem " + vmwareUuid + " " + memory / SystemConstant.KB_UNIT + " --config");
+            return R.ok();
+        } catch (Exception e) {
+            log.error("[AgentVmwareClientImpl::modifyVmwareMemory] Agent Vmware Memory Size Modify Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<Void> modifyVmwareVcpu(String targetAgentIp, String vmwareUuid, Integer vcpuNumber) {
+        try {
+            // TODO 测试命令执行
+            // 虚拟CPU临时生效（TODO 测试虚拟机关机时临时生效命令是否报错）
+            RuntimeUtil.execForStr("virsh setvcpus " + vmwareUuid + " " + vcpuNumber + " --live");
+            // 虚拟CPU下次启动失效并持久化
+            RuntimeUtil.execForStr("virsh setvcpus " + vmwareUuid + " " + vcpuNumber + " --config");
+            return R.ok();
+        } catch (Exception e) {
+            log.error("[AgentVmwareClientImpl::modifyVmwareVcpu] Agent Vmware Vcpu Number Modify Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
     }

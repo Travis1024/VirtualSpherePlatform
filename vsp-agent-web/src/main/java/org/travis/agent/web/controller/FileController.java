@@ -47,8 +47,8 @@ public class FileController {
         ) {
         RLock lock = redissonClient.getLock(LockConstant.LOCK_FILE_PREFIX + tempFilePath);
         try {
-            // 1.根据存储临时路径加锁, 尝试拿锁 500ms 后停止重试 (自动续期)
-            Assert.isTrue(lock.tryLock(500, TimeUnit.MILLISECONDS), () -> new CommonException(BizCodeEnum.LOCKED.getCode(), "当前切片文件正在处理中，请稍后重试!"));
+            // 1.根据存储临时路径加锁, 尝试拿锁 400ms 后停止重试 (自动续期)
+            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new CommonException(BizCodeEnum.LOCKED.getCode(), "当前切片文件正在处理中，请稍后重试!"));
             // 2.将切片文件保存到本地临时文件夹
             multipartFile.transferTo(new File(tempFilePath));
         } catch (IOException | InterruptedException e) {
@@ -65,8 +65,8 @@ public class FileController {
     public void imageSliceMerge(@Validated @RequestBody FileMergeDTO fileMergeDTO) {
         RLock lock = redissonClient.getLock(LockConstant.LOCK_FILE_PREFIX + fileMergeDTO.getImageId());
         try {
-            // 1.根据切片文件 ID 加锁, 尝试拿锁 500ms 后停止重试 (自动续期)
-            Assert.isTrue(lock.tryLock(500, TimeUnit.MILLISECONDS), () -> new CommonException(BizCodeEnum.LOCKED.getCode(), "当前切片文件正在处理中，请稍后重试!"));
+            // 1.根据切片文件 ID 加锁, 尝试拿锁 400ms 后停止重试 (自动续期)
+            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new CommonException(BizCodeEnum.LOCKED.getCode(), "当前切片文件正在处理中，请稍后重试!"));
 
             /*
              * 2.切片文件排序（切片文件序号都以下划线分割）

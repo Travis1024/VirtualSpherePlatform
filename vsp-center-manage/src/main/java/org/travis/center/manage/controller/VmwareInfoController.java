@@ -1,5 +1,6 @@
 package org.travis.center.manage.controller;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.validation.annotation.Validated;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import org.springframework.web.bind.annotation.*;
@@ -95,5 +96,25 @@ public class VmwareInfoController {
     @PostMapping("/resume")
     public List<VmwareErrorVO> resumeVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
         return vmwareInfoService.resumeVmware(vmwareIds);
+    }
+
+    @Log(title = "调整虚拟机内存大小", businessType = BusinessTypeEnum.UPDATE)
+    @Operation(summary = "调整虚拟机内存大小")
+    @PutMapping("/modifyMemory")
+    public void modifyVmwareMemory(
+            @Parameter(description = "虚拟机ID", required = true) @RequestParam("vmwareId") Long vmwareId,
+            @Parameter(description = "内存大小(字节)", required = true) @RequestParam("memory") Long memory
+    ) {
+        vmwareInfoService.modifyVmwareMemory(vmwareId, memory);
+    }
+
+    @Log(title = "调整虚拟机虚拟CPU数量", businessType = BusinessTypeEnum.UPDATE)
+    @Operation(summary = "调整虚拟机虚拟CPU数量")
+    @PutMapping("/modifyVcpu")
+    public void modifyVmwareVcpuNumber(
+            @Parameter(description = "虚拟机ID", required = true) @RequestParam("vmwareId") Long vmwareId,
+            @Parameter(description = "虚拟CPU数量", required = true) @RequestParam("vcpuNumber") Integer vcpuNumber
+    ) {
+        vmwareInfoService.modifyVmwareVcpuNumber(vmwareId, vcpuNumber);
     }
 }

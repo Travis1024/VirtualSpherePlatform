@@ -25,4 +25,8 @@ public interface AgentVmwareClient {
     R<String> destroyVmware(String targetAgentIp, String vmwareUuid);
 
     R<String> undefineVmware(String targetAgentIp, String vmwareUuid);
+
+    R<Void> modifyVmwareMemory(String targetAgentIp, String vmwareUuid, Long memory);
+
+    R<Void> modifyVmwareVcpu(String targetAgentIp, String vmwareUuid, Integer vcpuNumber);
 }
