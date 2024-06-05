@@ -145,9 +145,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         List<VmwareErrorVO> vmwareErrorList = new ArrayList<>();
 
         // 2.启动前宿主机 CPU、内存资源校验
-        List<VmwareInfo> vmwareInfoList = getBaseMapper().selectList(
-                Wrappers.<VmwareInfo>lambdaQuery().in(VmwareInfo::getId, vmwareIds)
-        );
+        List<VmwareInfo> vmwareInfoList = getBaseMapper().selectList(Wrappers.<VmwareInfo>lambdaQuery().in(VmwareInfo::getId, vmwareIds));
 
         // 3.遍历虚拟机列表，逐一启动
         for (VmwareInfo vmwareInfo : vmwareInfoList) {
@@ -170,8 +168,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             Assert.isTrue(vmLock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("虚拟机正在操作中，请稍后重试!"));
 
             // 2.查询虚拟机所属宿主机IP信息
-            HostInfo hostInfo = hostInfoMapper.selectOne(Wrappers.<HostInfo>lambdaQuery().select(HostInfo::getIp).eq(HostInfo::getId, vmwareInfo.getHostId()));
-            Assert.isTrue(ObjectUtil.isNotNull(hostInfo) && ObjectUtil.isNotNull(hostInfo.getIp()), () -> new NotFoundException("未找到宿主机或宿主机IP相关信息:" + vmwareInfo.getHostId()));
+            HostInfo hostInfo = queryHostInfoByVmwareInfo(vmwareInfo);
             String hostIp = hostInfo.getIp();
 
             // 3.Dubbo 获取宿主机实时资源信息
@@ -286,12 +283,9 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException(BizCodeEnum.LOCKED.getCode(), "虚拟机正在操作中，请稍后重试!"));
 
             // 1.查询虚拟机所在物理机信息
-            VmwareInfo vmwareInfo = getBaseMapper().selectById(vmwareId);
+            VmwareInfo vmwareInfo = getBaseMapper().selectOne(Wrappers.<VmwareInfo>lambdaQuery().select(VmwareInfo::getHostId).eq(VmwareInfo::getId, vmwareId));
             Assert.notNull(vmwareInfo, () -> new NotFoundException("未查询到虚拟机信息!"));
-            Long hostId = vmwareInfo.getHostId();
-            Assert.notNull(hostId, () -> new NotFoundException("未查询到虚拟机所属物理机ID信息!"));
-            HostInfo hostInfo = hostInfoMapper.selectById(hostId);
-            Assert.notNull(hostInfo, () -> new NotFoundException("未查询到虚拟机所属物理机信息!"));
+            HostInfo hostInfo = queryHostInfoByVmwareInfo(vmwareInfo);
 
             // 2.1.统一状态校验：校验是否超过最大内存
             Assert.isTrue(memory <= vmwareInfo.getMemoryMax(), () -> new BadRequestException("超出虚拟机最大内存限制:" + vmwareInfo.getMemoryMax()));
@@ -329,12 +323,9 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("虚拟机正在操作中，请稍后重试!"));
 
             // 1.查询虚拟机所在物理机信息
-            VmwareInfo vmwareInfo = getBaseMapper().selectById(vmwareId);
+            VmwareInfo vmwareInfo = getBaseMapper().selectOne(Wrappers.<VmwareInfo>lambdaQuery().select(VmwareInfo::getHostId).eq(VmwareInfo::getId, vmwareId));
             Assert.notNull(vmwareInfo, () -> new NotFoundException("未查询到虚拟机信息!"));
-            Long hostId = vmwareInfo.getHostId();
-            Assert.notNull(hostId, () -> new NotFoundException("未查询到虚拟机所属物理机ID信息!"));
-            HostInfo hostInfo = hostInfoMapper.selectById(hostId);
-            Assert.notNull(hostInfo, () -> new NotFoundException("未查询到虚拟机所属物理机信息!"));
+            HostInfo hostInfo = queryHostInfoByVmwareInfo(vmwareInfo);
 
             // 2.1.统一状态校验：校验是否超过最大 VCPU 数量
             Assert.isTrue(vcpuNumber <= vmwareInfo.getVcpuMax(), () -> new BadRequestException("超出虚拟机最大CPU数量限制:" + vmwareInfo.getVcpuMax()));
@@ -362,6 +353,32 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                 lock.unlock();
             }
         }
+    }
+
+    /**
+     * 通过虚拟机ID查询宿主机信息
+     *
+     * @param vmwareId  虚拟机-ID
+     * @return  HostInfo
+     */
+    private HostInfo queryHostInfoByVmwareId(Long vmwareId) {
+        VmwareInfo vmwareInfo = getBaseMapper().selectOne(Wrappers.<VmwareInfo>lambdaQuery().select(VmwareInfo::getHostId).eq(VmwareInfo::getId, vmwareId));
+        Assert.notNull(vmwareInfo, () -> new NotFoundException("未查询到虚拟机信息!"));
+        return queryHostInfoByVmwareInfo(vmwareInfo);
+    }
+
+    /**
+     * 通过虚拟机信息查询宿主机信息
+     *
+     * @param vmwareInfo    虚拟机信息
+     * @return  HostInfo
+     */
+    private HostInfo queryHostInfoByVmwareInfo(VmwareInfo vmwareInfo) {
+        Long hostId = vmwareInfo.getHostId();
+        Assert.notNull(hostId, () -> new NotFoundException("未查询到虚拟机所属物理机ID信息!"));
+        HostInfo hostInfo = hostInfoMapper.selectById(hostId);
+        Assert.notNull(hostInfo, () -> new NotFoundException("未查询到虚拟机所属物理机信息!"));
+        return hostInfo;
     }
 
     /**
