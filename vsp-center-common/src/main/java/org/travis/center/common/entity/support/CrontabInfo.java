@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 
 /**
  * @ClassName CrontabInfo
- * @Description TODO
+ * @Description CrontabInfo
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/5/31

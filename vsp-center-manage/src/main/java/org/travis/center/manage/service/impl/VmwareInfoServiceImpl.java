@@ -1,6 +1,8 @@
 package org.travis.center.manage.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -12,10 +14,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
@@ -23,6 +22,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentHostClient;
 import org.travis.api.client.agent.AgentVmwareClient;
 import org.travis.api.pojo.bo.HostResourceInfoBO;
@@ -139,17 +139,86 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public List<VmwareErrorVO> startVmware(List<Long> vmwareIds) {
-        // TODO 启动前宿主机 CPU、内存资源校验
-        return commonVmwareOperation(
-                vmwareIds,
-                VmwareStateEnum.POWER_ON,
-                (vmwareInfo, hostInfo) -> new CommonOperateParams(hostInfo.getIp(), vmwareInfo.getUuid()),
-                commonOperateParams -> agentVmwareClient.startVmware(commonOperateParams.getHostIp(), commonOperateParams.getVmwareUuid())
+        // 1.1.校验列表
+        Assert.isTrue(CollectionUtil.isNotEmpty(vmwareIds), () -> new BadRequestException("列表为空!"));
+        // 1.2.初始化错误列表 (返回结果)
+        List<VmwareErrorVO> vmwareErrorList = new ArrayList<>();
+
+        // 2.启动前宿主机 CPU、内存资源校验
+        List<VmwareInfo> vmwareInfoList = getBaseMapper().selectList(
+                Wrappers.<VmwareInfo>lambdaQuery().in(VmwareInfo::getId, vmwareIds)
         );
+
+        // 3.遍历虚拟机列表，逐一启动
+        for (VmwareInfo vmwareInfo : vmwareInfoList) {
+            VmwareErrorVO vmwareErrorVO = startSingleVmware(vmwareInfo);
+            if (vmwareErrorVO != null) {
+                vmwareErrorList.add(vmwareErrorVO);
+            }
+        }
+        return vmwareErrorList;
+    }
+
+    private VmwareErrorVO startSingleVmware(VmwareInfo vmwareInfo) {
+        VmwareErrorVO vmwareErrorVO = null;
+        RLock hostLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareInfo.getId());
+        RLock vmLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareInfo.getHostId());
+        try {
+            // 1.1.根据宿主机 ID 加锁, 尝试拿锁
+            Assert.isTrue(hostLock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("宿主机正在操作中，请稍后重试!"));
+            // 1.2.根据虚拟机 ID 加锁, 尝试拿锁
+            Assert.isTrue(vmLock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("虚拟机正在操作中，请稍后重试!"));
+
+            // 2.查询虚拟机所属宿主机IP信息
+            HostInfo hostInfo = hostInfoMapper.selectOne(Wrappers.<HostInfo>lambdaQuery().select(HostInfo::getIp).eq(HostInfo::getId, vmwareInfo.getHostId()));
+            Assert.isTrue(ObjectUtil.isNotNull(hostInfo) && ObjectUtil.isNotNull(hostInfo.getIp()), () -> new NotFoundException("未找到宿主机或宿主机IP相关信息:" + vmwareInfo.getHostId()));
+            String hostIp = hostInfo.getIp();
+
+            // 3.Dubbo 获取宿主机实时资源信息
+            R<HostResourceInfoBO> hostResourceInfoBOR = agentHostClient.queryHostResourceInfo(hostIp);
+            Assert.isTrue(hostResourceInfoBOR.checkSuccess(), () -> new NotFoundException("宿主机实时资源信息查询失败!"));
+
+            HostResourceInfoBO resourceInfoBO = hostResourceInfoBOR.getData();
+            int remainingVcpuNumber = resourceInfoBO.getVCpuAllNum() - resourceInfoBO.getVCpuActiveNum();
+            long remainingMemorySize = resourceInfoBO.getMemoryTotalMax() - resourceInfoBO.getMemoryTotalInUse();
+
+            // 4.校验虚拟机所需内存和虚拟CPU
+            if (vmwareInfo.getMemoryCurrent() > remainingMemorySize || vmwareInfo.getVcpuCurrent() > remainingVcpuNumber) {
+                throw new CommonException(BizCodeEnum.HOST_RESOURCE_LACK.getCode(), BizCodeEnum.HOST_RESOURCE_LACK.getMessage());
+            }
+
+            // 5.预先修改状态为：启动中
+            getBaseMapper().update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.STARTING).eq(VmwareInfo::getId, vmwareInfo.getId()));
+
+            // 6.虚拟机启动
+            R<String> startedVmwareR = agentVmwareClient.startVmware(hostIp, vmwareInfo.getUuid());
+            Assert.isTrue(startedVmwareR.checkSuccess(), () -> new DubboFunctionException("虚拟机启动失败:" + startedVmwareR.getMsg()));
+
+            // 7.修改虚拟机状态为：运行状态
+            getBaseMapper().update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.POWER_ON).eq(VmwareInfo::getId, vmwareInfo.getId()));
+            return null;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            // 启动失败则封装错误消息
+            vmwareErrorVO = new VmwareErrorVO();
+            vmwareErrorVO.setVmwareId(vmwareInfo.getId());
+            vmwareErrorVO.setErrorMessage(e.getMessage());
+            return vmwareErrorVO;
+        } finally {
+            if (vmLock.isHeldByCurrentThread()) {
+                vmLock.unlock();
+            }
+            if (hostLock.isHeldByCurrentThread()) {
+                hostLock.unlock();
+            }
+        }
     }
 
     @Override
     public List<VmwareErrorVO> suspendVmware(List<Long> vmwareIds) {
+        // 1.校验列表
+        Assert.isTrue(CollectionUtil.isNotEmpty(vmwareIds), () -> new BadRequestException("列表为空!"));
+
         return commonVmwareOperation(
                 vmwareIds,
                 VmwareStateEnum.PAUSE,
@@ -160,6 +229,9 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public List<VmwareErrorVO> resumeVmware(List<Long> vmwareIds) {
+        // 1.校验列表
+        Assert.isTrue(CollectionUtil.isNotEmpty(vmwareIds), () -> new BadRequestException("列表为空!"));
+
         return commonVmwareOperation(
                 vmwareIds,
                 VmwareStateEnum.POWER_ON,
@@ -170,6 +242,9 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public List<VmwareErrorVO> shutdownVmware(List<Long> vmwareIds) {
+        // 1.校验列表
+        Assert.isTrue(CollectionUtil.isNotEmpty(vmwareIds), () -> new BadRequestException("列表为空!"));
+
         return commonVmwareOperation(
                 vmwareIds,
                 VmwareStateEnum.POWER_OFF,
@@ -180,6 +255,9 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public List<VmwareErrorVO> destroyVmware(List<Long> vmwareIds) {
+        // 1.校验列表
+        Assert.isTrue(CollectionUtil.isNotEmpty(vmwareIds), () -> new BadRequestException("列表为空!"));
+
         return commonVmwareOperation(
                 vmwareIds,
                 VmwareStateEnum.POWER_OFF,
@@ -190,6 +268,9 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public List<VmwareErrorVO> deleteVmware(List<Long> vmwareIds) {
+        // 1.校验列表
+        Assert.isTrue(CollectionUtil.isNotEmpty(vmwareIds), () -> new BadRequestException("列表为空!"));
+
         return deleteVmwareOperation(
                 vmwareIds,
                 (vmwareInfo, hostInfo) -> new CommonOperateParams(hostInfo.getIp(), vmwareInfo.getUuid()),
@@ -228,6 +309,9 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             // 3.获取宿主机 IP 信息，并发送 Dubbo 消息
             R<Void> modifiedR = agentVmwareClient.modifyVmwareMemory(hostInfo.getIp(), vmwareInfo.getUuid(), memory, VmwareStateEnum.POWER_OFF.equals(vmwareInfo.getState()));
             Assert.isTrue(modifiedR.checkSuccess(), () -> new DubboFunctionException("虚拟机内存大小修改失败:" + modifiedR.getMsg()));
+
+            // 4.修改数据库内存大小
+            getBaseMapper().update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getMemoryCurrent, memory).eq(VmwareInfo::getId, vmwareId));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
@@ -268,6 +352,9 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             // 3.获取宿主机 IP 信息，并发送 Dubbo 消息
             R<Void> modifiedR = agentVmwareClient.modifyVmwareVcpu(hostInfo.getIp(), vmwareInfo.getUuid(), vcpuNumber, VmwareStateEnum.POWER_OFF.equals(vmwareInfo.getState()));
             Assert.isTrue(modifiedR.checkSuccess(), () -> new DubboFunctionException("虚拟机虚拟CPU数量修改失败:" + modifiedR.getMsg()));
+
+            // 4.修改数据库
+            getBaseMapper().update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getVcpuCurrent, vcpuNumber).eq(VmwareInfo::getId, vmwareId));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
@@ -319,7 +406,6 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         }
         return errorInfoList;
     }
-
 
     /**
      * 虚拟机删除操作封装

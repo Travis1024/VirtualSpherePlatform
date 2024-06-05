@@ -37,6 +37,8 @@ public enum BizCodeEnum {
     DUBBO_CALL_ERROR(940, "Dubbo-服务提供者调用异常"),
     DUBBO_FUNCTION_ERROR(941, "Dubbo-远程方法执行异常"),
     DUBBO_HEALTHY_CHECK_ERROR(942, "Dubbo-健康检查失败"),
+
+    HOST_RESOURCE_LACK(960, "宿主机资源不足"),
     /**
      * 未知错误
      */

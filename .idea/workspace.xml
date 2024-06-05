@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="完善自定义异常处理">
+    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="完善虚拟机资源调整">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentVmwareClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentVmwareClientImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/entity/support/CrontabInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/entity/support/CrontabInfo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/AgentVmwareClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/AgentVmwareClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/constants/LockConstant.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/constants/LockConstant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/enums/BizCodeEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/enums/BizCodeEnum.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -172,7 +173,7 @@
       <workItem from="1717319435826" duration="17932000" />
       <workItem from="1717343899876" duration="225000" />
       <workItem from="1717423742415" duration="5755000" />
-      <workItem from="1717550455979" duration="5945000" />
+      <workItem from="1717550455979" duration="14584000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -286,7 +287,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717557122651</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="完善虚拟机资源调整">
+      <option name="closed" value="true" />
+      <created>1717558276538</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1717558276538</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -312,10 +321,10 @@
     <MESSAGE value="新增动态配置" />
     <MESSAGE value="完善动态配置信息" />
     <MESSAGE value="完善动态配置特性" />
-    <MESSAGE value="完善虚拟机资源调整" />
     <MESSAGE value="修改虚拟机资源调整" />
     <MESSAGE value="完善自定义异常处理" />
-    <option name="LAST_COMMIT_MESSAGE" value="完善自定义异常处理" />
+    <MESSAGE value="完善虚拟机资源调整" />
+    <option name="LAST_COMMIT_MESSAGE" value="完善虚拟机资源调整" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
