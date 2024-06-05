@@ -46,10 +46,7 @@ import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
-import org.travis.shared.common.exceptions.BadRequestException;
-import org.travis.shared.common.exceptions.CommonException;
-import org.travis.shared.common.exceptions.DubboFunctionException;
-import org.travis.shared.common.exceptions.NotFoundException;
+import org.travis.shared.common.exceptions.*;
 
 import javax.annotation.Resource;
 
@@ -142,6 +139,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public List<VmwareErrorVO> startVmware(List<Long> vmwareIds) {
+        // TODO 启动前宿主机 CPU、内存资源校验
         return commonVmwareOperation(
                 vmwareIds,
                 VmwareStateEnum.POWER_ON,
@@ -204,7 +202,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         RLock lock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareId);
         try {
             // 0.根据虚拟机 ID 加锁, 尝试拿锁
-            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new CommonException(BizCodeEnum.LOCKED.getCode(), "虚拟机正在操作中，请稍后重试!"));
+            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException(BizCodeEnum.LOCKED.getCode(), "虚拟机正在操作中，请稍后重试!"));
 
             // 1.查询虚拟机所在物理机信息
             VmwareInfo vmwareInfo = getBaseMapper().selectById(vmwareId);
@@ -214,17 +212,17 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             HostInfo hostInfo = hostInfoMapper.selectById(hostId);
             Assert.notNull(hostInfo, () -> new NotFoundException("未查询到虚拟机所属物理机信息!"));
 
-            // 2.如果增加内存，判断物理机资源是否满足需求
-            if (memory > vmwareInfo.getMemoryCurrent()) {
-                // 2.1.校验是否超过最大内存
-                Assert.isTrue(memory <= vmwareInfo.getMemoryMax(), () -> new BadRequestException("超出虚拟机最大内存限制:" + vmwareInfo.getMemoryMax()));
-                // 2.2.Dubbo 获取宿主机实时资源信息
+            // 2.1.统一状态校验：校验是否超过最大内存
+            Assert.isTrue(memory <= vmwareInfo.getMemoryMax(), () -> new BadRequestException("超出虚拟机最大内存限制:" + vmwareInfo.getMemoryMax()));
+
+            // 2.2.非关机状态 & 资源扩展 -> 资源校验
+            if (!VmwareStateEnum.POWER_OFF.equals(vmwareInfo.getState()) && memory > vmwareInfo.getMemoryCurrent()) {
+                // Dubbo 获取宿主机实时资源信息
                 R<HostResourceInfoBO> hostResourceInfoBOR = agentHostClient.queryHostResourceInfo(hostInfo.getIp());
                 Assert.isTrue(hostResourceInfoBOR.checkSuccess(), () -> new NotFoundException("宿主机实时资源信息查询失败!"));
-                // 2.3.校验宿主机内存是否满足虚拟机资源需求
+                // 校验宿主机剩余内存的 95% 是否满足虚拟机资源需求
                 HostResourceInfoBO resourceInfoBO = hostResourceInfoBOR.getData();
-                // 2.4.TODO 校验内存
-                Assert.isTrue(memory - vmwareInfo.getMemoryCurrent() <= resourceInfoBO.getMemoryTotalMax() - resourceInfoBO.getMemoryTotalInUse(), () -> new BadRequestException("虚拟机内存容量已超出宿主机剩余内存, 请更换宿主机或调整虚拟机内存容量! 宿主机剩余内存: " + (resourceInfoBO.getMemoryTotalMax() - resourceInfoBO.getMemoryTotalInUse())));
+                Assert.isTrue(memory - vmwareInfo.getMemoryCurrent() <= (resourceInfoBO.getMemoryTotalMax() - resourceInfoBO.getMemoryTotalInUse()) * 0.95, () -> new BadRequestException("虚拟机内存容量已超出宿主机剩余内存, 请更换宿主机或调整虚拟机内存容量! 宿主机剩余内存: " + (resourceInfoBO.getMemoryTotalMax() - resourceInfoBO.getMemoryTotalInUse())));
             }
 
             // 3.获取宿主机 IP 信息，并发送 Dubbo 消息
@@ -244,7 +242,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         RLock lock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareId);
         try {
             // 0.根据虚拟机 ID 加锁, 尝试拿锁
-            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new CommonException(BizCodeEnum.LOCKED.getCode(), "虚拟机正在操作中，请稍后重试!"));
+            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("虚拟机正在操作中，请稍后重试!"));
 
             // 1.查询虚拟机所在物理机信息
             VmwareInfo vmwareInfo = getBaseMapper().selectById(vmwareId);
@@ -254,17 +252,17 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             HostInfo hostInfo = hostInfoMapper.selectById(hostId);
             Assert.notNull(hostInfo, () -> new NotFoundException("未查询到虚拟机所属物理机信息!"));
 
-            // 2.如果增加CPU数量，判断物理机资源是否满足需求
-            if (vcpuNumber > vmwareInfo.getVcpuCurrent()) {
-                // 2.1.校验是否超过最大CPU数量
-                Assert.isTrue(vcpuNumber <= vmwareInfo.getVcpuMax(), () -> new BadRequestException("超出虚拟机最大CPU数量限制:" + vmwareInfo.getVcpuMax()));
-                // 2.2.Dubbo 获取宿主机实时资源信息
+            // 2.1.统一状态校验：校验是否超过最大 VCPU 数量
+            Assert.isTrue(vcpuNumber <= vmwareInfo.getVcpuMax(), () -> new BadRequestException("超出虚拟机最大CPU数量限制:" + vmwareInfo.getVcpuMax()));
+
+            // 2.2.非关机状态 & 资源扩展 -> 资源校验
+            if (!VmwareStateEnum.POWER_OFF.equals(vmwareInfo.getState()) && vcpuNumber > vmwareInfo.getVcpuCurrent()) {
+                // Dubbo 获取宿主机实时资源信息
                 R<HostResourceInfoBO> hostResourceInfoBOR = agentHostClient.queryHostResourceInfo(hostInfo.getIp());
                 Assert.isTrue(hostResourceInfoBOR.checkSuccess(), () -> new NotFoundException("宿主机实时资源信息查询失败!"));
-                // 2.3.校验宿主机CPU剩余数量是否满足虚拟机资源需求
+                // 校验宿主机 VCPU 剩余数量是否满足虚拟机资源需求
                 HostResourceInfoBO resourceInfoBO = hostResourceInfoBOR.getData();
-                // 2.4.TODO 校验 CPU 数量
-                Assert.isTrue(vcpuNumber - vmwareInfo.getMemoryCurrent() <= resourceInfoBO.getVCpuAllNum() - resourceInfoBO.getVCpuActiveNum(), () -> new BadRequestException("虚拟机CPU容量已超出宿主机剩余虚拟CPU, 请更换宿主机或调整虚拟机CPU容量! 宿主机剩余CPU: " + (resourceInfoBO.getVCpuAllNum() - resourceInfoBO.getVCpuActiveNum())));
+                Assert.isTrue(vcpuNumber - vmwareInfo.getVcpuCurrent() <= resourceInfoBO.getVCpuAllNum() - resourceInfoBO.getVCpuActiveNum(), () -> new BadRequestException("虚拟机CPU容量已超出宿主机剩余虚拟CPU, 请更换宿主机或调整虚拟机CPU容量! 宿主机剩余CPU: " + (resourceInfoBO.getVCpuAllNum() - resourceInfoBO.getVCpuActiveNum())));
             }
 
             // 3.获取宿主机 IP 信息，并发送 Dubbo 消息
@@ -403,7 +401,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         RLock lock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareId);
         try {
             // 1.根据虚拟机 ID 加锁, 尝试拿锁
-            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new CommonException(BizCodeEnum.LOCKED.getCode(), "虚拟机正在操作中，请稍后重试!"));
+            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("虚拟机正在操作中，请稍后重试!"));
 
             // 2.Dubbo-操作
             R<String> vmwareOperationR = functionHandler.apply((T) operateParams);
