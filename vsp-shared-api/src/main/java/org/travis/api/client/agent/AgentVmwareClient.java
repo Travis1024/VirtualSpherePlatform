@@ -26,7 +26,7 @@ public interface AgentVmwareClient {
 
     R<String> undefineVmware(String targetAgentIp, String vmwareUuid);
 
-    R<Void> modifyVmwareMemory(String targetAgentIp, String vmwareUuid, Long memory);
+    R<Void> modifyVmwareMemory(String targetAgentIp, String vmwareUuid, Long memory, boolean isPowerOff);
 
-    R<Void> modifyVmwareVcpu(String targetAgentIp, String vmwareUuid, Integer vcpuNumber);
+    R<Void> modifyVmwareVcpu(String targetAgentIp, String vmwareUuid, Integer vcpuNumber, boolean isPowerOff);
 }

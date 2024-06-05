@@ -226,7 +226,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             }
 
             // 3.获取宿主机 IP 信息，并发送 Dubbo 消息
-            R<Void> modifiedR = agentVmwareClient.modifyVmwareMemory(hostInfo.getIp(), vmwareInfo.getUuid(), memory);
+            R<Void> modifiedR = agentVmwareClient.modifyVmwareMemory(hostInfo.getIp(), vmwareInfo.getUuid(), memory, VmwareStateEnum.POWER_OFF.equals(vmwareInfo.getState()));
             Assert.isTrue(modifiedR.checkSuccess(), () -> new DubboFunctionException("虚拟机内存大小修改失败:" + modifiedR.getMsg()));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -266,7 +266,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             }
 
             // 3.获取宿主机 IP 信息，并发送 Dubbo 消息
-            R<Void> modifiedR = agentVmwareClient.modifyVmwareVcpu(hostInfo.getIp(), vmwareInfo.getUuid(), vcpuNumber);
+            R<Void> modifiedR = agentVmwareClient.modifyVmwareVcpu(hostInfo.getIp(), vmwareInfo.getUuid(), vcpuNumber, VmwareStateEnum.POWER_OFF.equals(vmwareInfo.getState()));
             Assert.isTrue(modifiedR.checkSuccess(), () -> new DubboFunctionException("虚拟机虚拟CPU数量修改失败:" + modifiedR.getMsg()));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

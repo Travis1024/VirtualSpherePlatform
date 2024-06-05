@@ -120,13 +120,16 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     }
 
     @Override
-    public R<Void> modifyVmwareMemory(String targetAgentIp, String vmwareUuid, Long memory) {
+    public R<Void> modifyVmwareMemory(String targetAgentIp, String vmwareUuid, Long memory, boolean isPowerOff) {
         try {
-            // TODO 测试命令执行
-            // 内存临时生效（TODO 测试虚拟机关机时临时生效命令是否报错）
-            RuntimeUtil.execForStr("virsh setmem " + vmwareUuid + " " + memory / SystemConstant.KB_UNIT);
-            // 下次启动失效并持久化
-            RuntimeUtil.execForStr("virsh setmem " + vmwareUuid + " " + memory / SystemConstant.KB_UNIT + " --config");
+            // 非关机状态-内存临时生效
+            if (!isPowerOff) {
+                String execked = RuntimeUtil.execForStr("virsh setmem " + vmwareUuid + " " + memory / SystemConstant.KB_UNIT);
+                Assert.isFalse(execked.contains("error"), () -> new DubboFunctionException("live:" + execked));
+            }
+            // 虚拟内存下次启动生效并持久化
+            String execked = RuntimeUtil.execForStr("virsh setmem " + vmwareUuid + " " + memory / SystemConstant.KB_UNIT + " --config");
+            Assert.isTrue(StrUtil.isEmpty(execked.trim()), () -> new DubboFunctionException("config:" + execked));
             return R.ok();
         } catch (Exception e) {
             log.error("[AgentVmwareClientImpl::modifyVmwareMemory] Agent Vmware Memory Size Modify Error! -> {}", e.getMessage());
@@ -135,13 +138,16 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     }
 
     @Override
-    public R<Void> modifyVmwareVcpu(String targetAgentIp, String vmwareUuid, Integer vcpuNumber) {
+    public R<Void> modifyVmwareVcpu(String targetAgentIp, String vmwareUuid, Integer vcpuNumber, boolean isPowerOff) {
         try {
-            // TODO 测试命令执行
-            // 虚拟CPU临时生效（TODO 测试虚拟机关机时临时生效命令是否报错）
-            RuntimeUtil.execForStr("virsh setvcpus " + vmwareUuid + " " + vcpuNumber + " --live");
-            // 虚拟CPU下次启动失效并持久化
-            RuntimeUtil.execForStr("virsh setvcpus " + vmwareUuid + " " + vcpuNumber + " --config");
+            // 非关机状态-虚拟CPU临时生效
+            if (!isPowerOff) {
+                String execked = RuntimeUtil.execForStr("virsh setvcpus " + vmwareUuid + " " + vcpuNumber + " --live");
+                Assert.isFalse(execked.contains("error"), () -> new DubboFunctionException("live:" + execked));
+            }
+            // 虚拟CPU下次启动生效并持久化
+            String execked = RuntimeUtil.execForStr("virsh setvcpus " + vmwareUuid + " " + vcpuNumber + " --config");
+            Assert.isTrue(StrUtil.isEmpty(execked.trim()), () -> new DubboFunctionException("config:" + execked));
             return R.ok();
         } catch (Exception e) {
             log.error("[AgentVmwareClientImpl::modifyVmwareVcpu] Agent Vmware Vcpu Number Modify Error! -> {}", e.getMessage());

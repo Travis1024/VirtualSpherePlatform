@@ -4,21 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="完善虚拟机资源调整">
-      <change afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/exceptions/AuthFailedException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/exceptions/LockConflictException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/exceptions/ServerErrorException.java" afterDir="false" />
+    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="完善自定义异常处理">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/controller/FileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/controller/FileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/AuthGroupServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/AuthGroupServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/AuthUserRelationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/AuthUserRelationServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/AuthVmwareRelationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/AuthVmwareRelationServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/interceptor/MySaInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/interceptor/MySaInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentVmwareClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentVmwareClientImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/enums/BizCodeEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/enums/BizCodeEnum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/exceptions/DatabaseOperationException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/exceptions/ForbiddenException.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/exceptions/ForbiddenException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/AgentVmwareClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/AgentVmwareClient.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,7 +172,7 @@
       <workItem from="1717319435826" duration="17932000" />
       <workItem from="1717343899876" duration="225000" />
       <workItem from="1717423742415" duration="5755000" />
-      <workItem from="1717550455979" duration="4748000" />
+      <workItem from="1717550455979" duration="5945000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -280,7 +270,23 @@
       <option name="project" value="LOCAL" />
       <updated>1717430179494</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="修改虚拟机资源调整">
+      <option name="closed" value="true" />
+      <created>1717557099172</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1717557099172</updated>
+    </task>
+    <task id="LOCAL-00014" summary="完善自定义异常处理">
+      <option name="closed" value="true" />
+      <created>1717557122651</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1717557122651</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -307,7 +313,9 @@
     <MESSAGE value="完善动态配置信息" />
     <MESSAGE value="完善动态配置特性" />
     <MESSAGE value="完善虚拟机资源调整" />
-    <option name="LAST_COMMIT_MESSAGE" value="完善虚拟机资源调整" />
+    <MESSAGE value="修改虚拟机资源调整" />
+    <MESSAGE value="完善自定义异常处理" />
+    <option name="LAST_COMMIT_MESSAGE" value="完善自定义异常处理" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
