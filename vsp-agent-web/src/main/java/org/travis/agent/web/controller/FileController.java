@@ -17,6 +17,8 @@ import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.exceptions.CommonException;
+import org.travis.shared.common.exceptions.LockConflictException;
+import org.travis.shared.common.exceptions.ServerErrorException;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -48,11 +50,11 @@ public class FileController {
         RLock lock = redissonClient.getLock(LockConstant.LOCK_FILE_PREFIX + tempFilePath);
         try {
             // 1.根据存储临时路径加锁, 尝试拿锁 400ms 后停止重试 (自动续期)
-            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new CommonException(BizCodeEnum.LOCKED.getCode(), "当前切片文件正在处理中，请稍后重试!"));
+            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("当前切片文件正在处理中，请稍后重试!"));
             // 2.将切片文件保存到本地临时文件夹
             multipartFile.transferTo(new File(tempFilePath));
         } catch (IOException | InterruptedException e) {
-            throw new CommonException(BizCodeEnum.INTERNAL_SERVER_ERROR.getCode(), "切片文件上传失败 -> " + e.getMessage());
+            throw new ServerErrorException("切片文件上传失败 -> " + e.getMessage());
         } finally {
             if (lock.isHeldByCurrentThread()) {
                 lock.unlock();
@@ -66,7 +68,7 @@ public class FileController {
         RLock lock = redissonClient.getLock(LockConstant.LOCK_FILE_PREFIX + fileMergeDTO.getImageId());
         try {
             // 1.根据切片文件 ID 加锁, 尝试拿锁 400ms 后停止重试 (自动续期)
-            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new CommonException(BizCodeEnum.LOCKED.getCode(), "当前切片文件正在处理中，请稍后重试!"));
+            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("当前切片文件正在处理中，请稍后重试!"));
 
             /*
              * 2.切片文件排序（切片文件序号都以下划线分割）
@@ -94,7 +96,7 @@ public class FileController {
             });
 
         } catch (InterruptedException | IOException e) {
-            throw new CommonException(BizCodeEnum.INTERNAL_SERVER_ERROR.getCode(), "切片文件合并失败 -> " + e.getMessage());
+            throw new ServerErrorException("切片文件合并失败 -> " + e.getMessage());
         } finally {
             if (lock.isHeldByCurrentThread()) {
                 lock.unlock();

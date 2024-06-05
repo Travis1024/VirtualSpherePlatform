@@ -46,7 +46,7 @@ public class AuthVmwareRelationServiceImpl extends ServiceImpl<AuthVmwareRelatio
     public void insertRelations(AuthVmwareInsertDTO authVmwareInsertDTO) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = userAssistService.checkAdminUser();
-        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
+        Assert.isTrue(checkedAdminUser, ForbiddenException::new);
         // 2.循环处理并新增
         Long authGroupId = authVmwareInsertDTO.getAuthGroupId();
         List<Long> vmwareIdList = authVmwareInsertDTO.getVmwareIdList();
@@ -68,7 +68,7 @@ public class AuthVmwareRelationServiceImpl extends ServiceImpl<AuthVmwareRelatio
     public void deleteRelations(AuthVmwareDeleteDTO authVmwareDeleteDTO) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = userAssistService.checkAdminUser();
-        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
+        Assert.isTrue(checkedAdminUser, ForbiddenException::new);
         // 2.处理数据库信息
         Long authGroupId = authVmwareDeleteDTO.getAuthGroupId();
         List<Long> vmwareIdList = authVmwareDeleteDTO.getVmwareIdList();
@@ -79,7 +79,7 @@ public class AuthVmwareRelationServiceImpl extends ServiceImpl<AuthVmwareRelatio
     public List<VmwareInfo> queryVmwareListByAuthGroup(Long authGroupId) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = userAssistService.checkAdminUser();
-        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
+        Assert.isTrue(checkedAdminUser, ForbiddenException::new);
         // 2.查询数据库信息
         List<VmwareInfo> vmwareInfoList = new ArrayList<>();
         Optional<List<AuthVmwareRelation>> optionalAuthVmwareRelations = Optional.ofNullable(getBaseMapper().selectList(Wrappers.<AuthVmwareRelation>lambdaQuery().select(AuthVmwareRelation::getVmwareId).eq(AuthVmwareRelation::getAuthGroupId, authGroupId)));

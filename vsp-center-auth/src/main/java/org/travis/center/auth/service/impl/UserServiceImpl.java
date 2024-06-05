@@ -51,7 +51,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void register(UserRegisterDTO userRegisterDTO) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = userAssistService.checkAdminUser();
-        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
+        Assert.isTrue(checkedAdminUser, ForbiddenException::new);
 
         // 2.校验用户名是否存在
         Optional<User> userOptional = Optional.ofNullable(getOne(Wrappers.<User>lambdaQuery().select(User::getId).eq(User::getUsername, userRegisterDTO.getUsername())));
@@ -86,7 +86,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void updateUserInfo(UserUpdateDTO userUpdateDTO) {
         // 1.判断更新用户是否为当前登录用户, 判断是否为管理员用户
         if (!userUpdateDTO.getId().equals(UserThreadLocalUtil.getUserId()) && !userAssistService.checkAdminUser()) {
-            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
+            throw new ForbiddenException();
         }
         // 2.更新用户信息
         User user = new User();
@@ -98,7 +98,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void updatePassword(UserModifyPasswordDTO userModifyPasswordDTO) {
         // 1.判断更新用户是否为当前登录用户, 判断是否为管理员用户
         if (!userModifyPasswordDTO.getId().equals(UserThreadLocalUtil.getUserId()) && !userAssistService.checkAdminUser()) {
-            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
+            throw new ForbiddenException();
         }
 
         // 2.获取数据库中用户密码
@@ -115,7 +115,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void updateUserRole(UserModifyRoleDTO userModifyRoleDTO) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = userAssistService.checkAdminUser();
-        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
+        Assert.isTrue(checkedAdminUser, ForbiddenException::new);
         // 2.修改用户权限信息
         update(Wrappers.<User>lambdaUpdate().set(User::getRoleType, userModifyRoleDTO.getRoleType()).eq(User::getId, userModifyRoleDTO.getId()));
     }
@@ -124,7 +124,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void userDelete(Long userId) {
         // 1.判断更新用户是否为当前登录用户, 判断是否为管理员用户
         if (!userId.equals(UserThreadLocalUtil.getUserId()) && !userAssistService.checkAdminUser()) {
-            throw new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!");
+            throw new ForbiddenException();
         }
         // 2.执行删除操作
         removeById(userId);

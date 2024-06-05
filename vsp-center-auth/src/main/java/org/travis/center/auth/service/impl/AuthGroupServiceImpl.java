@@ -67,7 +67,7 @@ public class AuthGroupServiceImpl extends ServiceImpl<AuthGroupMapper, AuthGroup
     public AuthGroup insertOneAuthGroup(AuthGroupInsertDTO authGroupInsertDTO) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = userAssistService.checkAdminUser();
-        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
+        Assert.isTrue(checkedAdminUser, ForbiddenException::new);
         // 2.存储权限组信息
         AuthGroup authGroup = new AuthGroup();
         BeanUtils.copyProperties(authGroupInsertDTO, authGroup);
@@ -81,7 +81,7 @@ public class AuthGroupServiceImpl extends ServiceImpl<AuthGroupMapper, AuthGroup
     public void updateOneAuthGroup(AuthGroupUpdateDTO authGroupUpdateDTO) {
         // 1.校验当前登录用户是否为管理员
         boolean checkedAdminUser = userAssistService.checkAdminUser();
-        Assert.isTrue(checkedAdminUser, () -> new ForbiddenException(BizCodeEnum.FORBIDDEN.getCode(), "无操作权限!"));
+        Assert.isTrue(checkedAdminUser, ForbiddenException::new);
         // 2.修改权限组信息
         update(
                 Wrappers.<AuthGroup>lambdaUpdate()

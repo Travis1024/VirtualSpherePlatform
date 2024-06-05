@@ -22,10 +22,9 @@ public enum BizCodeEnum {
      * 客户端错误
      */
     BAD_REQUEST(400, "请求参数错误"),
-    MISSING_TOKEN(401, "未能读取到有效-Token"),
+    AUTH_FAILED(401, "未通过身份验证"),
     FORBIDDEN(403, "没有操作权限"),
     NOT_FOUND(404, "资源或请求未找到"),
-    METHOD_NOT_ALLOWED(405, "请求方法不正确"),
     LOCKED(423, "请求失败, 请稍后重试"),
     TOO_MANY_REQUESTS(429, "请求过于频繁, 请稍后重试"),
     /**
@@ -35,8 +34,6 @@ public enum BizCodeEnum {
     /**
      * 自定义服务错误
      */
-    TOKEN_CHECK_FAILED(901, "Token 验证失败"),
-    DATABASE_OPERATION_FAILED(920, "数据库操作异常"),
     DUBBO_CALL_ERROR(940, "Dubbo-服务提供者调用异常"),
     DUBBO_FUNCTION_ERROR(941, "Dubbo-远程方法执行异常"),
     DUBBO_HEALTHY_CHECK_ERROR(942, "Dubbo-健康检查失败"),

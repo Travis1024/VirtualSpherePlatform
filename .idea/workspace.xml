@@ -4,15 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="完善动态配置特性">
+    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="完善虚拟机资源调整">
+      <change afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/exceptions/AuthFailedException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/exceptions/LockConflictException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/exceptions/ServerErrorException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/controller/FileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/controller/FileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentVmwareClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentVmwareClientImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/VmwareInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/VmwareInfoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/VmwareInfoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/VmwareInfoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/AuthGroupServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/AuthGroupServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/AuthUserRelationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/AuthUserRelationServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/AuthVmwareRelationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/AuthVmwareRelationServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-auth/src/main/java/org/travis/center/auth/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/interceptor/MySaInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/interceptor/MySaInterceptor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/AgentVmwareClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/AgentVmwareClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/constants/SystemConstant.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/constants/SystemConstant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/enums/BizCodeEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/enums/BizCodeEnum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/exceptions/DatabaseOperationException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/exceptions/ForbiddenException.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/exceptions/ForbiddenException.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,6 +112,9 @@
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="org.travis.center.web" />
     </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.travis.shared.common.exceptions" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="configurationTypes">
@@ -172,7 +181,8 @@
       <workItem from="1717317448945" duration="288000" />
       <workItem from="1717319435826" duration="17932000" />
       <workItem from="1717343899876" duration="225000" />
-      <workItem from="1717423742415" duration="5728000" />
+      <workItem from="1717423742415" duration="5755000" />
+      <workItem from="1717550455979" duration="4748000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -262,7 +272,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717343878745</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="完善虚拟机资源调整">
+      <option name="closed" value="true" />
+      <created>1717430179494</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1717430179494</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -288,7 +306,8 @@
     <MESSAGE value="新增动态配置" />
     <MESSAGE value="完善动态配置信息" />
     <MESSAGE value="完善动态配置特性" />
-    <option name="LAST_COMMIT_MESSAGE" value="完善动态配置特性" />
+    <MESSAGE value="完善虚拟机资源调整" />
+    <option name="LAST_COMMIT_MESSAGE" value="完善虚拟机资源调整" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

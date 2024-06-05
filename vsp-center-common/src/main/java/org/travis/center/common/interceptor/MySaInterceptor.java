@@ -4,6 +4,7 @@ import cn.dev33.satoken.fun.SaParamFunction;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.travis.shared.common.enums.BizCodeEnum;
+import org.travis.shared.common.exceptions.AuthFailedException;
 import org.travis.shared.common.exceptions.CommonException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ public class MySaInterceptor extends SaInterceptor {
             super.preHandle(request, response, handler);
             return true;
         } catch (Exception e) {
-            throw new CommonException(BizCodeEnum.MISSING_TOKEN.getCode(), e.getMessage());
+            throw new AuthFailedException(e.getMessage());
         }
     }
 }
