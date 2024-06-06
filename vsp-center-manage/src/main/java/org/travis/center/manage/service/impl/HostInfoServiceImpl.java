@@ -15,7 +15,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentHealthyClient;
 import org.travis.api.client.agent.AgentHostClient;
-import org.travis.api.client.agent.callback.HostCallbackListener;
 import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
 import org.travis.api.pojo.bo.HostDetailsBO;
 import org.travis.center.common.entity.manage.HostInfo;
@@ -42,7 +41,6 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * @ClassName HostInfoServiceImpl
@@ -107,22 +105,8 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
             hostBridgedAdapterToAgentDTO.setNicStartAddress(networkLayerInfo.getNicStartAddress());
             hostBridgedAdapterToAgentDTO.setNicMask(networkLayerInfo.getNicMask());
 
-            agentHostClient.execBridgedAdapter(hostInfo.getIp(), hostBridgedAdapterToAgentDTO, new HostCallbackListener() {
-                @Override
-                public void sendBridgedInitResultMessage(Long hostId, boolean isSuccess, String stateMessage) {
-                    try {
-                        int updated = getBaseMapper().update(
-                                Wrappers.<HostInfo>lambdaUpdate()
-                                        .eq(HostInfo::getId, hostId)
-                                        .set(HostInfo::getStateMessage, stateMessage)
-                                        .set(HostInfo::getState, isSuccess ? HostStateEnum.READY : HostStateEnum.ERROR)
-                        );
-                        Assert.isTrue(updated != 0, () -> new BadRequestException("宿主机状态更新失败, 未找到当前宿主机信息!"));
-                    } catch (Exception e) {
-                        log.error("[CenterHostClientImpl::sendBridgedInitMessage] Modify Host Bridged Init State Error:{}", e.getMessage());
-                    }
-                }
-            });
+            // Dubbo-请求
+            agentHostClient.execBridgedAdapter(hostInfo.getIp(), hostBridgedAdapterToAgentDTO);
         }, ManageThreadPoolConfig.businessProcessExecutor);
 
         return hostInfo;

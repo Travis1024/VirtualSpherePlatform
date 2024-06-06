@@ -4,12 +4,11 @@ import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.system.oshi.OshiUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Argument;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.apache.dubbo.config.annotation.Method;
 import org.travis.agent.web.pojo.bo.BridgeInitMessageBO;
 import org.travis.api.client.agent.AgentHostClient;
-import org.travis.api.client.agent.callback.HostCallbackListener;
+import org.travis.api.client.center.CenterHostClient;
 import org.travis.api.pojo.bo.HostDetailsBO;
 import org.travis.api.pojo.bo.HostResourceInfoBO;
 import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
@@ -33,18 +32,14 @@ import java.util.List;
  * @Data 2024/5/25
  */
 @Slf4j
-@DubboService(
-        connections = 1,
-        callbacks = 1000,
-        methods = {
-                @Method(name = "execBridgedAdapter", arguments = @Argument(index = 2, callback = true))
-        }
-)
+@DubboService
 public class AgentHostClientImpl implements AgentHostClient {
     @Resource
     private BridgedAdapterHandler bridgedAdapterHandler;
     @Resource
     private StartDependentConfig startDependentConfig;
+    @DubboReference
+    private CenterHostClient centerHostClient;
 
     @Override
     public R<HostDetailsBO> queryHostInfoDetails(String targetAgentIp) {
@@ -87,16 +82,17 @@ public class AgentHostClientImpl implements AgentHostClient {
     }
 
     @Override
-    public void execBridgedAdapter(String targetAgentIp, HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO, HostCallbackListener hostCallbackListener) {
+    public void execBridgedAdapter(String targetAgentIp, HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO) {
+        BridgeInitMessageBO bridgeInitMessageBO = null;
         try {
             // 1.执行网卡桥接命令
-            BridgeInitMessageBO bridgeInitMessageBO = bridgedAdapterHandler.execBridgedAdapter(hostBridgedAdapterToAgentDTO);
-            // 2.TODO 执行回调
-            hostCallbackListener.sendBridgedInitResultMessage(bridgeInitMessageBO.getHostId(), bridgeInitMessageBO.getIsSuccess(), bridgeInitMessageBO.getStateMessage());
+            bridgeInitMessageBO = bridgedAdapterHandler.execBridgedAdapter(hostBridgedAdapterToAgentDTO);
+            // 2.执行回调
+            centerHostClient.sendBridgedInitMessage(bridgeInitMessageBO.getHostId(), bridgeInitMessageBO.getIsSuccess(), bridgeInitMessageBO.getStateMessage());
         } catch (Exception e) {
             log.error("[AgentHostClientImpl::execBridgedAdapter] Agent Exec Bridged Adapter Error! -> {}", e.getMessage());
             // 执行回调
-            hostCallbackListener.sendBridgedInitResultMessage(hostBridgedAdapterToAgentDTO.getId(), false, e.getMessage());
+            centerHostClient.sendBridgedInitMessage(hostBridgedAdapterToAgentDTO.getId(), false, (bridgeInitMessageBO != null ? bridgeInitMessageBO.getStateMessage() : null) + e.getMessage());
         }
     }
 
