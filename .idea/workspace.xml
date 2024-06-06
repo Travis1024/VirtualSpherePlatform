@@ -6,10 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="修改宿主机创建桥接网络回调执行">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentHostClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentHostClientImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/HostInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/HostInfoServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/AgentHostClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/AgentHostClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/callback/HostCallbackListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/VspAgentApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/VspAgentApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/service/AgentAssistService.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/service/AgentAssistService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-shared-api/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-api/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -197,7 +197,7 @@
       <workItem from="1717423742415" duration="5755000" />
       <workItem from="1717550455979" duration="15262000" />
       <workItem from="1717599878037" duration="3475000" />
-      <workItem from="1717646656316" duration="21378000" />
+      <workItem from="1717646656316" duration="22713000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -343,7 +343,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717670208264</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="修改宿主机创建桥接网络回调执行">
+      <option name="closed" value="true" />
+      <created>1717677308608</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1717677308608</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -20,7 +20,6 @@ import java.util.Arrays;
  * @Version v1.0
  * @Data 2024/5/10
  */
-@Slf4j
 @EnableDubbo
 @ComponentScan(basePackages = {"org.travis.agent", "org.travis.shared", "org.travis.api"})
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
