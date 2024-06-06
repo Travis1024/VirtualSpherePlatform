@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentHealthyClient;
 import org.travis.api.client.agent.AgentHostClient;
+import org.travis.api.client.agent.callback.HostCallbackListener;
 import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
 import org.travis.api.pojo.bo.HostDetailsBO;
 import org.travis.center.common.entity.manage.HostInfo;
@@ -99,20 +100,31 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
         NetworkLayerInfo networkLayerInfo = networkLayerInfoOptional.orElseThrow(() -> new BadRequestException("未查询二层网络信息!"));
 
         // 6.异步向 Dubbo-Agent 发送信息 (执行网卡桥接命令)
-        CompletableFuture<Void> completableFuture = CompletableFuture.supplyAsync(() -> {
-                    HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO = new HostBridgedAdapterToAgentDTO();
-                    hostBridgedAdapterToAgentDTO.setId(hostInfo.getId());
-                    hostBridgedAdapterToAgentDTO.setNicName(networkLayerInfo.getNicName());
-                    hostBridgedAdapterToAgentDTO.setNicStartAddress(networkLayerInfo.getNicStartAddress());
-                    hostBridgedAdapterToAgentDTO.setNicMask(networkLayerInfo.getNicMask());
-                    return agentHostClient.execBridgedAdapter(hostInfo.getIp(), hostBridgedAdapterToAgentDTO);
-                }, ManageThreadPoolConfig.businessProcessExecutor)
-                .thenAccept((execBridgedAdapterR) -> {
-                    Assert.isTrue(execBridgedAdapterR.checkSuccess(), () -> new DubboFunctionException(execBridgedAdapterR.getMsg()));
-                });
+        CompletableFuture.runAsync(() -> {
+            HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO = new HostBridgedAdapterToAgentDTO();
+            hostBridgedAdapterToAgentDTO.setId(hostInfo.getId());
+            hostBridgedAdapterToAgentDTO.setNicName(networkLayerInfo.getNicName());
+            hostBridgedAdapterToAgentDTO.setNicStartAddress(networkLayerInfo.getNicStartAddress());
+            hostBridgedAdapterToAgentDTO.setNicMask(networkLayerInfo.getNicMask());
 
-        // 等待异步消息发送结束
-        completableFuture.join();
+            agentHostClient.execBridgedAdapter(hostInfo.getIp(), hostBridgedAdapterToAgentDTO, new HostCallbackListener() {
+                @Override
+                public void sendBridgedInitResultMessage(Long hostId, boolean isSuccess, String stateMessage) {
+                    try {
+                        int updated = getBaseMapper().update(
+                                Wrappers.<HostInfo>lambdaUpdate()
+                                        .eq(HostInfo::getId, hostId)
+                                        .set(HostInfo::getStateMessage, stateMessage)
+                                        .set(HostInfo::getState, isSuccess ? HostStateEnum.READY : HostStateEnum.ERROR)
+                        );
+                        Assert.isTrue(updated != 0, () -> new BadRequestException("宿主机状态更新失败, 未找到当前宿主机信息!"));
+                    } catch (Exception e) {
+                        log.error("[CenterHostClientImpl::sendBridgedInitMessage] Modify Host Bridged Init State Error:{}", e.getMessage());
+                    }
+                }
+            });
+        }, ManageThreadPoolConfig.businessProcessExecutor);
+
         return hostInfo;
     }
 
@@ -161,9 +173,9 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
             session = jSch.getSession(username, hostIp, hostSshPort);
             session.setPassword(password);
             session.setConfig("StrictHostKeyChecking", "no");
-            session.setTimeout(8000);
+            session.setTimeout(10000);
             session.setServerAliveInterval(5000);
-            session.connect();
+            session.connect(10000);
             return true;
         } catch (Exception exception) {
             log.error("[HostInfoServiceImpl::checkHostSshConnect] {} SSH Connect Pre-Check Error: {}", hostIp, exception.getMessage());

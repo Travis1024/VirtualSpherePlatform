@@ -38,8 +38,8 @@ public class CommonExceptionAdvice {
 
     @ExceptionHandler(NotLoginException.class)
     public Object handleNotLoginException(NotLoginException exception) {
-        log.error("[登录鉴权异常] -> 异常类:{}, 状态码:{}, 异常信息:", exception.getClass().getName(), BizCodeEnum.MISSING_TOKEN, exception);
-        return processResponse(BizCodeEnum.MISSING_TOKEN.getCode(), BizCodeEnum.MISSING_TOKEN.getMessage());
+        log.error("[登录鉴权异常] -> 异常类:{}, 状态码:{}, 异常信息:", exception.getClass().getName(), BizCodeEnum.AUTH_FAILED, exception);
+        return processResponse(BizCodeEnum.AUTH_FAILED.getCode(), BizCodeEnum.AUTH_FAILED.getMessage());
     }
 
     @ExceptionHandler(RpcException.class)

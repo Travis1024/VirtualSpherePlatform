@@ -4,14 +4,17 @@ import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.system.oshi.OshiUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.Argument;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.apache.dubbo.config.annotation.Method;
+import org.travis.agent.web.pojo.bo.BridgeInitMessageBO;
 import org.travis.api.client.agent.AgentHostClient;
+import org.travis.api.client.agent.callback.HostCallbackListener;
 import org.travis.api.pojo.bo.HostDetailsBO;
 import org.travis.api.pojo.bo.HostResourceInfoBO;
 import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
 import org.travis.agent.web.config.StartDependentConfig;
 import org.travis.agent.web.handler.BridgedAdapterHandler;
-import org.travis.agent.web.utils.AgentThreadPoolConfig;
 import org.travis.shared.common.constants.AgentDependentConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
@@ -19,8 +22,8 @@ import org.travis.shared.common.exceptions.DubboFunctionException;
 import oshi.hardware.VirtualMemory;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * @ClassName AgentHostClientImpl
@@ -30,7 +33,13 @@ import java.util.concurrent.CompletableFuture;
  * @Data 2024/5/25
  */
 @Slf4j
-@DubboService
+@DubboService(
+        connections = 1,
+        callbacks = 1000,
+        methods = {
+                @Method(name = "execBridgedAdapter", arguments = @Argument(index = 2, callback = true))
+        }
+)
 public class AgentHostClientImpl implements AgentHostClient {
     @Resource
     private BridgedAdapterHandler bridgedAdapterHandler;
@@ -70,7 +79,7 @@ public class AgentHostClientImpl implements AgentHostClient {
     }
 
     private List<String> execQueryCpuNumberInfo() {
-        List<String> execkedForLineList = RuntimeUtil.execForLines("/bin/sh " + startDependentConfig.getFilePrefix() + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_CPU_NUMBER_KEY));
+        List<String> execkedForLineList = RuntimeUtil.execForLines("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_CPU_NUMBER_KEY));
         if (execkedForLineList == null || execkedForLineList.size() != 3) {
             throw new DubboFunctionException("虚拟核数 Shell 脚本查询任务执行失败! -> " + JSONUtil.toJsonStr(execkedForLineList));
         }
@@ -78,15 +87,16 @@ public class AgentHostClientImpl implements AgentHostClient {
     }
 
     @Override
-    public R<String> execBridgedAdapter(String targetAgentIp, HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO) {
+    public void execBridgedAdapter(String targetAgentIp, HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO, HostCallbackListener hostCallbackListener) {
         try {
-            // TODO 测试命令执行
-            // 异步执行网卡桥接命令
-            CompletableFuture.runAsync(() -> bridgedAdapterHandler.execBridgedAdapter(hostBridgedAdapterToAgentDTO), AgentThreadPoolConfig.singleExecutor);
-            return R.ok("桥接网卡及虚拟网络初始化中···");
+            // 1.执行网卡桥接命令
+            BridgeInitMessageBO bridgeInitMessageBO = bridgedAdapterHandler.execBridgedAdapter(hostBridgedAdapterToAgentDTO);
+            // 2.TODO 执行回调
+            hostCallbackListener.sendBridgedInitResultMessage(bridgeInitMessageBO.getHostId(), bridgeInitMessageBO.getIsSuccess(), bridgeInitMessageBO.getStateMessage());
         } catch (Exception e) {
             log.error("[AgentHostClientImpl::execBridgedAdapter] Agent Exec Bridged Adapter Error! -> {}", e.getMessage());
-            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+            // 执行回调
+            hostCallbackListener.sendBridgedInitResultMessage(hostBridgedAdapterToAgentDTO.getId(), false, e.getMessage());
         }
     }
 

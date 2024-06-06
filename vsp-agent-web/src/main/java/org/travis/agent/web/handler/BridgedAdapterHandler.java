@@ -1,19 +1,25 @@
 package org.travis.agent.web.handler;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import cn.hutool.system.oshi.OshiUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
+import org.travis.agent.web.pojo.bo.BridgeInitMessageBO;
 import org.travis.api.client.center.CenterHostClient;
 import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
 import org.travis.agent.web.config.StartDependentConfig;
 import org.travis.shared.common.constants.AgentDependentConstant;
 import org.travis.shared.common.constants.NetworkLayerConstant;
 import org.travis.shared.common.domain.R;
+import org.travis.shared.common.exceptions.DubboFunctionException;
 import oshi.hardware.NetworkIF;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,17 +40,20 @@ public class BridgedAdapterHandler {
     @Resource
     private StartDependentConfig startDependentConfig;
 
-    public void execBridgedAdapter(HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO) {
+    public BridgeInitMessageBO execBridgedAdapter(HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO) {
         // 1.查询网卡列表
+        log.debug("1.查询网卡列表");
         List<NetworkIF> networkInterfaces = OshiUtil.getNetworkIFs();
         Map<String, NetworkIF> networkInterfaceMap = networkInterfaces.stream().collect(Collectors.toMap(NetworkIF::getName, one -> one));
 
         // 2.获取目标网卡名称
+        log.debug("2.获取目标网卡名称");
         String targetInterfaceName = NetworkLayerConstant.INTERFACE_BR_NAME_PREFIX + hostBridgedAdapterToAgentDTO.getNicName().trim();
 
         /*
            准备桥接网卡
          */
+        log.debug("3|4.准备桥接网卡");
         boolean isSuccess;
         String stateMessage;
 
@@ -55,7 +64,7 @@ public class BridgedAdapterHandler {
             if (!networkInterface.isConnectorPresent()) {
                 // 3.1.目标网卡存在但未启用
                 isSuccess = false;
-                stateMessage = "目标网卡存在但未启用，请使用 `nmcli con up {目标网卡:br0-vsp-xxx}` 命令手动启用目标网卡!";
+                stateMessage = "目标网卡存在但未启用，请使用 `nmcli connection up {目标网卡:br0-vsp-xxx}` 命令手动启用目标网卡!";
             } else {
                 // 3.2.目标网卡存在并启用
                 isSuccess = true;
@@ -76,13 +85,20 @@ public class BridgedAdapterHandler {
                     // 4.1.2.源网卡存在并且已启用 -> 执行创建网桥命令
                     // 创建网桥
                     try {
-                        RuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_BRIDGE_KEY));
+                        // eg:/bin/sh /opt/vsp/dependent/init_bridge.sh br0-vsp-p4p1 p4p1
+                        String execked = RuntimeUtil.execForStr(
+                                "/bin/sh" + StrUtil.SPACE +
+                                        startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_BRIDGE_KEY) + StrUtil.SPACE +
+                                        targetInterfaceName + StrUtil.SPACE +
+                                        hostBridgedAdapterToAgentDTO.getNicName()
+                        );
+                        Assert.isTrue(execked.contains("Bridge setup script completed successfully."), () -> new DubboFunctionException(execked));
                         isSuccess = true;
                         stateMessage = "桥接网卡就绪-创建成功";
                     } catch (Exception e) {
                         log.error(e.getMessage(), e);
                         isSuccess = false;
-                        stateMessage = "桥接网卡创建失败!";
+                        stateMessage = "桥接网卡创建失败! " + e.getMessage();
                     }
                 }
             } else {
@@ -93,9 +109,10 @@ public class BridgedAdapterHandler {
         }
 
         // 5.如果桥接网卡创建成功，继续创建虚拟网络
+        log.debug("5.桥接网卡创建成功,继续创建虚拟网络");
         if (isSuccess) {
             try {
-                RuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_NETWORK_KEY));
+                RuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_NETWORK_KEY));
                 stateMessage = stateMessage + " | 虚拟网络就绪-创建成功";
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
@@ -104,10 +121,13 @@ public class BridgedAdapterHandler {
             }
         }
 
-        // 6.执行结果回调
-        R<Void> sendBridgedInitMessageR = centerHostClient.sendBridgedInitMessage(hostBridgedAdapterToAgentDTO.getId(), isSuccess, stateMessage);
-        if (sendBridgedInitMessageR != null && sendBridgedInitMessageR.checkFail()) {
-            log.error("[BridgedAdapterHandler::execBridgedAdapter] Failed to send Bridged Init Message: {}", sendBridgedInitMessageR.getMsg());
-        }
+        // 6.返回执行结果
+        log.debug("6.返回执行结果");
+        BridgeInitMessageBO bridgeInitMessageBO = new BridgeInitMessageBO();
+        bridgeInitMessageBO.setHostId(hostBridgedAdapterToAgentDTO.getId());
+        bridgeInitMessageBO.setIsSuccess(isSuccess);
+        bridgeInitMessageBO.setStateMessage(stateMessage);
+        log.debug(JSONUtil.toJsonStr(bridgeInitMessageBO));
+        return bridgeInitMessageBO;
     }
 }

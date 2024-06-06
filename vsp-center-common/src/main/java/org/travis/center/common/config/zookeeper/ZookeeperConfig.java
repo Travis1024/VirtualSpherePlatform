@@ -28,7 +28,7 @@ public class ZookeeperConfig {
 
         CuratorFramework curatorFramework = CuratorFrameworkFactory.builder()
                 .connectString(zookeeperAddr)
-                .sessionTimeoutMs(10000)
+                .sessionTimeoutMs(30000)
                 .retryPolicy(new ExponentialBackoffRetry(2000, 3))
                 .build();
         curatorFramework.start();

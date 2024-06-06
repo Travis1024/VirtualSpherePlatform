@@ -5,8 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="完善虚拟机启动过程">
+      <change afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/pojo/bo/BridgeInitMessageBO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/callback/HostCallbackListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/handler/BridgedAdapterHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/handler/BridgedAdapterHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentDiskClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentDiskClientImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentHostClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentHostClientImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/config/mvc/CommonExceptionAdvice.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/config/mvc/CommonExceptionAdvice.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/config/zookeeper/ZookeeperConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/config/zookeeper/ZookeeperConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/HostInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/HostInfoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/VspCenterApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/VspCenterApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/dubbo/CenterMessageClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/dubbo/CenterMessageClientImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/AgentHostClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/AgentHostClient.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,6 +27,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Enum" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -61,38 +72,39 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JUnit.CrontabTest.getNextMonth.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.VirtualSpherePlatform [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.VirtualSpherePlatform [package].executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Spring Boot.VspAgentApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.VspCenterApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev-version-1&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.31144464&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.ccnode.codegenerator.I.b&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.CrontabTest.getNextMonth.executor": "Run",
+    "Maven.VirtualSpherePlatform [clean].executor": "Run",
+    "Maven.VirtualSpherePlatform [package].executor": "Run",
+    "Remote JVM Debug.AgentDebug.executor": "Debug",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.VspAgentApplication.executor": "Run",
+    "Spring Boot.VspCenterApplication.executor": "Run",
+    "git-widget-placeholder": "dev-version-1",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.31144464",
+    "settings.editor.selected.configurable": "com.ccnode.codegenerator.I.b",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;java.sql.Driver&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "java.sql.Driver"
     ]
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -111,7 +123,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.CrontabTest.getNextMonth">
+  <component name="RunManager" selected="Remote JVM Debug.AgentDebug">
     <configuration name="CrontabTest.getNextMonth" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="vsp-center-web" />
       <extension name="coverage">
@@ -128,6 +140,20 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="AgentDebug" type="Remote">
+      <module name="vsp-agent-web" />
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" />
+      <option name="HOST" value="192.168.0.201" />
+      <option name="PORT" value="32002" />
+      <option name="AUTO_RESTART" value="false" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="32002" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <method v="2" />
+    </configuration>
     <configuration name="VspAgentApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="vsp-agent-web" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="org.travis.agent.web.VspAgentApplication" />
@@ -142,6 +168,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="JUnit.CrontabTest.getNextMonth" />
+      <item itemvalue="Remote JVM Debug.AgentDebug" />
+      <item itemvalue="Spring Boot.VspAgentApplication" />
+      <item itemvalue="Spring Boot.VspCenterApplication" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.CrontabTest.getNextMonth" />
@@ -170,7 +202,9 @@
       <workItem from="1717319435826" duration="17932000" />
       <workItem from="1717343899876" duration="225000" />
       <workItem from="1717423742415" duration="5755000" />
-      <workItem from="1717550455979" duration="15206000" />
+      <workItem from="1717550455979" duration="15262000" />
+      <workItem from="1717599878037" duration="3475000" />
+      <workItem from="1717646656316" duration="19256000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -300,7 +334,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717582495701</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="完善虚拟机启动过程">
+      <option name="closed" value="true" />
+      <created>1717583103598</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1717583103598</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -336,17 +378,36 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/initializer/CrontabInfoRedisInitializer.java</url>
-          <line>41</line>
+          <url>file://$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/dubbo/CenterHostClientImpl.java</url>
+          <line>32</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/dubbo/CenterHostClientImpl.java</url>
+          <line>38</line>
           <properties>
             <option name="lambda-ordinal" value="-1" />
           </properties>
-          <option name="timeStamp" value="2" />
+          <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/initializer/CrontabInfoRedisInitializer.java</url>
-          <line>42</line>
-          <option name="timeStamp" value="3" />
+          <url>file://$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentHostClientImpl.java</url>
+          <line>94</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentHostClientImpl.java</url>
+          <line>96</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentHostClientImpl.java</url>
+          <line>89</line>
+          <properties class="org.travis.agent.web.service.dubbo.AgentHostClientImpl" method="execBridgedAdapter">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="30" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

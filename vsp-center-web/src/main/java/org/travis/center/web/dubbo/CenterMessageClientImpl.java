@@ -37,6 +37,7 @@ public class CenterMessageClientImpl implements CenterMessageClient {
 
     @Override
     public R<String> dubboHealthyCheck() {
+        log.debug("[Center Healthy Check Request]");
         return R.ok("Center Health Check OK!");
     }
 }

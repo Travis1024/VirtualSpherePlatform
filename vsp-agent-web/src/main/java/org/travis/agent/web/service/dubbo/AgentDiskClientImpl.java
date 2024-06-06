@@ -15,6 +15,7 @@ import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.exceptions.DubboFunctionException;
 
 import javax.annotation.Resource;
+import java.io.File;
 
 /**
  * @ClassName AgentDiskClientImpl
@@ -58,7 +59,7 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     @Override
     public R<Integer> queryDiskSize(String targetAgentIp, String originImagePath) {
         try {
-            String diskSizeStr = RuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_DISK_SIZE_CALC_KEY)).trim() + StrUtil.SPACE + originImagePath;
+            String diskSizeStr = RuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_DISK_SIZE_CALC_KEY)).trim() + StrUtil.SPACE + originImagePath;
             Integer diskSize = Integer.parseInt(diskSizeStr);
             return R.ok(diskSize);
         } catch (Exception e) {
