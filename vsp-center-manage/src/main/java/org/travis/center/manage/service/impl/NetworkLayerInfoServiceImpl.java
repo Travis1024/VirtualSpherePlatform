@@ -35,6 +35,10 @@ public class NetworkLayerInfoServiceImpl extends ServiceImpl<NetworkLayerInfoMap
 
     @Override
     public NetworkLayerInfo insertOne(NetworkInsertDTO networkInsertDTO) {
+        // 1.判断网卡名称是否已经存在
+        Optional<NetworkLayerInfo> layerInfoOptional = Optional.ofNullable(getOne(Wrappers.<NetworkLayerInfo>lambdaQuery().select(NetworkLayerInfo::getId).eq(NetworkLayerInfo::getNicName, networkInsertDTO.getNicName())));
+        Assert.isTrue(layerInfoOptional.isEmpty(), () -> new BadRequestException("网卡名称已存在!"));
+        // 2.保存数据
         NetworkLayerInfo networkLayerInfo = new NetworkLayerInfo();
         BeanUtils.copyProperties(networkInsertDTO, networkLayerInfo);
         networkLayerInfo.setId(SnowflakeIdUtil.nextId());
