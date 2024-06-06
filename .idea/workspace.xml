@@ -4,9 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="修改宿主机创建桥接网络回调执行">
+    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="修改二层网络新增">
+      <change afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/pojo/vo/HostErrorVO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/NetworkLayerInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/NetworkLayerInfoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentDiskClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentDiskClientImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/DiskInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/DiskInfoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/HostInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/HostInfoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/HostInfoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/HostInfoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/VmwareInfoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/VmwareInfoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/HostInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/HostInfoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +44,9 @@
     &quot;accountId&quot;: &quot;94a716d9-85e1-4caa-90c2-20d5dc45edda&quot;
   }
 }</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$MAVEN_REPOSITORY$/org/apache/dubbo/dubbo/3.2.11/dubbo-3.2.11-sources.jar!/org/apache/dubbo/config/annotation/Method.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -194,7 +204,7 @@
       <workItem from="1717423742415" duration="5755000" />
       <workItem from="1717550455979" duration="15262000" />
       <workItem from="1717599878037" duration="3475000" />
-      <workItem from="1717646656316" duration="23635000" />
+      <workItem from="1717646656316" duration="30575000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -356,7 +366,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717679286191</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="修改二层网络新增">
+      <option name="closed" value="true" />
+      <created>1717679559427</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1717679559427</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -387,7 +405,8 @@
     <MESSAGE value="完善虚拟机资源调整" />
     <MESSAGE value="完善虚拟机启动过程" />
     <MESSAGE value="修改宿主机创建桥接网络回调执行" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改宿主机创建桥接网络回调执行" />
+    <MESSAGE value="修改二层网络新增" />
+    <option name="LAST_COMMIT_MESSAGE" value="修改二层网络新增" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -401,6 +420,41 @@
           <url>file://$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentHostClientImpl.java</url>
           <line>92</line>
           <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>96</line>
+          <option name="timeStamp" value="36" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>98</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>100</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>102</line>
+          <option name="timeStamp" value="39" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>104</line>
+          <option name="timeStamp" value="40" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>107</line>
+          <option name="timeStamp" value="41" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>109</line>
+          <option name="timeStamp" value="42" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

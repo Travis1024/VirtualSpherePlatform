@@ -1,4 +1,5 @@
 package org.travis.center.manage.controller;
+import cn.hutool.core.lang.Assert;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.validation.annotation.Validated;
 import org.travis.center.common.entity.manage.HostInfo;
@@ -7,6 +8,7 @@ import org.travis.center.common.enums.BusinessTypeEnum;
 import org.travis.center.manage.pojo.dto.HostInsertDTO;
 import org.travis.center.manage.pojo.dto.HostSshCheckDTO;
 import org.travis.center.manage.pojo.dto.HostUpdateDTO;
+import org.travis.center.manage.pojo.vo.HostErrorVO;
 import org.travis.center.manage.service.HostInfoService;
 import org.travis.center.support.aspect.Log;
 import org.travis.shared.common.domain.PageQuery;
@@ -50,10 +52,9 @@ public class HostInfoController {
     @Log(title = "宿主机信息删除", businessType = BusinessTypeEnum.DELETE)
     @Operation(summary = "宿主机信息删除")
     @DeleteMapping("/delete")
-    public void delete(@RequestParam("hostIds") List<Long> hostIdList) {
-        if (!hostIdList.isEmpty()) {
-            hostInfoService.delete(hostIdList);
-        }
+    public List<HostErrorVO> delete(@RequestParam("hostIds") List<Long> hostIdList) {
+        Assert.isFalse(hostIdList.isEmpty(), () -> new BadRequestException("宿主机 ID 列表为空!"));
+        return hostInfoService.delete(hostIdList);
     }
 
     @Log(title = "宿主机信息更新", businessType = BusinessTypeEnum.UPDATE)
@@ -61,13 +62,6 @@ public class HostInfoController {
     @PutMapping("/update")
     public void updateOne(@Validated @RequestBody HostUpdateDTO hostUpdateDTO) {
         hostInfoService.updateOne(hostUpdateDTO);
-    }
-
-    @Log(title = "更新宿主机IP地址", businessType = BusinessTypeEnum.UPDATE)
-    @Operation(summary = "更新宿主机IP地址")
-    @PutMapping("/updateIp")
-    public void updateHostIp(@RequestParam("hostId") Long hostId, @RequestParam("hostIp") String hostIp) {
-        hostInfoService.updateHostIp(hostId, hostIp);
     }
 
     @Log(title = "校验新增宿主机IP及Agent健康状态")

@@ -6,6 +6,7 @@ import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.apache.dubbo.config.annotation.Method;
 import org.travis.api.client.agent.AgentDiskClient;
 import org.travis.agent.web.config.StartDependentConfig;
 import org.travis.shared.common.constants.AgentDependentConstant;
@@ -25,7 +26,12 @@ import java.io.File;
  * @Data 2024/5/23
  */
 @Slf4j
-@DubboService
+@DubboService(
+        methods = {
+                // 磁盘复制超时时间: 2 小时
+                @Method(name = "copyDiskFile", timeout = 7200000)
+        }
+)
 public class AgentDiskClientImpl implements AgentDiskClient {
     @Resource
     private StartDependentConfig startDependentConfig;

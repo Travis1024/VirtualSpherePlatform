@@ -1,5 +1,6 @@
 package org.travis.center.manage.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
@@ -37,6 +38,8 @@ public interface VmwareInfoService extends IService<VmwareInfo>{
     List<VmwareErrorVO> destroyVmware(List<Long> vmwareIds);
 
     List<VmwareErrorVO> deleteVmware(List<Long> vmwareIds);
+
+    VmwareErrorVO deleteOneById(Long vmwareId);
 
     void modifyVmwareMemory(Long vmwareId, Long memory);
 

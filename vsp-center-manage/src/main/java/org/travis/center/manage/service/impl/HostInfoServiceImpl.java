@@ -3,12 +3,16 @@ package org.travis.center.manage.service.impl;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.redisson.api.RBucket;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -19,6 +23,7 @@ import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
 import org.travis.api.pojo.bo.HostDetailsBO;
 import org.travis.center.common.entity.manage.HostInfo;
 import org.travis.center.common.entity.manage.NetworkLayerInfo;
+import org.travis.center.common.entity.manage.VmwareInfo;
 import org.travis.center.common.enums.HostStateEnum;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.center.common.mapper.manage.NetworkLayerInfoMapper;
@@ -26,21 +31,27 @@ import org.travis.center.common.service.AgentAssistService;
 import org.travis.center.common.utils.ManageThreadPoolConfig;
 import org.travis.center.manage.pojo.dto.HostInsertDTO;
 import org.travis.center.manage.pojo.dto.HostUpdateDTO;
+import org.travis.center.manage.pojo.vo.HostErrorVO;
+import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.center.manage.service.HostInfoService;
+import org.travis.center.manage.service.VmwareInfoService;
+import org.travis.shared.common.constants.LockConstant;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
-import org.travis.shared.common.exceptions.BadRequestException;
-import org.travis.shared.common.exceptions.CommonException;
-import org.travis.shared.common.exceptions.DubboFunctionException;
+import org.travis.shared.common.exceptions.*;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
 import org.travis.shared.common.utils.VspStrUtil;
 
 import javax.annotation.Resource;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName HostInfoServiceImpl
@@ -61,10 +72,21 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
     private NetworkLayerInfoMapper networkLayerInfoMapper;
     @DubboReference
     public AgentHostClient agentHostClient;
+    @Resource
+    private RedissonClient redissonClient;
+    @Resource
+    private HostInfoService hostInfoService;
+    @Resource
+    private VmwareInfoService vmwareInfoService;
 
     @Transactional
     @Override
     public HostInfo insertOne(HostInsertDTO hostInsertDTO) {
+        // 0.宿主机 IP 加锁
+        RBucket<Object> rBucket = redissonClient.getBucket(LockConstant.LOCK_HOST_PREFIX + hostInsertDTO.getIp());
+        boolean setIfAbsent = rBucket.setIfAbsent(hostInsertDTO.getIp(), Duration.ofMinutes(2));
+        Assert.isTrue(setIfAbsent, () -> new LockConflictException("宿主机 IP 正在操作中, 请勿重复提交!"));
+
         // 1.校验宿主机 IP
         validateHostIp(hostInsertDTO.getIp());
 
@@ -99,14 +121,23 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
 
         // 6.异步向 Dubbo-Agent 发送信息 (执行网卡桥接命令)
         CompletableFuture.runAsync(() -> {
-            HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO = new HostBridgedAdapterToAgentDTO();
-            hostBridgedAdapterToAgentDTO.setId(hostInfo.getId());
-            hostBridgedAdapterToAgentDTO.setNicName(networkLayerInfo.getNicName());
-            hostBridgedAdapterToAgentDTO.setNicStartAddress(networkLayerInfo.getNicStartAddress());
-            hostBridgedAdapterToAgentDTO.setNicMask(networkLayerInfo.getNicMask());
-
-            // Dubbo-请求
-            agentHostClient.execBridgedAdapter(hostInfo.getIp(), hostBridgedAdapterToAgentDTO);
+            RLock lock = redissonClient.getLock(LockConstant.LOCK_HOST_PREFIX + hostInfo.getId());
+            try {
+                // 6.1.宿主机加锁
+                lock.lock(30, TimeUnit.SECONDS);
+                // 6.2.组装参数
+                HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO = new HostBridgedAdapterToAgentDTO();
+                hostBridgedAdapterToAgentDTO.setId(hostInfo.getId());
+                hostBridgedAdapterToAgentDTO.setNicName(networkLayerInfo.getNicName());
+                hostBridgedAdapterToAgentDTO.setNicStartAddress(networkLayerInfo.getNicStartAddress());
+                hostBridgedAdapterToAgentDTO.setNicMask(networkLayerInfo.getNicMask());
+                // 6.3.发送Dubbo-请求
+                agentHostClient.execBridgedAdapter(hostInfo.getIp(), hostBridgedAdapterToAgentDTO);
+            } finally {
+                if (lock.isHeldByCurrentThread()) {
+                    lock.unlock();
+                }
+            }
         }, ManageThreadPoolConfig.businessProcessExecutor);
 
         return hostInfo;
@@ -171,10 +202,49 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
         }
     }
 
+    @Override
+    public List<HostErrorVO> delete(List<Long> hostIdList) {
+        List<HostErrorVO> hostErrorVOList = new ArrayList<>();
+        for (Long hostId : hostIdList) {
+            HostErrorVO hostErrorVO = hostInfoService.deleteOneById(hostId);
+            if (hostErrorVO != null) {
+                hostErrorVOList.add(hostErrorVO);
+            }
+        }
+        return hostErrorVOList;
+    }
+
     @Transactional
     @Override
-    public void delete(List<Long> hostIdList) {
-        removeBatchByIds(hostIdList);
+    public HostErrorVO deleteOneById(Long hostId) {
+        HostErrorVO hostErrorVO;
+        RLock lock = redissonClient.getLock(LockConstant.LOCK_HOST_PREFIX + hostId);
+        try {
+            // 1.尝试拿锁 400ms 后停止重试 (自动续期)
+            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("当前宿主机正在操作中, 请稍后重试!"));
+
+            // 2.查询并删除所有虚拟机
+            List<Long> vmwareIds = vmwareInfoService.getBaseMapper().selectList(
+                    Wrappers.<VmwareInfo>lambdaQuery().select(VmwareInfo::getId).eq(VmwareInfo::getHostId, hostId)
+            ).stream().map(VmwareInfo::getId).collect(Collectors.toList());
+
+            List<VmwareErrorVO> vmwareErrorList = vmwareInfoService.deleteVmware(vmwareIds);
+            Assert.isTrue(vmwareErrorList.isEmpty(), () -> new ServerErrorException("从属虚拟机删除失败:" + JSONUtil.toJsonStr(vmwareErrorVOS)));
+
+            // 3.删除宿主机信息
+            removeById(hostId);
+            return null;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            hostErrorVO = new HostErrorVO();
+            hostErrorVO.setHostId(hostId);
+            hostErrorVO.setErrorMessage(e.getMessage());
+            return hostErrorVO;
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
     }
 
     @Override
@@ -184,6 +254,7 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
         updateById(hostInfo);
     }
 
+    @Deprecated
     @Override
     public void updateHostIp(Long hostId, String hostIp) {
         // 1.校验宿主机 IP 地址

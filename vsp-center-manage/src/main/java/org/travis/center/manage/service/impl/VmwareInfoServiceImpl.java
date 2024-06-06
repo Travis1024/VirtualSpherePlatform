@@ -2,7 +2,6 @@ package org.travis.center.manage.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -73,6 +72,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     private WsMessageHolder wsMessageHolder;
     @Resource
     private AgentHostClient agentHostClient;
+    @Resource
+    private VmwareInfoService vmwareInfoService;
 
     @Override
     public VmwareInfo selectOne(Long id) {
@@ -265,14 +266,41 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public List<VmwareErrorVO> deleteVmware(List<Long> vmwareIds) {
-        // 1.校验列表
-        Assert.isTrue(CollectionUtil.isNotEmpty(vmwareIds), () -> new BadRequestException("列表为空!"));
+        List<VmwareErrorVO> vmwareErrorVOList = new ArrayList<>();
+        for (Long vmwareId : vmwareIds) {
+            VmwareErrorVO vmwareErrorVO = vmwareInfoService.deleteOneById(vmwareId);
+            if (vmwareErrorVO != null) {
+                vmwareErrorVOList.add(vmwareErrorVO);
+            }
+        }
+        return vmwareErrorVOList;
+    }
 
-        return deleteVmwareOperation(
-                vmwareIds,
-                (vmwareInfo, hostInfo) -> new CommonOperateParams(hostInfo.getIp(), vmwareInfo.getUuid()),
-                commonOperateParams -> agentVmwareClient.undefineVmware(commonOperateParams.getHostIp(), commonOperateParams.getVmwareUuid())
-        );
+    @Transactional
+    @Override
+    public VmwareErrorVO deleteOneById(Long vmwareId) {
+        VmwareErrorVO vmwareErrorVO;
+        RLock rLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareId);
+        try {
+            // 1.根据虚拟机 ID 加锁, 尝试拿锁
+            Assert.isTrue(rLock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException(BizCodeEnum.LOCKED.getCode(), "虚拟机正在操作中，请稍后重试!"));
+
+            // 2.TODO 删除相关磁盘、快照等信息
+
+            // 3.数据库删除
+            removeById(vmwareId);
+            return null;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            vmwareErrorVO = new VmwareErrorVO();
+            vmwareErrorVO.setVmwareId(vmwareId);
+            vmwareErrorVO.setErrorMessage(e.getMessage());
+            return vmwareErrorVO;
+        } finally {
+            if (rLock.isHeldByCurrentThread()) {
+                rLock.unlock();
+            }
+        }
     }
 
     @Override
