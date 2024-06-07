@@ -123,7 +123,7 @@ public abstract class AbstractCreationService {
         VmwareInfo vmwareInfo = new VmwareInfo();
         BeanUtils.copyProperties(vmwareInsertDTO, vmwareInfo);
         vmwareInfo.setId(SnowflakeIdUtil.nextId());
-        vmwareInfo.setUuid(IdUtil.fastSimpleUUID());
+        vmwareInfo.setUuid(IdUtil.fastUUID());
         vmwareInfo.setState(VmwareStateEnum.IN_PREPARATION);
         vmwareInfo.setVcpuMax(hostResourceInfoBO.getVCpuAllNum());
         vmwareInfo.setMemoryMax((long) ((hostResourceInfoBO.getMemoryTotalMax() * 1.0 / SystemConstant.GB_UNIT) * 0.8) * SystemConstant.GB_UNIT);
@@ -141,7 +141,7 @@ public abstract class AbstractCreationService {
         xmlParamBO.setCurVcpu(String.valueOf(vmwareInfo.getVcpuCurrent()));
         xmlParamBO.setSystemDiskPath(agentAssistService.getHostSharedStoragePath() + diskInfo.getSubPath());
 
-        if (VmwareCreateFormEnum.ISO.getValue().equals(vmwareCreateFormValue)) {
+        if (VmwareCreateFormEnum.ISO.getValue().equals(vmwareInfo.getCreateForm().getValue())) {
             ImageInfo imageInfo = imageInfoMapper.selectById(vmwareInsertDTO.getImageId());
             xmlParamBO.setIosPath(agentAssistService.getHostSharedStoragePath() + imageInfo.getSubPath());
         }

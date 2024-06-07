@@ -101,7 +101,7 @@ public class DiskInfoServiceImpl extends ServiceImpl<DiskInfoMapper, DiskInfo> i
         String serverAgentIp = agentIpList.get(RandomUtil.randomInt(0, agentIpList.size()));
         String sharedStoragePath = agentAssistService.getHostSharedStoragePath();
         // Dubbo 创建磁盘
-        R<String> createDiskR = agentDiskClient.createDisk(serverAgentIp, sharedStoragePath + subPath, diskInfo.getId() / SystemConstant.GB_UNIT);
+        R<String> createDiskR = agentDiskClient.createDisk(serverAgentIp, sharedStoragePath + subPath, diskInfo.getSpaceSize() / SystemConstant.GB_UNIT);
         Assert.isTrue(createDiskR.checkSuccess(), () -> new DubboFunctionException(createDiskR.getMsg()));
         log.info("磁盘创建成功! -> {}", sharedStoragePath + subPath);
 

@@ -15,6 +15,7 @@ import org.travis.agent.web.config.StartDependentConfig;
 import org.travis.shared.common.constants.AgentDependentConstant;
 import org.travis.shared.common.constants.NetworkLayerConstant;
 import org.travis.shared.common.exceptions.DubboFunctionException;
+import org.travis.shared.common.utils.VspRuntimeUtil;
 import oshi.hardware.NetworkIF;
 
 import javax.annotation.Resource;
@@ -85,7 +86,7 @@ public class BridgedAdapterHandler {
                     // 创建网桥
                     try {
                         // eg:/bin/sh /opt/vsp/dependent/init_bridge.sh br0-vsp-p4p1 p4p1
-                        String execked = RuntimeUtil.execForStr(
+                        String execked = VspRuntimeUtil.execForStr(
                                 "/bin/sh" + StrUtil.SPACE +
                                         startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_BRIDGE_KEY) + StrUtil.SPACE +
                                         targetInterfaceName + StrUtil.SPACE +
@@ -111,7 +112,7 @@ public class BridgedAdapterHandler {
         log.debug("5.桥接网卡创建成功,继续创建虚拟网络");
         if (isSuccess) {
             try {
-                RuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_NETWORK_KEY));
+                VspRuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_NETWORK_KEY));
                 stateMessage = stateMessage + " | 虚拟网络就绪-创建成功";
             } catch (Exception e) {
                 log.error(e.getMessage(), e);

@@ -14,6 +14,7 @@ import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.exceptions.DubboFunctionException;
+import org.travis.shared.common.utils.VspRuntimeUtil;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -40,7 +41,7 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     public R<String> createDisk(String targetAgentIp, String path, Long unitGbSize) {
         try {
             checkFileSuffix(path);
-            String execked = RuntimeUtil.execForStr("qemu-img create -f qcow2 -o preallocation=off " + path + " " + unitGbSize.toString() + "G");
+            String execked = VspRuntimeUtil.execForStr("qemu-img create -f qcow2 -o preallocation=off " + path + " " + unitGbSize.toString() + "G");
             Assert.isTrue(execked.startsWith("Formatting"), () -> new DubboFunctionException("磁盘创建失败:" + execked));
             return R.ok("Disk Create Successfully");
         } catch (Exception e) {
@@ -65,7 +66,7 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     @Override
     public R<Integer> queryDiskSize(String targetAgentIp, String originImagePath) {
         try {
-            String diskSizeStr = RuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_DISK_SIZE_CALC_KEY)).trim() + StrUtil.SPACE + originImagePath;
+            String diskSizeStr = VspRuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_DISK_SIZE_CALC_KEY)).trim() + StrUtil.SPACE + originImagePath;
             Integer diskSize = Integer.parseInt(diskSizeStr);
             return R.ok(diskSize);
         } catch (Exception e) {
@@ -77,7 +78,7 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     @Override
     public R<Void> copyDiskFile(String targetAgentIp, String originImagePath, String targetDiskPath) {
         try {
-            RuntimeUtil.execForStr("cp " + originImagePath + " " + targetDiskPath);
+            VspRuntimeUtil.execForStr("cp " + originImagePath + " " + targetDiskPath);
             return R.ok();
         } catch (Exception e) {
             log.error("[AgentDiskClientImpl::copyDiskFile] Copy Disk File Error! -> {}", e.getMessage());

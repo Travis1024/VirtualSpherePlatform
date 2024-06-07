@@ -6,6 +6,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.travis.api.client.agent.AgentCommandClient;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
+import org.travis.shared.common.utils.VspRuntimeUtil;
 
 /**
  * @ClassName HostCommandClient
@@ -20,7 +21,7 @@ public class AgentCommandClientImpl implements AgentCommandClient {
     @Override
     public R<String> execSingleCommand(String targetAgentIp, String command) {
         try {
-            String result = RuntimeUtil.execForStr(command);
+            String result = VspRuntimeUtil.execForStr(command);
             return R.ok(result);
         } catch (Exception e) {
             log.error("[HostCommandClientImpl::execSingleCommand] -> {}", e.toString());

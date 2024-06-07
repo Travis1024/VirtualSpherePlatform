@@ -18,6 +18,7 @@ import org.travis.shared.common.constants.AgentDependentConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.DubboFunctionException;
+import org.travis.shared.common.utils.VspRuntimeUtil;
 import oshi.hardware.VirtualMemory;
 
 import javax.annotation.Resource;
@@ -74,7 +75,7 @@ public class AgentHostClientImpl implements AgentHostClient {
     }
 
     private List<String> execQueryCpuNumberInfo() {
-        List<String> execkedForLineList = RuntimeUtil.execForLines("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_CPU_NUMBER_KEY));
+        List<String> execkedForLineList = VspRuntimeUtil.execForLines("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_CPU_NUMBER_KEY));
         if (execkedForLineList == null || execkedForLineList.size() != 3) {
             throw new DubboFunctionException("虚拟核数 Shell 脚本查询任务执行失败! -> " + JSONUtil.toJsonStr(execkedForLineList));
         }
