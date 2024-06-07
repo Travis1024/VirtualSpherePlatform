@@ -125,7 +125,6 @@ public class VmwareInfoController {
         return vmwareInfoService.queryVncAddress(vmwareId);
     }
 
-
     @Log(title = "核对虚拟机状态信息")
     @Operation(summary = "核对虚拟机状态信息")
     @GetMapping("/correct")

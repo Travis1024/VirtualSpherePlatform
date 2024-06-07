@@ -156,4 +156,22 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
     }
+
+    @Override
+    public R<String> queryVncAddress(String targetAgentIp, String vmwareUuid) {
+        try {
+            // 1.查询 VNC 端口
+            String execked = VspRuntimeUtil.execForStr("virsh vncdisplay " + vmwareUuid).trim();
+            Assert.isTrue(execked.startsWith(StrUtil.COLON), () -> new DubboFunctionException("VNC查询失败:" + execked));
+            // 2.组装真实端口
+            String portStr = execked.substring(1);
+            int realPort = 5900 + Integer.parseInt(portStr);
+            // 192.168.0.201:5900
+            return R.ok(targetAgentIp + StrUtil.COLON + realPort);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            log.error("[AgentVmwareClientImpl::queryVncAddress] Agent Vmware Query Vnc Address Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
 }

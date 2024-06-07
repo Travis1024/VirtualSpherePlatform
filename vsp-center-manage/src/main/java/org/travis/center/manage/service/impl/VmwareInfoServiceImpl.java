@@ -387,7 +387,15 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public String queryVncAddress(Long vmwareId) {
-        return "";
+        // 1.查询虚拟机信息, 并验证虚拟机当前状态
+        VmwareInfo vmwareInfo = getById(vmwareId);
+        Assert.isTrue(VmwareStateEnum.POWER_ON.equals(vmwareInfo.getState()), () -> new BadRequestException("虚拟机处于非运行状态, 无法查询 VNC 地址信息!"));
+        // 2.查询虚拟机所在的宿主机IP
+        HostInfo hostInfo = queryHostInfoByVmwareId(vmwareId);
+        // 3.Dubbo-发送查询 VNC 请求信息
+        R<String> queryVncR = agentVmwareClient.queryVncAddress(hostInfo.getIp(), vmwareInfo.getUuid());
+        Assert.isTrue(queryVncR.checkSuccess(), () -> new DubboFunctionException("VNC远程查询失败:" + queryVncR.getMsg()));
+        return queryVncR.getData();
     }
 
     @Override

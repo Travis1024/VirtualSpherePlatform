@@ -4,14 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="自定义命令行执行">
+    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="完善物理机虚拟机相关功能">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/HostInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/HostInfoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/VmwareInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/controller/VmwareInfoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/HostInfoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/HostInfoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/VmwareInfoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/VmwareInfoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/HostInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/HostInfoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentVmwareClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentVmwareClientImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/AgentVmwareClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-api/src/main/java/org/travis/api/client/agent/AgentVmwareClient.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -283,7 +280,7 @@
       <workItem from="1717599878037" duration="3475000" />
       <workItem from="1717646656316" duration="31567000" />
       <workItem from="1717723278113" duration="5164000" />
-      <workItem from="1717728469103" duration="20249000" />
+      <workItem from="1717728469103" duration="22208000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -533,7 +530,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717752138075</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="完善物理机虚拟机相关功能">
+      <option name="closed" value="true" />
+      <created>1717754528614</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1717754528614</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -571,7 +576,8 @@
     <MESSAGE value="修改宿主机信息" />
     <MESSAGE value="修改ISO虚拟机创建" />
     <MESSAGE value="自定义命令行执行" />
-    <option name="LAST_COMMIT_MESSAGE" value="自定义命令行执行" />
+    <MESSAGE value="完善物理机虚拟机相关功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="完善物理机虚拟机相关功能" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
