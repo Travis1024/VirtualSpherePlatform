@@ -31,6 +31,7 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
         try {
             // 1.将字符串写入临时 xml 文件中
             String tmpPath = VmwareConstant.TMP_XML_FOLDER + File.separator + vmwareId + ".xml";
+            FileUtil.mkParentDirs(tmpPath);
             FileUtil.writeString(xmlContent, tmpPath, StandardCharsets.UTF_8);
             // 2.执行虚拟机定义
             String execked = RuntimeUtil.execForStr("virsh define " + tmpPath);

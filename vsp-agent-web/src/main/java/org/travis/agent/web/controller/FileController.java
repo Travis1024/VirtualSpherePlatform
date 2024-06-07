@@ -51,11 +51,8 @@ public class FileController {
         try {
             // 1.根据存储临时路径加锁, 尝试拿锁 400ms 后停止重试 (自动续期)
             Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("当前切片文件正在处理中，请稍后重试!"));
-            // 2.校验文件存放临时文件的目录是否存在
-            String tempFolder = tempFilePath.substring(0, tempFilePath.lastIndexOf(File.separator));
-            if (!FileUtil.exist(tempFolder) || FileUtil.isFile(tempFolder)) {
-                FileUtil.mkdir(tempFolder);
-            }
+            // 2.校验文件存放临时文件的目录
+            FileUtil.mkParentDirs(tempFilePath);
             // 3.将切片文件保存到本地临时文件夹
             multipartFile.transferTo(new File(tempFilePath));
         } catch (IOException | InterruptedException e) {
@@ -77,8 +74,8 @@ public class FileController {
 
             /*
              * 2.切片文件排序（切片文件序号都以下划线分割）
-             * /tmp/vsp/iso/1712678912389115_0
-             * /tmp/vsp/iso/1712678912389115_1
+             * /opt/vsp/image/1712678912389115_0
+             * /opt/vsp/image/1712678912389115_1
              */
             List<String> tempFilePathList = fileMergeDTO.getServerTempFilePathList();
             Assert.isFalse(tempFilePathList.isEmpty(), () -> new BadRequestException("切片文件列表不能为空!"));

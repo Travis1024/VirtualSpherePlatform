@@ -9,7 +9,7 @@ package org.travis.shared.common.constants;
  */
 public class VmwareConstant {
 
-    public static final String TMP_XML_FOLDER = "/tmp/vsp/xml";
+    public static final String TMP_XML_FOLDER = "/opt/vsp/xml";
 
     public static final String XML_PARAM_NAME = "name";
     public static final String XML_PARAM_UUID = "uuid";

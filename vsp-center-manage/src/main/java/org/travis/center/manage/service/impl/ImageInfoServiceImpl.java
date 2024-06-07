@@ -78,8 +78,8 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
         // 4.生成响应信息
         List<String> serverTempFilePathList = new ArrayList<>(imageUploadDTO.getSliceNumber());
         for (int i = 0; i < imageUploadDTO.getSliceNumber(); i++) {
-            // /tmp/vsp/image/1712678912389115_0
-            // /tmp/vsp/image/1712678912389115_1
+            // /opt/vsp/image/1712678912389115_0
+            // /opt/vsp/image/1712678912389115_1
             serverTempFilePathList.add(ImageConstant.TMP_IMAGE_PATH_PREFIX + File.separator + imageInfo.getId() + StrUtil.UNDERLINE + i);
         }
         ImageUploadVO imageUploadVO = new ImageUploadVO();
@@ -95,8 +95,8 @@ public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo
         imageUploadVO.setServerMergeUri(serverMergeUri);
         // /root/vsp/share/share_image/ubuntu-22.02.iso
         imageUploadVO.setServerFilePath(sharedStoragePath + ImageConstant.SUB_IMAGE_PATH_PREFIX + File.separator + imageUploadDTO.getImageFileName());
-        // /tmp/vsp/image/1712678912389115_0
-        // /tmp/vsp/image/1712678912389115_1
+        // /opt/vsp/image/1712678912389115_0
+        // /opt/vsp/image/1712678912389115_1
         imageUploadVO.setServerTempFilePathList(serverTempFilePathList);
         return imageUploadVO;
     }
