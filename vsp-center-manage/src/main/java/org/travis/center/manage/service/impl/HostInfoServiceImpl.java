@@ -282,4 +282,9 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
     public List<HostInfo> selectList() {
         return getBaseMapper().selectList(null);
     }
+
+    @Override
+    public void correctHostState() {
+
+    }
 }

@@ -96,4 +96,12 @@ public class HostInfoController {
     public List<HostInfo> selectList() {
         return hostInfoService.selectList();
     }
+
+
+    @Log(title = "核对宿主机状态信息")
+    @Operation(summary = "核对宿主机状态信息")
+    @GetMapping("/correct")
+    public void correctHostState() {
+        hostInfoService.correctHostState();
+    }
 }

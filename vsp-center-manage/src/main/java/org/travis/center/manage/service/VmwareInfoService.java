@@ -44,4 +44,8 @@ public interface VmwareInfoService extends IService<VmwareInfo>{
     void modifyVmwareMemory(Long vmwareId, Long memory);
 
     void modifyVmwareVcpuNumber(Long vmwareId, Integer vcpuNumber);
+
+    String queryVncAddress(Long vmwareId);
+
+    void correctVmwareState();
 }

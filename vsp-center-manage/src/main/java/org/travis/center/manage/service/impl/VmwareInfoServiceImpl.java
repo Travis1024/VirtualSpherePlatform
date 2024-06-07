@@ -385,6 +385,16 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         }
     }
 
+    @Override
+    public String queryVncAddress(Long vmwareId) {
+        return "";
+    }
+
+    @Override
+    public void correctVmwareState() {
+
+    }
+
     /**
      * 通过虚拟机ID查询宿主机信息
      *

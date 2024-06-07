@@ -117,4 +117,19 @@ public class VmwareInfoController {
     ) {
         vmwareInfoService.modifyVmwareVcpuNumber(vmwareId, vcpuNumber);
     }
+
+    @Log(title = "获取虚拟机VNC地址", businessType = BusinessTypeEnum.QUERY)
+    @Operation(summary = "获取虚拟机VNC地址")
+    @GetMapping("/vncAddr")
+    public String queryVncAddress(@RequestParam("vmwareId") Long vmwareId) {
+        return vmwareInfoService.queryVncAddress(vmwareId);
+    }
+
+
+    @Log(title = "核对虚拟机状态信息")
+    @Operation(summary = "核对虚拟机状态信息")
+    @GetMapping("/correct")
+    public void correctVmwareState() {
+        vmwareInfoService.correctVmwareState();
+    }
 }
