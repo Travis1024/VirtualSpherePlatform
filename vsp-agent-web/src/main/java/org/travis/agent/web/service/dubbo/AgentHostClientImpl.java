@@ -6,7 +6,7 @@ import cn.hutool.system.oshi.OshiUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.travis.agent.web.pojo.bo.BridgeInitMessageBO;
+import org.travis.agent.web.pojo.bo.BridgeInitResultMessageBO;
 import org.travis.api.client.agent.AgentHostClient;
 import org.travis.api.client.center.CenterHostClient;
 import org.travis.api.pojo.bo.HostDetailsBO;
@@ -83,16 +83,16 @@ public class AgentHostClientImpl implements AgentHostClient {
 
     @Override
     public void execBridgedAdapter(String targetAgentIp, HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO) {
-        BridgeInitMessageBO bridgeInitMessageBO = null;
+        BridgeInitResultMessageBO bridgeInitResultMessageBO = null;
         try {
             // 1.执行网卡桥接命令
-            bridgeInitMessageBO = bridgedAdapterHandler.execBridgedAdapter(hostBridgedAdapterToAgentDTO);
+            bridgeInitResultMessageBO = bridgedAdapterHandler.execBridgedAdapter(hostBridgedAdapterToAgentDTO);
             // 2.执行回调
-            centerHostClient.sendBridgedInitResultMessage(bridgeInitMessageBO.getHostId(), hostBridgedAdapterToAgentDTO.getHostName(), bridgeInitMessageBO.getIsSuccess(), bridgeInitMessageBO.getStateMessage());
+            centerHostClient.sendBridgedInitResultMessage(bridgeInitResultMessageBO.getHostId(), hostBridgedAdapterToAgentDTO.getHostName(), bridgeInitResultMessageBO.getIsSuccess(), bridgeInitResultMessageBO.getStateMessage());
         } catch (Exception e) {
             log.error("[AgentHostClientImpl::execBridgedAdapter] Agent Exec Bridged Adapter Error! -> {}", e.getMessage());
             // 执行回调
-            centerHostClient.sendBridgedInitResultMessage(hostBridgedAdapterToAgentDTO.getHostId(), hostBridgedAdapterToAgentDTO.getHostName(), false, (bridgeInitMessageBO != null ? bridgeInitMessageBO.getStateMessage() : null) + e.getMessage());
+            centerHostClient.sendBridgedInitResultMessage(hostBridgedAdapterToAgentDTO.getHostId(), hostBridgedAdapterToAgentDTO.getHostName(), false, (bridgeInitResultMessageBO != null ? bridgeInitResultMessageBO.getStateMessage() : null) + e.getMessage());
         }
     }
 

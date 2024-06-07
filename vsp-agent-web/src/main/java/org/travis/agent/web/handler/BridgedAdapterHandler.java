@@ -8,13 +8,12 @@ import cn.hutool.system.oshi.OshiUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
-import org.travis.agent.web.pojo.bo.BridgeInitMessageBO;
+import org.travis.agent.web.pojo.bo.BridgeInitResultMessageBO;
 import org.travis.api.client.center.CenterHostClient;
 import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
 import org.travis.agent.web.config.StartDependentConfig;
 import org.travis.shared.common.constants.AgentDependentConstant;
 import org.travis.shared.common.constants.NetworkLayerConstant;
-import org.travis.shared.common.domain.R;
 import org.travis.shared.common.exceptions.DubboFunctionException;
 import oshi.hardware.NetworkIF;
 
@@ -40,7 +39,7 @@ public class BridgedAdapterHandler {
     @Resource
     private StartDependentConfig startDependentConfig;
 
-    public BridgeInitMessageBO execBridgedAdapter(HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO) {
+    public BridgeInitResultMessageBO execBridgedAdapter(HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO) {
         // 1.查询网卡列表
         log.debug("1.查询网卡列表");
         List<NetworkIF> networkInterfaces = OshiUtil.getNetworkIFs();
@@ -123,11 +122,11 @@ public class BridgedAdapterHandler {
 
         // 6.返回执行结果
         log.debug("6.返回执行结果");
-        BridgeInitMessageBO bridgeInitMessageBO = new BridgeInitMessageBO();
-        bridgeInitMessageBO.setHostId(hostBridgedAdapterToAgentDTO.getId());
-        bridgeInitMessageBO.setIsSuccess(isSuccess);
-        bridgeInitMessageBO.setStateMessage(stateMessage);
-        log.debug(JSONUtil.toJsonStr(bridgeInitMessageBO));
-        return bridgeInitMessageBO;
+        BridgeInitResultMessageBO bridgeInitResultMessageBO = new BridgeInitResultMessageBO();
+        bridgeInitResultMessageBO.setHostId(hostBridgedAdapterToAgentDTO.getHostId());
+        bridgeInitResultMessageBO.setIsSuccess(isSuccess);
+        bridgeInitResultMessageBO.setStateMessage(stateMessage);
+        log.debug(JSONUtil.toJsonStr(bridgeInitResultMessageBO));
+        return bridgeInitResultMessageBO;
     }
 }
