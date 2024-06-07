@@ -22,7 +22,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @Component
 @ServerEndpoint(value = "/ws/global/{clientTag}")
-public class WsGlobalMsg {
+public class WsGlobalMessage {
 
     /**
      * 全局 Session 连接池

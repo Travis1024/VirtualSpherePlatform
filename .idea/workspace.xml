@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="完善宿主机添加功能">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/handler/BridgedAdapterHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/handler/BridgedAdapterHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/pojo/bo/BridgeInitMessageBO.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/pojo/bo/BridgeInitResultMessageBO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentHostClientImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/service/dubbo/AgentHostClientImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +66,8 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ApiPost:MODULE_HTTP_CONFIG:vsp-agent-web": "{\"host\":\"localhost:22001\"}",
+    "ApiPost:MODULE_HTTP_CONFIG:vsp-center-auth": "{\"host\":\"localhost:22001\"}",
     "JUnit.CrontabTest.getNextMonth.executor": "Run",
     "Maven.VirtualSpherePlatform [clean].executor": "Run",
     "Maven.VirtualSpherePlatform [package].executor": "Run",
@@ -91,7 +90,7 @@
     "project.structure.last.edited": "SDKs",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.31144464",
-    "settings.editor.selected.configurable": "com.ccnode.codegenerator.I.b",
+    "settings.editor.selected.configurable": "cn.apipost.upload.ApiPostSettingsConfiguration",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -200,7 +199,8 @@
       <workItem from="1717550455979" duration="15262000" />
       <workItem from="1717599878037" duration="3475000" />
       <workItem from="1717646656316" duration="31567000" />
-      <workItem from="1717723278113" duration="3524000" />
+      <workItem from="1717723278113" duration="5164000" />
+      <workItem from="1717728469103" duration="1776000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -386,7 +386,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717726724104</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="完善宿主机添加功能">
+      <option name="closed" value="true" />
+      <created>1717726830688</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1717726830688</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -6,7 +6,7 @@ import org.travis.center.common.entity.support.GlobalMessage;
 import org.travis.shared.common.enums.MsgConfirmEnum;
 import org.travis.center.common.mapper.support.GlobalMessageMapper;
 import org.travis.shared.common.domain.WebSocketMessage;
-import org.travis.center.support.websocket.service.WsGlobalMsg;
+import org.travis.center.support.websocket.service.WsGlobalMessage;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
 
 import javax.annotation.Resource;
@@ -25,7 +25,7 @@ public class WsMessageHolder {
 
     public void sendGlobalMessage(WebSocketMessage webSocketMessage) {
         // 1.推送消息
-        WsGlobalMsg.sendGlobalMsg(JSONUtil.toJsonStr(webSocketMessage));
+        WsGlobalMessage.sendGlobalMsg(JSONUtil.toJsonStr(webSocketMessage));
         // 2.消息持久化
         messagePersistence(webSocketMessage);
     }
