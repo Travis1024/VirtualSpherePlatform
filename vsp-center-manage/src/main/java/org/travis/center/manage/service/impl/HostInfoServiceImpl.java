@@ -13,6 +13,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -75,8 +76,6 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
     @Resource
     private RedissonClient redissonClient;
     @Resource
-    private HostInfoService hostInfoService;
-    @Resource
     private VmwareInfoService vmwareInfoService;
 
     @Transactional
@@ -127,7 +126,8 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
                 lock.lock(30, TimeUnit.SECONDS);
                 // 6.2.组装参数
                 HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO = new HostBridgedAdapterToAgentDTO();
-                hostBridgedAdapterToAgentDTO.setId(hostInfo.getId());
+                hostBridgedAdapterToAgentDTO.setHostId(hostInfo.getId());
+                hostBridgedAdapterToAgentDTO.setHostName(hostInfo.getName());
                 hostBridgedAdapterToAgentDTO.setNicName(networkLayerInfo.getNicName());
                 hostBridgedAdapterToAgentDTO.setNicStartAddress(networkLayerInfo.getNicStartAddress());
                 hostBridgedAdapterToAgentDTO.setNicMask(networkLayerInfo.getNicMask());
@@ -206,7 +206,7 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
     public List<HostErrorVO> delete(List<Long> hostIdList) {
         List<HostErrorVO> hostErrorVOList = new ArrayList<>();
         for (Long hostId : hostIdList) {
-            HostErrorVO hostErrorVO = hostInfoService.deleteOneById(hostId);
+            HostErrorVO hostErrorVO = ((HostInfoService) AopContext.currentProxy()).deleteOneById(hostId);
             if (hostErrorVO != null) {
                 hostErrorVOList.add(hostErrorVO);
             }
@@ -229,7 +229,7 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
             ).stream().map(VmwareInfo::getId).collect(Collectors.toList());
 
             List<VmwareErrorVO> vmwareErrorList = vmwareInfoService.deleteVmware(vmwareIds);
-            Assert.isTrue(vmwareErrorList.isEmpty(), () -> new ServerErrorException("从属虚拟机删除失败:" + JSONUtil.toJsonStr(vmwareErrorVOS)));
+            Assert.isTrue(vmwareErrorList.isEmpty(), () -> new ServerErrorException("从属虚拟机删除失败:" + JSONUtil.toJsonStr(vmwareErrorList)));
 
             // 3.删除宿主机信息
             removeById(hostId);

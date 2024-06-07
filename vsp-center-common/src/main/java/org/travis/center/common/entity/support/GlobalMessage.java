@@ -55,6 +55,13 @@ public class GlobalMessage extends com.baomidou.mybatisplus.extension.activereco
     private MsgModuleEnum messageModule;
 
     /**
+     * 消息标题
+     */
+    @TableField(value = "MESSAGE_TITLE")
+    @Schema(description="消息标题")
+    private String messageTitle;
+
+    /**
      * 消息内容
      */
     @TableField(value = "MESSAGE_CONTENT")
@@ -124,6 +131,8 @@ public class GlobalMessage extends com.baomidou.mybatisplus.extension.activereco
     public static final String COL_MESSAGE_STATE = "MESSAGE_STATE";
 
     public static final String COL_MESSAGE_MODULE = "MESSAGE_MODULE";
+
+    public static final String COL_MESSAGE_TITLE = "MESSAGE_TITLE";
 
     public static final String COL_MESSAGE_CONTENT = "MESSAGE_CONTENT";
 

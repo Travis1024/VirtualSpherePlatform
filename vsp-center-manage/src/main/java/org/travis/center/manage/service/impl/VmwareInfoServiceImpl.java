@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -72,8 +73,6 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     private WsMessageHolder wsMessageHolder;
     @Resource
     private AgentHostClient agentHostClient;
-    @Resource
-    private VmwareInfoService vmwareInfoService;
 
     @Override
     public VmwareInfo selectOne(Long id) {
@@ -110,6 +109,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                     // 全局推送创建成功消息,记录日志
                     wsMessageHolder.sendGlobalMessage(
                             WebSocketMessage.builder()
+                                    .msgTitle("虚拟机创建")
                                     .msgModule(MsgModuleEnum.VMWARE)
                                     .msgState(MsgStateEnum.INFO)
                                     .msgContent(StrUtil.format("{} -> 虚拟机异步创建成功!", vmwareInsertDTO.getName()))
@@ -120,6 +120,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                     // 全局推送创建失败消息,记录日志
                     wsMessageHolder.sendGlobalMessage(
                             WebSocketMessage.builder()
+                                    .msgTitle("虚拟机创建")
                                     .msgModule(MsgModuleEnum.VMWARE)
                                     .msgState(MsgStateEnum.ERROR)
                                     .msgContent(StrUtil.format("{} -> 虚拟机异步创建失败:{}", vmwareInsertDTO.getName(), ex))
@@ -131,6 +132,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
         wsMessageHolder.sendGlobalMessage(
                 WebSocketMessage.builder()
+                        .msgTitle("虚拟机创建")
                         .msgModule(MsgModuleEnum.VMWARE)
                         .msgState(MsgStateEnum.INFO)
                         .msgContent(StrUtil.format("{} -> 虚拟机异步创建中, 请关注全局消息!", vmwareInsertDTO.getName()))
@@ -268,7 +270,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     public List<VmwareErrorVO> deleteVmware(List<Long> vmwareIds) {
         List<VmwareErrorVO> vmwareErrorVOList = new ArrayList<>();
         for (Long vmwareId : vmwareIds) {
-            VmwareErrorVO vmwareErrorVO = vmwareInfoService.deleteOneById(vmwareId);
+            VmwareErrorVO vmwareErrorVO = ((VmwareInfoService) AopContext.currentProxy()).deleteOneById(vmwareId);
             if (vmwareErrorVO != null) {
                 vmwareErrorVOList.add(vmwareErrorVO);
             }

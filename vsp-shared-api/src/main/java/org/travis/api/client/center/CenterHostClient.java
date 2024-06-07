@@ -1,7 +1,5 @@
 package org.travis.api.client.center;
 
-import org.travis.shared.common.domain.R;
-
 /**
  * @ClassName CenterHostClient
  * @Description CenterHostClient
@@ -10,5 +8,5 @@ import org.travis.shared.common.domain.R;
  * @Data 2024/5/25
  */
 public interface CenterHostClient {
-    R<Void> sendBridgedInitMessage(Long hostId, boolean isSuccess, String stateMessage);
+    void sendBridgedInitResultMessage(Long hostId, String hostName, boolean isSuccess, String stateMessage);
 }

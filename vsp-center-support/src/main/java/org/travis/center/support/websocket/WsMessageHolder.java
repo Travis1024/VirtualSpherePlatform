@@ -34,6 +34,7 @@ public class WsMessageHolder {
         GlobalMessage globalMessage = new GlobalMessage();
         globalMessage.setId(SnowflakeIdUtil.nextId());
         globalMessage.setIsConfirm(MsgConfirmEnum.UN_CONFIRMED);
+        globalMessage.setMessageTitle(webSocketMessage.getMsgTitle());
         globalMessage.setMessageContent(webSocketMessage.getMsgContent());
         globalMessage.setMessageState(webSocketMessage.getMsgState());
         globalMessage.setMessageModule(webSocketMessage.getMsgModule());

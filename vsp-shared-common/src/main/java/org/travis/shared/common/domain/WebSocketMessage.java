@@ -24,6 +24,8 @@ public class WebSocketMessage {
     private MsgModuleEnum msgModule;
     @Schema(description = "消息状态")
     private MsgStateEnum msgState;
+    @Schema(description = "消息标题")
+    private String msgTitle;
     @Schema(description = "消息内容")
     private String msgContent;
 }

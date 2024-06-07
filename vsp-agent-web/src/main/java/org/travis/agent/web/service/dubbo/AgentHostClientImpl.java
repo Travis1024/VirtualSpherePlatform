@@ -88,11 +88,11 @@ public class AgentHostClientImpl implements AgentHostClient {
             // 1.执行网卡桥接命令
             bridgeInitMessageBO = bridgedAdapterHandler.execBridgedAdapter(hostBridgedAdapterToAgentDTO);
             // 2.执行回调
-            centerHostClient.sendBridgedInitMessage(bridgeInitMessageBO.getHostId(), bridgeInitMessageBO.getIsSuccess(), bridgeInitMessageBO.getStateMessage());
+            centerHostClient.sendBridgedInitResultMessage(bridgeInitMessageBO.getHostId(), hostBridgedAdapterToAgentDTO.getHostName(), bridgeInitMessageBO.getIsSuccess(), bridgeInitMessageBO.getStateMessage());
         } catch (Exception e) {
             log.error("[AgentHostClientImpl::execBridgedAdapter] Agent Exec Bridged Adapter Error! -> {}", e.getMessage());
             // 执行回调
-            centerHostClient.sendBridgedInitMessage(hostBridgedAdapterToAgentDTO.getId(), false, (bridgeInitMessageBO != null ? bridgeInitMessageBO.getStateMessage() : null) + e.getMessage());
+            centerHostClient.sendBridgedInitResultMessage(hostBridgedAdapterToAgentDTO.getHostId(), hostBridgedAdapterToAgentDTO.getHostName(), false, (bridgeInitMessageBO != null ? bridgeInitMessageBO.getStateMessage() : null) + e.getMessage());
         }
     }
 

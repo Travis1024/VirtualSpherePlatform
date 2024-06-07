@@ -18,7 +18,13 @@ public class HostBridgedAdapterToAgentDTO implements Serializable {
      * 宿主机 ID
      */
     @Schema(description="宿主机 ID")
-    private Long id;
+    private Long hostId;
+
+    /**
+     * 宿主机名称
+     */
+    @Schema(description="宿主机名称")
+    private String hostName;
 
     /**
      * 网卡名称（eg：p4p1）

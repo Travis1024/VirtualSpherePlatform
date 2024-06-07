@@ -6,6 +6,7 @@
     <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="MESSAGE_STATE" jdbcType="INTEGER" property="messageState" />
     <result column="MESSAGE_MODULE" jdbcType="INTEGER" property="messageModule" />
+    <result column="MESSAGE_TITLE" jdbcType="VARCHAR" property="messageTitle" />
     <result column="MESSAGE_CONTENT" jdbcType="LONGVARCHAR" property="messageContent" />
     <result column="IS_CONFIRM" jdbcType="INTEGER" property="isConfirm" />
     <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
@@ -19,6 +20,6 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     ID, MESSAGE_STATE, MESSAGE_MODULE, MESSAGE_CONTENT, IS_CONFIRM, IS_DELETED, UPDATER,
-    CREATOR, UPDATE_TIME, CREATE_TIME, CONFIRM_USER_ID, CONFIRM_TIME
+    CREATOR, UPDATE_TIME, CREATE_TIME, CONFIRM_USER_ID, CONFIRM_TIME, MESSAGE_TITLE
   </sql>
 </mapper>

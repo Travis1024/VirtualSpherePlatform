@@ -74,6 +74,4 @@ public class DiskInfoController {
     public void deleteDisk(@RequestParam("diskId") Long diskId) {
         diskInfoService.deleteDisk(diskId, true);
     }
-
-    public
 }

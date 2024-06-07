@@ -28,7 +28,7 @@ import java.util.Arrays;
 @EnableDubbo
 @EnableWebSocket
 @EnableScheduling
-@EnableAspectJAutoProxy
+@EnableAspectJAutoProxy(exposeProxy = true)
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"org.travis.center", "org.travis.shared", "org.travis.api"})
 @MapperScan("org.travis.center.**.mapper")

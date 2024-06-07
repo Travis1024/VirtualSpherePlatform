@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
  */
 @Slf4j
 @Component
-@ServerEndpoint(value = "/ws/global/{random}")
+@ServerEndpoint(value = "/ws/global/{clientTag}")
 public class WsGlobalMsg {
 
     /**
@@ -30,10 +30,10 @@ public class WsGlobalMsg {
     public static ConcurrentHashSet<Session> sessionPool = new ConcurrentHashSet<>();
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("random") String random) {
+    public void onOpen(Session session, @PathParam("clientTag") String clientTag) {
         try {
             sessionPool.add(session);
-            log.info("[WebSocketGlobalMsg::onOpen] -> {} 连接成功!", session.getId());
+            log.info("[WebSocketGlobalMsg::onOpen] -> {} - {} 连接成功!", session.getId(), clientTag);
         } catch (Exception e) {
             log.error("[WebSocketGlobalMsg::onOpen] 连接失败!");
             log.error(e.getMessage(), e);
