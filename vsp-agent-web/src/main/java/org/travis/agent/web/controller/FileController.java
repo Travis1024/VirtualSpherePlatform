@@ -51,7 +51,12 @@ public class FileController {
         try {
             // 1.根据存储临时路径加锁, 尝试拿锁 400ms 后停止重试 (自动续期)
             Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("当前切片文件正在处理中，请稍后重试!"));
-            // 2.将切片文件保存到本地临时文件夹
+            // 2.校验文件存放临时文件的目录是否存在
+            String tempFolder = tempFilePath.substring(0, tempFilePath.lastIndexOf(File.separator));
+            if (!FileUtil.exist(tempFolder) || FileUtil.isFile(tempFolder)) {
+                FileUtil.mkdir(tempFolder);
+            }
+            // 3.将切片文件保存到本地临时文件夹
             multipartFile.transferTo(new File(tempFilePath));
         } catch (IOException | InterruptedException e) {
             throw new ServerErrorException("切片文件上传失败 -> " + e.getMessage());

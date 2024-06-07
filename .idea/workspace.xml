@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="完善宿主机添加功能">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/controller/FileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/controller/FileController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +70,9 @@
     "ApiPost:MODULE_HTTP_CONFIG:vsp-agent-web": "{\"host\":\"localhost:22001\"}",
     "ApiPost:MODULE_HTTP_CONFIG:vsp-center-auth": "{\"host\":\"localhost:22001\"}",
     "JUnit.CrontabTest.getNextMonth.executor": "Run",
+    "JUnit.FileControllerTest.fileSlice.executor": "Run",
+    "JUnit.ImageTest.calcCrc32.executor": "Run",
+    "JUnit.ImageTest.calcSliceNumber.executor": "Run",
     "Maven.VirtualSpherePlatform [clean].executor": "Run",
     "Maven.VirtualSpherePlatform [package].executor": "Run",
     "Remote JVM Debug.AgentDebug.executor": "Debug",
@@ -79,7 +83,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.VspAgentApplication.executor": "Run",
-    "Spring Boot.VspCenterApplication.executor": "Debug",
+    "Spring Boot.VspCenterApplication.executor": "Run",
     "git-widget-placeholder": "dev-version-1",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
@@ -117,7 +121,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Remote JVM Debug.AgentDebug">
+  <component name="RunManager" selected="JUnit.FileControllerTest.fileSlice">
     <configuration name="CrontabTest.getNextMonth" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="vsp-center-web" />
       <extension name="coverage">
@@ -129,6 +133,54 @@
       <option name="PACKAGE_NAME" value="org.travis.center.web" />
       <option name="MAIN_CLASS_NAME" value="org.travis.center.web.CrontabTest" />
       <option name="METHOD_NAME" value="getNextMonth" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FileControllerTest.fileSlice" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="vsp-agent-web" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.travis.agent.web.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.travis.agent.web.controller" />
+      <option name="MAIN_CLASS_NAME" value="org.travis.agent.web.controller.FileControllerTest" />
+      <option name="METHOD_NAME" value="fileSlice" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ImageTest.calcCrc32" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="vsp-center-web" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.travis.center.web.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.travis.center.web" />
+      <option name="MAIN_CLASS_NAME" value="org.travis.center.web.ImageTest" />
+      <option name="METHOD_NAME" value="calcCrc32" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ImageTest.calcSliceNumber" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="vsp-center-web" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.travis.center.web.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.travis.center.web" />
+      <option name="MAIN_CLASS_NAME" value="org.travis.center.web.ImageTest" />
+      <option name="METHOD_NAME" value="calcSliceNumber" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -163,6 +215,9 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="JUnit.FileControllerTest.fileSlice" />
+      <item itemvalue="JUnit.ImageTest.calcCrc32" />
+      <item itemvalue="JUnit.ImageTest.calcSliceNumber" />
       <item itemvalue="JUnit.CrontabTest.getNextMonth" />
       <item itemvalue="Remote JVM Debug.AgentDebug" />
       <item itemvalue="Spring Boot.VspAgentApplication" />
@@ -170,6 +225,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.FileControllerTest.fileSlice" />
+        <item itemvalue="JUnit.ImageTest.calcCrc32" />
+        <item itemvalue="JUnit.ImageTest.calcSliceNumber" />
         <item itemvalue="JUnit.CrontabTest.getNextMonth" />
       </list>
     </recent_temporary>
@@ -200,7 +258,7 @@
       <workItem from="1717599878037" duration="3475000" />
       <workItem from="1717646656316" duration="31567000" />
       <workItem from="1717723278113" duration="5164000" />
-      <workItem from="1717728469103" duration="1776000" />
+      <workItem from="1717728469103" duration="8388000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -394,7 +452,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717726830688</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="完善宿主机添加功能">
+      <option name="closed" value="true" />
+      <created>1717730404418</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1717730404418</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -429,6 +495,100 @@
     <MESSAGE value="完善虚拟机资源管理" />
     <MESSAGE value="完善宿主机添加功能" />
     <option name="LAST_COMMIT_MESSAGE" value="完善宿主机添加功能" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/VmwareInfoServiceImpl.java</url>
+          <line>100</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>96</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>98</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>100</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>113</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>122</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>134</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>153</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>162</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>102</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>104</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>107</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>109</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/IsoCreationService.java</url>
+          <line>32</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/DiskInfoServiceImpl.java</url>
+          <line>77</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/DiskInfoServiceImpl.java</url>
+          <line>103</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/controller/FileController.java</url>
+          <line>62</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
