@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="修改切片文件存储">
+    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="修改宿主机信息">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/entity/manage/HostInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/entity/manage/HostInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/resources/mapper/HostInfoMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/resources/mapper/HostInfoMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/HostInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/HostInfoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/entity/manage/VmwareInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-common/src/main/java/org/travis/center/common/entity/manage/VmwareInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/pojo/dto/VmwareInsertDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/pojo/dto/VmwareInsertDTO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +84,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.VspAgentApplication.executor": "Run",
-    "Spring Boot.VspCenterApplication.executor": "Run",
+    "Spring Boot.VspCenterApplication.executor": "Debug",
     "git-widget-placeholder": "dev-version-1",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
@@ -260,7 +259,7 @@
       <workItem from="1717599878037" duration="3475000" />
       <workItem from="1717646656316" duration="31567000" />
       <workItem from="1717723278113" duration="5164000" />
-      <workItem from="1717728469103" duration="11690000" />
+      <workItem from="1717728469103" duration="13247000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -478,7 +477,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717745045106</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="修改宿主机信息">
+      <option name="closed" value="true" />
+      <created>1717746095412</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1717746095412</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -513,7 +520,8 @@
     <MESSAGE value="完善虚拟机资源管理" />
     <MESSAGE value="完善宿主机添加功能" />
     <MESSAGE value="修改切片文件存储" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改切片文件存储" />
+    <MESSAGE value="修改宿主机信息" />
+    <option name="LAST_COMMIT_MESSAGE" value="修改宿主机信息" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -525,28 +533,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
-          <line>96</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
-          <line>98</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
           <line>100</line>
           <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
-          <line>113</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
-          <line>122</line>
-          <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
@@ -600,6 +588,29 @@
           <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/DiskInfoServiceImpl.java</url>
           <line>103</line>
           <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>178</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/creation/AbstractCreationService.java</url>
+          <line>182</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/DiskInfoServiceImpl.java</url>
+          <line>105</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vsp-center-manage/src/main/java/org/travis/center/manage/service/impl/DiskInfoServiceImpl.java</url>
+          <line>104</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -135,8 +135,8 @@ public abstract class AbstractCreationService {
         XmlParamBO xmlParamBO = new XmlParamBO();
         xmlParamBO.setName(vmwareInfo.getName());
         xmlParamBO.setUuid(vmwareInfo.getUuid());
-        xmlParamBO.setMaxMemory(String.valueOf(vmwareInfo.getMemoryMax()));
-        xmlParamBO.setCurMemory(String.valueOf(vmwareInfo.getMemoryCurrent()));
+        xmlParamBO.setMaxMemory(String.valueOf(vmwareInfo.getMemoryMax() / SystemConstant.KB_UNIT));
+        xmlParamBO.setCurMemory(String.valueOf(vmwareInfo.getMemoryCurrent() / SystemConstant.KB_UNIT));
         xmlParamBO.setMaxVcpu(String.valueOf(vmwareInfo.getVcpuMax()));
         xmlParamBO.setCurVcpu(String.valueOf(vmwareInfo.getVcpuCurrent()));
         xmlParamBO.setSystemDiskPath(agentAssistService.getHostSharedStoragePath() + diskInfo.getSubPath());

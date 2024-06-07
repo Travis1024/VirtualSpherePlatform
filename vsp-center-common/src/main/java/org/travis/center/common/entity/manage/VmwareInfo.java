@@ -94,17 +94,17 @@ public class VmwareInfo extends com.baomidou.mybatisplus.extension.activerecord.
     private Integer vcpuCurrent;
 
     /**
-     * 虚拟机内存最大值（KB）
+     * 虚拟机内存最大值（字节）
      */
     @TableField(value = "MEMORY_MAX")
-    @Schema(description="虚拟机内存最大值（KB）")
+    @Schema(description="虚拟机内存最大值（字节）")
     private Long memoryMax;
 
     /**
-     * 虚拟机内存当前值（KB）
+     * 虚拟机内存当前值（字节）
      */
     @TableField(value = "MEMORY_CURRENT")
-    @Schema(description="虚拟机内存当前值（KB）")
+    @Schema(description="虚拟机内存当前值（字节）")
     private Long memoryCurrent;
 
     /**

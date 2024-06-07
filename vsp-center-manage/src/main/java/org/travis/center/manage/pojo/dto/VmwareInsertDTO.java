@@ -40,7 +40,7 @@ public class VmwareInsertDTO implements Serializable {
     @NotNull(message = "虚拟机 vCPU 核数不能为空!")
     private Integer vcpuCurrent;
 
-    @Schema(description="虚拟机内存值（KB）")
+    @Schema(description="虚拟机内存值（字节）")
     @NotNull(message = "虚拟机内存值不能为空!")
     private Long memoryCurrent;
 
