@@ -143,7 +143,7 @@ public abstract class AbstractCreationService {
 
         if (VmwareCreateFormEnum.ISO.getValue().equals(vmwareInfo.getCreateForm().getValue())) {
             ImageInfo imageInfo = imageInfoMapper.selectById(vmwareInsertDTO.getImageId());
-            xmlParamBO.setIosPath(agentAssistService.getHostSharedStoragePath() + imageInfo.getSubPath());
+            xmlParamBO.setIsoPath(agentAssistService.getHostSharedStoragePath() + imageInfo.getSubPath());
         }
 
         return replaceXmlParams(xmlParamBO);
@@ -201,6 +201,6 @@ public abstract class AbstractCreationService {
         private String maxVcpu;
         private String curVcpu;
         private String systemDiskPath;
-        private String iosPath;
+        private String isoPath;
     }
 }
