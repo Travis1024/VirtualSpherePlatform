@@ -1,13 +1,12 @@
 package org.travis.agent.web;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.travis.shared.common.utils.NetworkUtil;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -24,7 +23,7 @@ import java.util.Arrays;
 @ComponentScan(basePackages = {"org.travis.agent", "org.travis.shared", "org.travis.api"})
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class VspAgentApplication {
-    public static void main(String[] args) throws UnknownHostException, SocketException {
+    public static void main(String[] args) {
         // Create Spring Application Instance
         SpringApplication application = new SpringApplication(VspAgentApplication.class);
 
@@ -54,7 +53,7 @@ public class VspAgentApplication {
                 protocol,
                 environment.getProperty("server.port"),
                 protocol,
-                NetworkUtil.getLocalHostAddress(),
+                NetUtils.getLocalHost(),
                 environment.getProperty("server.port"),
                 Arrays.toString(environment.getActiveProfiles())
         );

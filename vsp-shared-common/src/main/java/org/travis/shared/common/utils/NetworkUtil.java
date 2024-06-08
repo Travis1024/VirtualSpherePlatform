@@ -17,6 +17,8 @@ import java.util.Enumeration;
  * @Data 2024/5/14
  */
 public class NetworkUtil {
+
+    @Deprecated
     public static String getLocalHostAddress() throws UnknownHostException, SocketException {
         InetAddress candidateAddress = null;
         // 遍历所有的网络接口

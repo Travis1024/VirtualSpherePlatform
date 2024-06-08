@@ -1,6 +1,7 @@
 package org.travis.center.web;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
 import org.mybatis.spring.annotation.MapperScan;
@@ -34,7 +35,7 @@ import java.util.Arrays;
 @MapperScan("org.travis.center.**.mapper")
 @SpringBootApplication
 public class VspCenterApplication {
-    public static void main(String[] args) throws UnknownHostException, SocketException {
+    public static void main(String[] args) {
         // Create Spring Application Instance
         SpringApplication application = new SpringApplication(VspCenterApplication.class);
 
@@ -64,7 +65,7 @@ public class VspCenterApplication {
                 protocol,
                 environment.getProperty("server.port"),
                 protocol,
-                NetworkUtil.getLocalHostAddress(),
+                NetUtils.getLocalHost(),
                 environment.getProperty("server.port"),
                 Arrays.toString(environment.getActiveProfiles())
         );
