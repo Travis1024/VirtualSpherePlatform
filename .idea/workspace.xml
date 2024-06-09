@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="查询 VNC 地址">
-      <change afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/config/DubboConfig.java" afterDir="false" />
+    <list default="true" id="d41424be-b522-431e-851f-9f63ef01e2f5" name="Changes" comment="完善 Dubbo 地址发现">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/VspAgentApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/VspAgentApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/controller/DubboController.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/controller/DubboController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/VspCenterApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-center-web/src/main/java/org/travis/center/web/VspCenterApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/utils/NetworkUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-shared-common/src/main/java/org/travis/shared/common/utils/NetworkUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/config/DubboConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/vsp-agent-web/src/main/java/org/travis/agent/web/config/DubboConfig.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -283,7 +279,7 @@
       <workItem from="1717599878037" duration="3475000" />
       <workItem from="1717646656316" duration="31567000" />
       <workItem from="1717723278113" duration="5164000" />
-      <workItem from="1717728469103" duration="28595000" />
+      <workItem from="1717728469103" duration="30541000" />
     </task>
     <task id="LOCAL-00001" summary="modify">
       <option name="closed" value="true" />
@@ -549,7 +545,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717773635828</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="完善 Dubbo 地址发现">
+      <option name="closed" value="true" />
+      <created>1717806328958</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1717806328958</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -589,7 +593,8 @@
     <MESSAGE value="自定义命令行执行" />
     <MESSAGE value="完善物理机虚拟机相关功能" />
     <MESSAGE value="查询 VNC 地址" />
-    <option name="LAST_COMMIT_MESSAGE" value="查询 VNC 地址" />
+    <MESSAGE value="完善 Dubbo 地址发现" />
+    <option name="LAST_COMMIT_MESSAGE" value="完善 Dubbo 地址发现" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

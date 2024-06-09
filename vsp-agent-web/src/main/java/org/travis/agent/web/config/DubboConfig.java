@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @ClassName DubboConfig
- * @Description TODO
+ * @Description TODDubboConfigO
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/6/8
