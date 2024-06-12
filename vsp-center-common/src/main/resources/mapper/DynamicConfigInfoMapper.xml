@@ -9,6 +9,7 @@
     <result column="CONFIG_DESCRIPTION" jdbcType="VARCHAR" property="configDescription" />
     <result column="CONFIG_TYPE" jdbcType="INTEGER" property="configType" />
     <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
+    <result column="IS_FIXED" jdbcType="INTEGER" property="isFixed" />
     <result column="UPDATER" jdbcType="BIGINT" property="updater" />
     <result column="CREATOR" jdbcType="BIGINT" property="creator" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
@@ -18,6 +19,6 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     ID, CONFIG_NAME, CONFIG_VALUE, CONFIG_DESCRIPTION, CONFIG_TYPE, IS_DELETED,
-    UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME, CONFIG_EXAMPLE
+    UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME, CONFIG_EXAMPLE, IS_FIXED
   </sql>
 </mapper>
