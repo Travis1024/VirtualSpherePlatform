@@ -37,7 +37,7 @@ build/
 ### Definition ###
 *.properties
 **/src/test/
-doc/
+doc/private/
 logs/
 log_dir_IS_UNDEFINED/
 TIPS.md
