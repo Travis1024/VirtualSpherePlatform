@@ -35,9 +35,8 @@ build/
 .DS_Store
 
 ### Definition ###
-*.properties
+user.properties
 **/src/test/
 doc/private/
 logs/
 log_dir_IS_UNDEFINED/
-TIPS.md
