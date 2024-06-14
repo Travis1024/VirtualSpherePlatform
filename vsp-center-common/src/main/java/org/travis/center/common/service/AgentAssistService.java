@@ -31,8 +31,8 @@ public class AgentAssistService {
     private CuratorFramework curatorFramework;
     @Resource
     private HostInfoMapper hostInfoMapper;
-    @Value("${vsp.host.shared.storagePath}")
-    private String hostSharedStoragePath;
+    @Value("${vsp.agent.shared.storagePath}")
+    private String agentHostSharedStoragePath;
 
     public List<String> getHealthyHostAgentIpList() {
         List<String> ipList = new ArrayList<>();
@@ -63,6 +63,6 @@ public class AgentAssistService {
     }
 
     public String getHostSharedStoragePath() {
-        return hostSharedStoragePath.endsWith(File.separator) ? hostSharedStoragePath.substring(0, hostSharedStoragePath.length() - File.separator.length()) : hostSharedStoragePath;
+        return agentHostSharedStoragePath.endsWith(File.separator) ? agentHostSharedStoragePath.substring(0, agentHostSharedStoragePath.length() - File.separator.length()) : agentHostSharedStoragePath;
     }
 }
