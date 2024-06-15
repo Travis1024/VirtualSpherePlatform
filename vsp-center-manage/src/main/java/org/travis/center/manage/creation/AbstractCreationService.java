@@ -124,7 +124,7 @@ public abstract class AbstractCreationService {
         BeanUtils.copyProperties(vmwareInsertDTO, vmwareInfo);
         vmwareInfo.setId(SnowflakeIdUtil.nextId());
         vmwareInfo.setUuid(IdUtil.fastUUID());
-        vmwareInfo.setState(VmwareStateEnum.IN_PREPARATION);
+        vmwareInfo.setState(VmwareStateEnum.ING_CREATE);
         vmwareInfo.setVcpuMax(hostResourceInfoBO.getVCpuAllNum());
         vmwareInfo.setMemoryMax((long) ((hostResourceInfoBO.getMemoryTotalMax() * 1.0 / SystemConstant.GB_UNIT) * 0.8) * SystemConstant.GB_UNIT);
         vmwareInfoMapper.insert(vmwareInfo);
@@ -162,7 +162,7 @@ public abstract class AbstractCreationService {
         // 7.1.更新系统磁盘状态
         diskInfoMapper.update(Wrappers.<DiskInfo>lambdaUpdate().set(DiskInfo::getIsMount, DiskMountEnum.MOUNTED).eq(DiskInfo::getId, diskInfo.getId()));
         // 7.2.更新虚拟机状态
-        vmwareInfoMapper.update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.POWER_OFF).eq(VmwareInfo::getId, vmwareInfo.getId()));
+        vmwareInfoMapper.update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.SHUT_OFF).eq(VmwareInfo::getId, vmwareInfo.getId()));
     }
 
     private String replaceXmlParams(XmlParamBO xmlParamBO) throws IOException {

@@ -188,14 +188,14 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             }
 
             // 5.预先修改状态为：启动中
-            getBaseMapper().update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.STARTING).eq(VmwareInfo::getId, vmwareInfo.getId()));
+            getBaseMapper().update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.ING_START).eq(VmwareInfo::getId, vmwareInfo.getId()));
 
             // 6.虚拟机启动
             R<String> startedVmwareR = agentVmwareClient.startVmware(hostIp, vmwareInfo.getUuid());
             Assert.isTrue(startedVmwareR.checkSuccess(), () -> new DubboFunctionException("虚拟机启动失败:" + startedVmwareR.getMsg()));
 
             // 7.修改虚拟机状态为：运行状态
-            getBaseMapper().update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.POWER_ON).eq(VmwareInfo::getId, vmwareInfo.getId()));
+            getBaseMapper().update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.RUNNING).eq(VmwareInfo::getId, vmwareInfo.getId()));
             return null;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -221,7 +221,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
         return commonVmwareOperation(
                 vmwareIds,
-                VmwareStateEnum.PAUSE,
+                VmwareStateEnum.PAUSED,
                 (vmwareInfo, hostInfo) -> new CommonOperateParams(hostInfo.getIp(), vmwareInfo.getUuid()),
                 commonOperateParams -> agentVmwareClient.suspendVmware(commonOperateParams.getHostIp(), commonOperateParams.getVmwareUuid())
         );
@@ -234,7 +234,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
         return commonVmwareOperation(
                 vmwareIds,
-                VmwareStateEnum.POWER_ON,
+                VmwareStateEnum.RUNNING,
                 (vmwareInfo, hostInfo) -> new CommonOperateParams(hostInfo.getIp(), vmwareInfo.getUuid()),
                 commonOperateParams -> agentVmwareClient.resumeVmware(commonOperateParams.getHostIp(), commonOperateParams.getVmwareUuid())
         );
@@ -247,7 +247,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
         return commonVmwareOperation(
                 vmwareIds,
-                VmwareStateEnum.POWER_OFF,
+                VmwareStateEnum.SHUT_OFF,
                 (vmwareInfo, hostInfo) -> new CommonOperateParams(hostInfo.getIp(), vmwareInfo.getUuid()),
                 commonOperateParams -> agentVmwareClient.shutdownVmware(commonOperateParams.getHostIp(), commonOperateParams.getVmwareUuid())
         );
@@ -260,7 +260,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
         return commonVmwareOperation(
                 vmwareIds,
-                VmwareStateEnum.POWER_OFF,
+                VmwareStateEnum.SHUT_OFF,
                 (vmwareInfo, hostInfo) -> new CommonOperateParams(hostInfo.getIp(), vmwareInfo.getUuid()),
                 commonOperateParams -> agentVmwareClient.destroyVmware(commonOperateParams.getHostIp(), commonOperateParams.getVmwareUuid())
         );
@@ -321,7 +321,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             Assert.isTrue(memory <= vmwareInfo.getMemoryMax(), () -> new BadRequestException("超出虚拟机最大内存限制:" + vmwareInfo.getMemoryMax()));
 
             // 2.2.非关机状态 & 资源扩展 -> 资源校验
-            if (!VmwareStateEnum.POWER_OFF.equals(vmwareInfo.getState()) && memory > vmwareInfo.getMemoryCurrent()) {
+            if (!VmwareStateEnum.SHUT_OFF.equals(vmwareInfo.getState()) && memory > vmwareInfo.getMemoryCurrent()) {
                 // Dubbo 获取宿主机实时资源信息
                 R<HostResourceInfoBO> hostResourceInfoBOR = agentHostClient.queryHostResourceInfo(hostInfo.getIp());
                 Assert.isTrue(hostResourceInfoBOR.checkSuccess(), () -> new NotFoundException("宿主机实时资源信息查询失败!"));
@@ -331,7 +331,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             }
 
             // 3.获取宿主机 IP 信息，并发送 Dubbo 消息
-            R<Void> modifiedR = agentVmwareClient.modifyVmwareMemory(hostInfo.getIp(), vmwareInfo.getUuid(), memory, VmwareStateEnum.POWER_OFF.equals(vmwareInfo.getState()));
+            R<Void> modifiedR = agentVmwareClient.modifyVmwareMemory(hostInfo.getIp(), vmwareInfo.getUuid(), memory, VmwareStateEnum.SHUT_OFF.equals(vmwareInfo.getState()));
             Assert.isTrue(modifiedR.checkSuccess(), () -> new DubboFunctionException("虚拟机内存大小修改失败:" + modifiedR.getMsg()));
 
             // 4.修改数据库内存大小
@@ -361,7 +361,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             Assert.isTrue(vcpuNumber <= vmwareInfo.getVcpuMax(), () -> new BadRequestException("超出虚拟机最大CPU数量限制:" + vmwareInfo.getVcpuMax()));
 
             // 2.2.非关机状态 & 资源扩展 -> 资源校验
-            if (!VmwareStateEnum.POWER_OFF.equals(vmwareInfo.getState()) && vcpuNumber > vmwareInfo.getVcpuCurrent()) {
+            if (!VmwareStateEnum.SHUT_OFF.equals(vmwareInfo.getState()) && vcpuNumber > vmwareInfo.getVcpuCurrent()) {
                 // Dubbo 获取宿主机实时资源信息
                 R<HostResourceInfoBO> hostResourceInfoBOR = agentHostClient.queryHostResourceInfo(hostInfo.getIp());
                 Assert.isTrue(hostResourceInfoBOR.checkSuccess(), () -> new NotFoundException("宿主机实时资源信息查询失败!"));
@@ -371,7 +371,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             }
 
             // 3.获取宿主机 IP 信息，并发送 Dubbo 消息
-            R<Void> modifiedR = agentVmwareClient.modifyVmwareVcpu(hostInfo.getIp(), vmwareInfo.getUuid(), vcpuNumber, VmwareStateEnum.POWER_OFF.equals(vmwareInfo.getState()));
+            R<Void> modifiedR = agentVmwareClient.modifyVmwareVcpu(hostInfo.getIp(), vmwareInfo.getUuid(), vcpuNumber, VmwareStateEnum.SHUT_OFF.equals(vmwareInfo.getState()));
             Assert.isTrue(modifiedR.checkSuccess(), () -> new DubboFunctionException("虚拟机虚拟CPU数量修改失败:" + modifiedR.getMsg()));
 
             // 4.修改数据库
@@ -389,7 +389,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     public String queryVncAddress(Long vmwareId) {
         // 1.查询虚拟机信息, 并验证虚拟机当前状态
         VmwareInfo vmwareInfo = getById(vmwareId);
-        Assert.isTrue(VmwareStateEnum.POWER_ON.equals(vmwareInfo.getState()), () -> new BadRequestException("虚拟机处于非运行状态, 无法查询 VNC 地址信息!"));
+        Assert.isTrue(VmwareStateEnum.RUNNING.equals(vmwareInfo.getState()), () -> new BadRequestException("虚拟机处于非运行状态, 无法查询 VNC 地址信息!"));
         // 2.查询虚拟机所在的宿主机IP
         HostInfo hostInfo = queryHostInfoByVmwareId(vmwareId);
         // 3.Dubbo-发送查询 VNC 请求信息
@@ -435,7 +435,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     public List<VmwareErrorVO> complexVmware(List<Long> vmwareIds) {
         return commonVmwareOperation(
                 vmwareIds,
-                VmwareStateEnum.POWER_OFF,
+                VmwareStateEnum.RUNNING,
                 (vmwareInfo, hostInfo) -> new SubOperateParams(hostInfo.getIp(), vmwareInfo.getUuid(), "subParam"),
                 (Function<SubOperateParams, R<String>>) subOperateParams -> agentVmwareClient.complexVmware(subOperateParams.getHostIp(), subOperateParams.getVmwareUuid(), subOperateParams.getSubParam())
         );

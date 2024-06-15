@@ -17,21 +17,32 @@ import java.io.Serializable;
  */
 @Getter
 public enum VmwareStateEnum implements Serializable {
-    IN_PREPARATION(0, "创建中"),
-    STARTING(1, "启动中"),
+    // Official status
+    UN_DEFINED(0, "undefined", "未定义"),
+    SHUT_OFF(1, "shut off", "关闭"),
+    RUNNING(2, "running", "运行"),
+    PAUSED(3, "paused", "暂停"),
+    SAVED(4, "saved", "保存"),
+    CRASHED(5, "crashed", "崩溃"),
 
-    PAUSE(2, "暂停状态"),
-    POWER_ON(3, "运行状态"),
-    POWER_OFF(4, "关机状态"),
+    // Intermediate statue
+    ING_CREATE(10, "creating", "创建中"),
+    ING_START(11, "starting", "启动中"),
+
+    // Custom state
+    UNKNOW(20, "unknow", "未知"),
+    ERROR(21, "error", "异常"),
     ;
 
     @EnumValue
     private final Integer value;
     @JsonValue
     private final String display;
+    private final String tag;
 
-    VmwareStateEnum(Integer value, String display) {
+    VmwareStateEnum(Integer value, String tag, String display) {
         this.value = value;
+        this.tag = tag;
         this.display = display;
     }
 
