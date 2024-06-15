@@ -1,15 +1,12 @@
 package org.travis.agent.web.handler;
 
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.system.oshi.OshiUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 import org.travis.agent.web.pojo.bo.BridgeInitResultMessageBO;
-import org.travis.api.client.center.CenterHostClient;
 import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
 import org.travis.agent.web.config.StartDependentConfig;
 import org.travis.shared.common.constants.AgentDependentConstant;
@@ -35,8 +32,6 @@ import java.util.stream.Collectors;
 @Component
 public class BridgedAdapterHandler {
 
-    @DubboReference
-    public CenterHostClient centerHostClient;
     @Resource
     private StartDependentConfig startDependentConfig;
 

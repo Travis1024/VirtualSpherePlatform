@@ -12,6 +12,7 @@ public class AgentDependentConstant {
      * 桥接网络初始化文件 key
      */
     public static final String INIT_BRIDGE_KEY = "init-bridge";
+
     /**
      * virsh 虚拟网络初始化文件 key
      */
@@ -26,4 +27,9 @@ public class AgentDependentConstant {
      * 查询磁盘大小 key
      */
     public static final String INIT_DISK_SIZE_CALC_KEY = "init-disk-size-calc";
+
+    /**
+     * 查询虚拟机状态列表 key
+     */
+    public static final String INIT_QUERY_VM_STATES_KEY = "init-query-vm-states";
 }

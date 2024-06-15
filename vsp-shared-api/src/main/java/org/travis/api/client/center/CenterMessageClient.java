@@ -12,6 +12,5 @@ import org.travis.shared.common.domain.WebSocketMessage;
  */
 public interface CenterMessageClient {
     R<Void> sendGlobalMessage(WebSocketMessage webSocketMessage);
-
-    R<String> dubboHealthyCheck();
+    void sendBridgedInitResultMessage(Long hostId, String hostName, boolean isSuccess, String stateMessage);
 }

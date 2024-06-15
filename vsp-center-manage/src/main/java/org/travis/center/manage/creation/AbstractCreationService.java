@@ -2,6 +2,7 @@ package org.travis.center.manage.creation;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.CharUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -122,6 +123,8 @@ public abstract class AbstractCreationService {
     public void stepTwo() {
         VmwareInfo vmwareInfo = new VmwareInfo();
         BeanUtils.copyProperties(vmwareInsertDTO, vmwareInfo);
+        // 如果存在空格，全部替换为下划线
+        vmwareInfo.setName(vmwareInfo.getName().trim().replace(CharUtil.SPACE, CharUtil.UNDERLINE));
         vmwareInfo.setId(SnowflakeIdUtil.nextId());
         vmwareInfo.setUuid(IdUtil.fastUUID());
         vmwareInfo.setState(VmwareStateEnum.ING_CREATE);

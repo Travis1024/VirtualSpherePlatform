@@ -1,27 +1,27 @@
 package org.travis.agent.web.crontab;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.Method;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
-import org.travis.center.common.entity.support.CrontabInfo;
-import org.travis.center.common.entity.support.OperationLog;
-import org.travis.center.common.mapper.support.CrontabInfoMapper;
-import org.travis.center.common.mapper.table.TableMapper;
-import org.travis.center.support.service.OperationLogService;
+import org.travis.agent.web.handler.VmwareStateAggregateHandler;
+import org.travis.agent.web.utils.DubboAddrUtil;
+import org.travis.api.client.center.CenterHealthyClient;
+import org.travis.api.pojo.bo.HostHealthyStateBO;
 import org.travis.shared.common.constants.CrontabConstant;
-import org.travis.shared.common.constants.DatabaseConstant;
-import org.travis.shared.common.constants.RedissonConstant;
-import org.travis.shared.common.utils.TableMonthThreadLocalUtil;
-import org.travis.shared.common.utils.TimeUtil;
+import org.travis.shared.common.domain.R;
+import org.travis.shared.common.exceptions.DubboFunctionException;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 /**
@@ -37,71 +37,59 @@ public class CrontabScheduleService implements SchedulingConfigurer {
 
     @Resource
     private RedissonClient redissonClient;
+    @DubboReference(
+            methods = {
+                    @Method(name = "dubboHealthyCheck", timeout = 2000, retries = 2),
+                    @Method(name = "pushHostHealthyState", timeout = 4000)
+            }
+    )
+    private CenterHealthyClient centerHealthyClient;
     @Resource
-    private CrontabInfoMapper crontabInfoMapper;
+    private DubboAddrUtil dubboAddrUtil;
     @Resource
-    private OperationLogService operationLogService;
+    private VmwareStateAggregateHandler vmwareStateAggregateHandler;
 
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         // 在注册器添加定时任务前添加线程池
-        taskRegistrar.setScheduler(Executors.newScheduledThreadPool(4));
+        taskRegistrar.setScheduler(Executors.newScheduledThreadPool(1));
 
-        // 1.日志数据定时持久化定时任务
+        // 1.[健康状态推送] 定时任务
         taskRegistrar.addTriggerTask(
                 // 1.获取所有缓存操作日志列表
-                this::operateLogHandleMethod,
+                this::operateHandleHealthyStates,
                 // 2.设置任务执行周期
-                triggerContext -> {
-                    // 2.1.从缓存或数据库中获取执行周期
-                    String cronExpression = queryCronExpression(CrontabConstant.LOG_TASK_INDEX_ID);
-                    // 2.2.cron 合法性校验
-                    if (StrUtil.isBlank(cronExpression)) {
-                        log.warn("[Crontab-Operation-Log] No related expression is found, the default expression is used!");
-                        cronExpression = CrontabConstant.CRON_30_S;
-                    }
-                    // 2.3.返回执行周期
-                    return new CronTrigger(cronExpression).nextExecutionTime(triggerContext);
-                }
+                triggerContext -> new CronTrigger(CrontabConstant.CRON_10_S).nextExecutionTime(triggerContext)
         );
-
-        // 2.日志数据月份表定时创建任务
-        taskRegistrar.addTriggerTask(
-                // 1.表创建任务
-                this::logTableCreateHandleMethod,
-                // 2.设置任务执行周期
-                triggerContext -> {
-                    // 2.1.从缓存或数据库中获取执行周期
-                    String cronExpression = queryCronExpression(CrontabConstant.LOG_TABLE_CREATE_INDEX_ID);
-                    // 2.2.cron 合法性校验
-                    if (StrUtil.isBlank(cronExpression)) {
-                        log.warn("[Crontab-Log-Table-Create] No related expression is found, the default expression is used!");
-                        cronExpression = CrontabConstant.CRON_26_27_28_PER_MONTH;
-                    }
-                    // 2.3.返回执行周期
-                    return new CronTrigger(cronExpression).nextExecutionTime(triggerContext);
-                }
-        );
-
     }
 
-    private void operateLogHandleMethod() {
+    private void operateHandleHealthyStates() {
         try {
-            log.info("[Crontab-Task-Start] Operation Log persistence crontab schedule started");
-            RBlockingDeque<OperationLog> blockingDeque = redissonClient.getBlockingDeque(RedissonConstant.LOG_CACHE_DATA_KEY);
-            List<OperationLog> operationLogs = new ArrayList<>();
-            blockingDeque.drainTo(operationLogs);
-            // 如果缓存中有数据，进行持久化
-            if (!operationLogs.isEmpty()) {
-                TableMonthThreadLocalUtil.setData(TimeUtil.getCurrentYearMonth());
-                operationLogService.saveBatch(operationLogs);
-            }
-            log.info("[Crontab-Task-Finish] Operation Log Count -> {}", operationLogs.size());
+            String uuid = IdUtil.fastSimpleUUID();
+            log.info("[Healthy-Push-Task-Start-{}] Healthy States Push Crontab Schedule Started", uuid);
+            // 1.Dubbo-检测 Center 健康状态
+            R<Void> centerHealthyCheckR = centerHealthyClient.dubboHealthyCheck();
+            Assert.isTrue(centerHealthyCheckR.checkSuccess(), () -> new DubboFunctionException(centerHealthyCheckR.getMsg()));
+
+            // 2.获取虚拟机状态信息
+            Map<String, String> vmwareUuidStateMap = vmwareStateAggregateHandler.queryVmwareUuidStatesMap();
+
+            // 3.组装参数
+            HostHealthyStateBO hostHealthyStateBO = new HostHealthyStateBO();
+            hostHealthyStateBO.setHostIp(dubboAddrUtil.getRegisterToDubboIpAddr());
+            hostHealthyStateBO.setVmwareUuidStateMap(vmwareUuidStateMap);
+
+            // 4.sleep random seconds
+            Thread.sleep(RandomUtil.randomInt(20, 2000));
+
+            // 5.Dubbo-推送健康状态
+            R<Void> pushR = centerHealthyClient.pushHostHealthyState(hostHealthyStateBO);
+            Assert.isTrue(pushR.checkSuccess(), () -> new DubboFunctionException(pushR.getMsg()));
+
+            log.info("[Healthy-Push-Task-Start-{}] Healthy States Push Finished!", uuid);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-        } finally {
-            TableMonthThreadLocalUtil.removeData();
         }
     }
 }
