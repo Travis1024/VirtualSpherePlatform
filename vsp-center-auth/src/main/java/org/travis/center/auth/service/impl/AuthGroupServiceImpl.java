@@ -40,9 +40,9 @@ import javax.annotation.Resource;
 @Service
 public class AuthGroupServiceImpl extends ServiceImpl<AuthGroupMapper, AuthGroup> implements AuthGroupService{
     @Resource
-    private UserAssistService userAssistService;
+    public UserAssistService userAssistService;
     @Resource
-    private AuthUserRelationMapper authUserRelationMapper;
+    public AuthUserRelationMapper authUserRelationMapper;
 
     @Override
     public List<AuthGroup> queryCurrentUserAuthGroup() {

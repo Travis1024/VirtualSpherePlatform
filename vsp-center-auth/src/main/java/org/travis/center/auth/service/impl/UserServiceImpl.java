@@ -37,7 +37,7 @@ import javax.annotation.Resource;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService{
 
     @Resource
-    private UserAssistService userAssistService;
+    public UserAssistService userAssistService;
 
     @Override
     public void login(String username, String password) {

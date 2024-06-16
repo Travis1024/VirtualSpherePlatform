@@ -29,11 +29,11 @@ import java.util.stream.Collectors;
 public class LogTableDatabaseInitializer implements CommandLineRunner {
 
     @Value("${vsp.database.schema}")
-    private String schema;
+    public String schema;
     @Resource
-    private TableMapper tableMapper;
+    public TableMapper tableMapper;
     @Resource
-    private RedissonClient redissonClient;
+    public RedissonClient redissonClient;
 
     @Override
     public void run(String... args) {

@@ -79,4 +79,9 @@ public class SystemConstant {
      * KB
      */
     public static final Long KB_UNIT = 1024L;
+
+    /**
+     * 本地缓存-程序启动时间戳 key
+     */
+    public static final String PROGRAM_START_TIME_KEY = "StartTimeKey";
 }

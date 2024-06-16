@@ -26,18 +26,18 @@ import javax.annotation.Resource;
 public class DynamicConfigUtil {
 
     @Resource
-    private Cache<Long, String> permanentCache;
+    public Cache<Long, String> configPermanentCache;
     @Resource
-    private DynamicConfigInfoMapper dynamicConfigInfoMapper;
+    public DynamicConfigInfoMapper dynamicConfigInfoMapper;
 
     public String getConfigValue(Long configId) {
         synchronized (getConfigLock(configId)) {
-            String cacheValue = permanentCache.getIfPresent(configId);
+            String cacheValue = configPermanentCache.getIfPresent(configId);
             if (StrUtil.isBlank(cacheValue)) {
                 DynamicConfigInfo configInfo = dynamicConfigInfoMapper.selectById(configId);
                 Assert.isTrue(ObjectUtil.isNotNull(configInfo), () -> new NotFoundException("未找到相关配置!"));
                 cacheValue = configInfo.getConfigValue();
-                permanentCache.put(configId, cacheValue);
+                configPermanentCache.put(configId, cacheValue);
             }
             return cacheValue;
         }
@@ -51,7 +51,7 @@ public class DynamicConfigUtil {
                             .set(DynamicConfigInfo::getConfigValue, configValue)
                             .eq(DynamicConfigInfo::getId, configId)
             );
-            permanentCache.invalidate(configId);
+            configPermanentCache.invalidate(configId);
         }
     }
 

@@ -35,7 +35,7 @@ import java.io.File;
 )
 public class AgentDiskClientImpl implements AgentDiskClient {
     @Resource
-    private StartDependentConfig startDependentConfig;
+    public StartDependentConfig startDependentConfig;
 
     @Override
     public R<String> createDisk(String targetAgentIp, String path, Long unitGbSize) {

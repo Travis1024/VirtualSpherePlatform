@@ -23,7 +23,7 @@ import java.util.Map;
 public class AgentApplicationInitializer implements CommandLineRunner {
 
     @Resource
-    private StartDependentConfig startDependentConfig;
+    public StartDependentConfig startDependentConfig;
 
     @Override
     public void run(String... args) throws Exception {

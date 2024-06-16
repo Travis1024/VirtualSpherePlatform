@@ -25,7 +25,7 @@ import java.util.List;
 public class AuthUserRelationController {
 
     @Resource
-    private AuthUserRelationService authUserRelationService;
+    public AuthUserRelationService authUserRelationService;
 
     @Log(title = "新增用户-权限组关系", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "新增用户-权限组关系")

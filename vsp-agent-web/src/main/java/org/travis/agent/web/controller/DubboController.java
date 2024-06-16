@@ -26,9 +26,9 @@ import javax.annotation.Resource;
 @RequestMapping("/dubbo")
 public class DubboController {
     @DubboReference
-    private CenterHealthyClient centerHealthyClient;
+    public CenterHealthyClient centerHealthyClient;
     @Resource
-    private DubboAddrUtil dubboAddrUtil;
+    public DubboAddrUtil dubboAddrUtil;
 
     @Operation(summary = "Center-Dubbo健康检测")
     @GetMapping("/healthy")

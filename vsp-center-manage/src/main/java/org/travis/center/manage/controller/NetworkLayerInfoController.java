@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping("/networkLayer")
 public class NetworkLayerInfoController {
     @Resource
-    private NetworkLayerInfoService networkLayerInfoService;
+    public NetworkLayerInfoService networkLayerInfoService;
 
     @Log(title = "新增二层网络信息", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "新增二层网络信息")

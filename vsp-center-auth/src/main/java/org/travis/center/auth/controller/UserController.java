@@ -26,7 +26,7 @@ import javax.annotation.Resource;
 @RequestMapping("/user")
 public class UserController {
     @Resource
-    private UserService userService;
+    public UserService userService;
 
     @Log(title = "查询当前登录用户信息", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "查询当前登录用户信息")

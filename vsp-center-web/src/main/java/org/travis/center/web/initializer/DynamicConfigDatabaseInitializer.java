@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class DynamicConfigDatabaseInitializer implements CommandLineRunner {
 
     @Resource
-    private DynamicConfigInfoMapper dynamicConfigInfoMapper;
+    public DynamicConfigInfoMapper dynamicConfigInfoMapper;
 
     private static final AtomicLong INDEX_START_NUMBER = new AtomicLong(1L);
 

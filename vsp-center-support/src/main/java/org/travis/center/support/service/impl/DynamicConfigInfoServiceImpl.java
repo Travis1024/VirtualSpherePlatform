@@ -32,7 +32,7 @@ import javax.annotation.Resource;
 public class DynamicConfigInfoServiceImpl extends ServiceImpl<DynamicConfigInfoMapper, DynamicConfigInfo> implements DynamicConfigInfoService{
 
     @Resource
-    private DynamicConfigUtil dynamicConfigUtil;
+    public DynamicConfigUtil dynamicConfigUtil;
 
     @Override
     public List<DynamicConfigInfo> selectList() {

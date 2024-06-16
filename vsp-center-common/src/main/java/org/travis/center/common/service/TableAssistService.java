@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 @Service
 public class TableAssistService {
     @Resource
-    private RedissonClient redissonClient;
+    public RedissonClient redissonClient;
 
     /**
      * 校验月份表是否存在

@@ -66,7 +66,7 @@ public abstract class AbstractCreationService {
     @DubboReference
     public AgentVmwareClient agentVmwareClient;
     @Resource
-    private VmwareXmlDetailsMapper vmwareXmlDetailsMapper;
+    public VmwareXmlDetailsMapper vmwareXmlDetailsMapper;
 
     // step 0
     protected Integer vmwareCreateFormValue;

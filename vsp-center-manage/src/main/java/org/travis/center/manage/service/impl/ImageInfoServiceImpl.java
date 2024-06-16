@@ -47,9 +47,9 @@ import java.util.Optional;
 public class ImageInfoServiceImpl extends ServiceImpl<ImageInfoMapper, ImageInfo> implements ImageInfoService{
 
     @Resource
-    private HostInfoMapper hostInfoMapper;
+    public HostInfoMapper hostInfoMapper;
     @Resource
-    private AgentAssistService agentAssistService;
+    public AgentAssistService agentAssistService;
     @DubboReference
     public AgentImageClient agentImageClient;
 

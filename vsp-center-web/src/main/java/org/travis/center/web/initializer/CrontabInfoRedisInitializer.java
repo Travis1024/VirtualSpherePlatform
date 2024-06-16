@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 public class CrontabInfoRedisInitializer implements CommandLineRunner {
 
     @Resource
-    private RedissonClient redissonClient;
+    public RedissonClient redissonClient;
     @Resource
-    private CrontabInfoMapper crontabInfoMapper;
+    public CrontabInfoMapper crontabInfoMapper;
 
     @Override
     public void run(String... args) {

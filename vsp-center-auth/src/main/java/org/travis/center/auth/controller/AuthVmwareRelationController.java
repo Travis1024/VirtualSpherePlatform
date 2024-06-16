@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/authVmware")
 public class AuthVmwareRelationController {
     @Resource
-    private AuthVmwareRelationService authVmwareRelationService;
+    public AuthVmwareRelationService authVmwareRelationService;
 
     @Log(title = "新增虚拟机-权限组关系", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "新增虚拟机-权限组关系")

@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("/authGroup")
 public class AuthGroupController {
     @Resource
-    private AuthGroupService authGroupService;
+    public AuthGroupService authGroupService;
 
     @Log(title = "查询当前用户所关联权限组列表", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "查询当前用户所关联权限组列表")

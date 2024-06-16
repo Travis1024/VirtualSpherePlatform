@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 @RequestMapping("/operationLog")
 public class OperationLogController {
     @Resource
-    private OperationLogService operationLogService;
+    public OperationLogService operationLogService;
 
     @Log(title = "按月份分页查询操作日志列表信息", businessType = BusinessTypeEnum.QUERY, isSaveResponseData = false)
     @Operation(summary = "分页查询操作日志列表信息")

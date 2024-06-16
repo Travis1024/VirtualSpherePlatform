@@ -27,7 +27,7 @@ import javax.annotation.Resource;
 @Service
 public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, OperationLog> implements OperationLogService{
     @Resource
-    private TableAssistService tableAssistService;
+    public TableAssistService tableAssistService;
 
     @Override
     public PageResult<OperationLog> pageSelectList(OperationLogQueryDTO operationLogQueryDTO) {

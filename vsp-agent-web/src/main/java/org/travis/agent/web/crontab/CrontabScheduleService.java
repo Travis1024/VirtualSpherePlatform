@@ -36,18 +36,18 @@ import java.util.concurrent.Executors;
 public class CrontabScheduleService implements SchedulingConfigurer {
 
     @Resource
-    private RedissonClient redissonClient;
+    public RedissonClient redissonClient;
     @DubboReference(
             methods = {
                     @Method(name = "dubboHealthyCheck", timeout = 2000, retries = 2),
                     @Method(name = "pushHostHealthyState", timeout = 4000)
             }
     )
-    private CenterHealthyClient centerHealthyClient;
+    public CenterHealthyClient centerHealthyClient;
     @Resource
-    private DubboAddrUtil dubboAddrUtil;
+    public DubboAddrUtil dubboAddrUtil;
     @Resource
-    private VmwareStateAggregateHandler vmwareStateAggregateHandler;
+    public VmwareStateAggregateHandler vmwareStateAggregateHandler;
 
 
     @Override

@@ -28,10 +28,10 @@ import java.util.List;
 public class DynamicConfigInfoController {
 
     @Resource
-    private DynamicConfigUtil dynamicConfigUtil;
+    public DynamicConfigUtil dynamicConfigUtil;
 
     @Resource
-    private DynamicConfigInfoService dynamicConfigInfoService;
+    public DynamicConfigInfoService dynamicConfigInfoService;
 
     @Log(title = "查询动态配置信息列表", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "查询动态配置信息列表")

@@ -21,7 +21,7 @@ import java.util.List;
 public class CrontabInfoController {
 
     @Resource
-    private CrontabInfoService crontabInfoService;
+    public CrontabInfoService crontabInfoService;
 
     @Log(title = "查询定时任务列表", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "查询定时任务列表")

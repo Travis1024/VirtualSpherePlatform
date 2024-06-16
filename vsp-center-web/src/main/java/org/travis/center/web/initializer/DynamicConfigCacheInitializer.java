@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
 public class DynamicConfigCacheInitializer implements CommandLineRunner {
 
     @Resource
-    private DynamicConfigInfoMapper dynamicConfigInfoMapper;
+    public DynamicConfigInfoMapper dynamicConfigInfoMapper;
     @Resource
-    private Cache<Long, String> permanentCache;
+    public Cache<Long, String> configPermanentCache;
 
     @Override
     public void run(String... args) {
@@ -37,7 +37,7 @@ public class DynamicConfigCacheInitializer implements CommandLineRunner {
         // 根据 ID 列表查询动态配置信息
         List<DynamicConfigInfo> dynamicConfigInfos = dynamicConfigInfoMapper.selectBatchIds(configIds);
         // 缓存到 Caffeine 本地缓存
-        dynamicConfigInfos.forEach(dynamicConfigInfo -> permanentCache.put(dynamicConfigInfo.getId(), dynamicConfigInfo.getConfigValue()));
+        dynamicConfigInfos.forEach(dynamicConfigInfo -> configPermanentCache.put(dynamicConfigInfo.getId(), dynamicConfigInfo.getConfigValue()));
         log.info("[5] Initializing Dynamic Config Cache Completed.");
     }
 }

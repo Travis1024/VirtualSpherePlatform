@@ -25,7 +25,7 @@ import java.util.Optional;
 @Service
 public class UserAssistService {
     @Resource
-    private UserMapper userMapper;
+    public UserMapper userMapper;
 
     /**
      * @MethodName checkAdminUser

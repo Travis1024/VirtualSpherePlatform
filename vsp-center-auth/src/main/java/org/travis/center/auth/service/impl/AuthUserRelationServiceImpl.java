@@ -34,9 +34,9 @@ import javax.annotation.Resource;
 @Service
 public class AuthUserRelationServiceImpl extends ServiceImpl<AuthUserRelationMapper, AuthUserRelation> implements AuthUserRelationService{
     @Resource
-    private UserService userService;
+    public UserService userService;
     @Resource
-    private UserAssistService userAssistService;
+    public UserAssistService userAssistService;
 
     @Transactional
     @Override

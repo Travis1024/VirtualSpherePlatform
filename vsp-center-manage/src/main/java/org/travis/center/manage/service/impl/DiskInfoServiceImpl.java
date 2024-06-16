@@ -49,9 +49,9 @@ public class DiskInfoServiceImpl extends ServiceImpl<DiskInfoMapper, DiskInfo> i
     @DubboReference
     public AgentDiskClient agentDiskClient;
     @Resource
-    private AgentAssistService agentAssistService;
+    public AgentAssistService agentAssistService;
     @Resource
-    private HostInfoMapper hostInfoMapper;
+    public HostInfoMapper hostInfoMapper;
 
     @Override
     public DiskInfo selectOne(Long diskId) {

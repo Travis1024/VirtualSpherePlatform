@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 public class CrontabInfoDatabaseInitializer implements CommandLineRunner {
 
     @Resource
-    private CrontabInfoMapper crontabInfoMapper;
+    public CrontabInfoMapper crontabInfoMapper;
 
     public static final List<CrontabInfo> CRONTAB_INFOS = new ArrayList<>();
 

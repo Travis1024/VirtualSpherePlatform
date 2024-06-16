@@ -33,7 +33,7 @@ import java.util.List;
 public class CrontabInfoServiceImpl extends ServiceImpl<CrontabInfoMapper, CrontabInfo> implements CrontabInfoService{
 
     @Resource
-    private RedissonClient redissonClient;
+    public RedissonClient redissonClient;
 
     @Override
     public List<CrontabInfo> selectList() {

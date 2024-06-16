@@ -31,7 +31,7 @@ import java.util.Optional;
 @Service
 public class NetworkLayerInfoServiceImpl extends ServiceImpl<NetworkLayerInfoMapper, NetworkLayerInfo> implements NetworkLayerInfoService{
     @Resource
-    private HostInfoMapper hostInfoMapper;
+    public HostInfoMapper hostInfoMapper;
 
     @Override
     public NetworkLayerInfo insertOne(NetworkInsertDTO networkInsertDTO) {

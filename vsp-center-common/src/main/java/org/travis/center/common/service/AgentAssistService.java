@@ -28,11 +28,11 @@ import java.util.stream.Collectors;
 @Service
 public class AgentAssistService {
     @Resource
-    private CuratorFramework curatorFramework;
+    public CuratorFramework curatorFramework;
     @Resource
-    private HostInfoMapper hostInfoMapper;
+    public HostInfoMapper hostInfoMapper;
     @Value("${vsp.agent.shared.storagePath}")
-    private String agentHostSharedStoragePath;
+    public String agentHostSharedStoragePath;
 
     public List<String> getHealthyHostAgentIpList() {
         List<String> ipList = new ArrayList<>();

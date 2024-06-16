@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutionException;
 public class HostInfoController {
 
     @Resource
-    private HostInfoService hostInfoService;
+    public HostInfoService hostInfoService;
 
     @Log(title = "通过ID查询单条宿主机数据", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "通过ID查询单条宿主机数据")

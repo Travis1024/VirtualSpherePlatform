@@ -17,6 +17,9 @@ import org.travis.shared.common.domain.R;
 @Slf4j
 @DubboService
 public class CenterHealthyClientImpl implements CenterHealthyClient {
+
+
+
     @Override
     public R<Void> dubboHealthyCheck() {
         log.info("[center] dubbo healthy check");
@@ -26,6 +29,7 @@ public class CenterHealthyClientImpl implements CenterHealthyClient {
     @Override
     public R<Void> pushHostHealthyState(HostHealthyStateBO hostHealthyStateBO) {
         try {
+            // TODO 处理心跳推送信息
 
 
             return R.ok();

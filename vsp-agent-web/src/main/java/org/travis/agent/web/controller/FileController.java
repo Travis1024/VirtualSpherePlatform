@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 public class FileController {
 
     @Resource
-    private RedissonClient redissonClient;
+    public RedissonClient redissonClient;
 
     @Operation(summary = "切片文件上传")
     @PostMapping(ImageConstant.SLICE_UPLOAD)

@@ -68,15 +68,15 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
     @DubboReference
     public AgentHealthyClient agentHealthyClient;
     @Resource
-    private AgentAssistService agentAssistService;
+    public AgentAssistService agentAssistService;
     @Resource
-    private NetworkLayerInfoMapper networkLayerInfoMapper;
+    public NetworkLayerInfoMapper networkLayerInfoMapper;
     @DubboReference
     public AgentHostClient agentHostClient;
     @Resource
-    private RedissonClient redissonClient;
+    public RedissonClient redissonClient;
     @Resource
-    private VmwareInfoService vmwareInfoService;
+    public VmwareInfoService vmwareInfoService;
 
     @Transactional
     @Override

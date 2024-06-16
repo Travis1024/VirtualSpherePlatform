@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 @Component
 public class WsMessageHolder {
     @Resource
-    private GlobalMessageMapper globalMessageMapper;
+    public GlobalMessageMapper globalMessageMapper;
 
     public void sendGlobalMessage(WebSocketMessage webSocketMessage) {
         // 1.推送消息

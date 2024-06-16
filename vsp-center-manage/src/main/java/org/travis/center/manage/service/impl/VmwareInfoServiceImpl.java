@@ -62,17 +62,17 @@ import javax.annotation.Resource;
 public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareInfo> implements VmwareInfoService{
 
     @Resource
-    private CreationHolder creationHolder;
+    public CreationHolder creationHolder;
     @Resource
-    private HostInfoMapper hostInfoMapper;
+    public HostInfoMapper hostInfoMapper;
     @DubboReference
     public AgentVmwareClient agentVmwareClient;
     @Resource
-    private RedissonClient redissonClient;
+    public RedissonClient redissonClient;
     @Resource
-    private WsMessageHolder wsMessageHolder;
+    public WsMessageHolder wsMessageHolder;
     @Resource
-    private AgentHostClient agentHostClient;
+    public AgentHostClient agentHostClient;
 
     @Override
     public VmwareInfo selectOne(Long id) {

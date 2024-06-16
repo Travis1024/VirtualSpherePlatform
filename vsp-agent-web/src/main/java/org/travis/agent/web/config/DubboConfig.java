@@ -17,9 +17,9 @@ import org.springframework.context.annotation.Configuration;
 public class DubboConfig {
 
     @Value("${dubbo.protocol.name}")
-    private String dubboProtocolName;
+    public String dubboProtocolName;
     @Value("${dubbo.protocol.port}")
-    private Integer dubboProtocolPort;
+    public Integer dubboProtocolPort;
 
     @Bean
     public ProtocolConfig getProtocolConfig() {

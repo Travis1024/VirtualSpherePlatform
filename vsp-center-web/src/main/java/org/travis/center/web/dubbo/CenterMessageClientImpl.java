@@ -30,9 +30,9 @@ import javax.annotation.Resource;
 public class CenterMessageClientImpl implements CenterMessageClient {
 
     @Resource
-    private WsMessageHolder wsMessageHolder;
+    public WsMessageHolder wsMessageHolder;
     @Resource
-    private HostInfoMapper hostInfoMapper;
+    public HostInfoMapper hostInfoMapper;
 
     @Override
     public R<Void> sendGlobalMessage(WebSocketMessage webSocketMessage) {

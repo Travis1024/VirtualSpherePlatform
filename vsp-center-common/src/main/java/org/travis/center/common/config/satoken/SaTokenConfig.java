@@ -23,7 +23,7 @@ import javax.annotation.Resource;
 @Configuration
 public class SaTokenConfig implements WebMvcConfigurer {
     @Resource
-    private UserInfoInterceptor userInfoInterceptor;
+    public UserInfoInterceptor userInfoInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

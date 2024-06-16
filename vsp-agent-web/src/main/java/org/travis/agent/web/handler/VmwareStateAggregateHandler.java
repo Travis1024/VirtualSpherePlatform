@@ -27,7 +27,7 @@ import java.util.Map;
 public class VmwareStateAggregateHandler {
 
     @Resource
-    private StartDependentConfig startDependentConfig;
+    public StartDependentConfig startDependentConfig;
 
     public Map<String, String> queryVmwareUuidStatesMap() {
         List<String> execkedForLineList = VspRuntimeUtil.execForLines("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_QUERY_VM_STATES_KEY));

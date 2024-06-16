@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class BridgedAdapterHandler {
 
     @Resource
-    private StartDependentConfig startDependentConfig;
+    public StartDependentConfig startDependentConfig;
 
     public BridgeInitResultMessageBO execBridgedAdapter(HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO) {
         // 1.查询网卡列表

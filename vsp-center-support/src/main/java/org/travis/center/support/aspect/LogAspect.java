@@ -48,7 +48,7 @@ import java.util.Map;
 public class LogAspect {
 
     @Resource
-    private RedissonClient redissonClient;
+    public RedissonClient redissonClient;
 
     /** 排除敏感属性字段 */
     public static final String[] EXCLUDE_PROPERTIES = {"password", "oldPassword", "newPassword", "confirmPassword"};

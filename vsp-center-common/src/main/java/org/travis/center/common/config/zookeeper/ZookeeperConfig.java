@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ZookeeperConfig {
     @Value("${dubbo.registry.address}")
-    private String zookeeperServer;
+    public String zookeeperServer;
 
     @Bean
     public CuratorFramework curatorFramework() {

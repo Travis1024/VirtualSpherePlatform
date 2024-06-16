@@ -36,11 +36,11 @@ import java.util.List;
 @DubboService
 public class AgentHostClientImpl implements AgentHostClient {
     @Resource
-    private BridgedAdapterHandler bridgedAdapterHandler;
+    public BridgedAdapterHandler bridgedAdapterHandler;
     @Resource
-    private StartDependentConfig startDependentConfig;
+    public StartDependentConfig startDependentConfig;
     @DubboReference
-    private CenterMessageClient centerMessageClient;
+    public CenterMessageClient centerMessageClient;
 
     @Override
     public R<HostDetailsBO> queryHostInfoDetails(String targetAgentIp) {

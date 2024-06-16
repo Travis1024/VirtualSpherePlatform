@@ -37,9 +37,9 @@ import javax.annotation.Resource;
 @Service
 public class AuthVmwareRelationServiceImpl extends ServiceImpl<AuthVmwareRelationMapper, AuthVmwareRelation> implements AuthVmwareRelationService{
     @Resource
-    private UserAssistService userAssistService;
+    public UserAssistService userAssistService;
     @Resource
-    private VmwareInfoMapper vmwareInfoMapper;
+    public VmwareInfoMapper vmwareInfoMapper;
 
     @Transactional
     @Override

@@ -25,7 +25,7 @@ import java.util.List;
 public class ImageInfoController {
 
     @Resource
-    private ImageInfoService imageInfoService;
+    public ImageInfoService imageInfoService;
 
     @Log(title = "上传新增镜像信息 & 获取镜像切片文件上传地址")
     @Operation(summary = "上传新增镜像信息 & 获取镜像切片文件上传地址")

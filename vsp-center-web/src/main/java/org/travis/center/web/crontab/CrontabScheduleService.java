@@ -43,15 +43,15 @@ import java.util.concurrent.Executors;
 public class CrontabScheduleService implements SchedulingConfigurer {
 
     @Resource
-    private RedissonClient redissonClient;
+    public RedissonClient redissonClient;
     @Resource
-    private CrontabInfoMapper crontabInfoMapper;
+    public CrontabInfoMapper crontabInfoMapper;
     @Resource
-    private OperationLogService operationLogService;
+    public OperationLogService operationLogService;
     @Resource
-    private TableMapper tableMapper;
+    public TableMapper tableMapper;
     @Value("${vsp.database.schema}")
-    private String schema;
+    public String schema;
 
 
     @Override
