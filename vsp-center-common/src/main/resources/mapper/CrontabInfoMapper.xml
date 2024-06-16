@@ -8,6 +8,7 @@
     <result column="CRON_DESCRIPTION" jdbcType="VARCHAR" property="cronDescription" />
     <result column="CRON_NAME" jdbcType="VARCHAR" property="cronName" />
     <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
+    <result column="IS_FIXED" jdbcType="INTEGER" property="isFixed" />
     <result column="UPDATER" jdbcType="BIGINT" property="updater" />
     <result column="CREATOR" jdbcType="BIGINT" property="creator" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
@@ -16,6 +17,6 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     ID, CRON_EXPRESSION, CRON_DESCRIPTION, CRON_NAME, IS_DELETED, UPDATER, CREATOR, UPDATE_TIME,
-    CREATE_TIME
+    CREATE_TIME, IS_FIXED
   </sql>
 </mapper>

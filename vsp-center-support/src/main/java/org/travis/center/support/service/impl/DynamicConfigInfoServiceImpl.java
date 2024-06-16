@@ -3,13 +3,13 @@ package org.travis.center.support.service.impl;
 import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
 import java.util.Optional;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.travis.center.common.entity.support.DynamicConfigInfo;
-import org.travis.center.common.enums.DynamicConfigFixedEnum;
+import org.travis.center.common.enums.IsFixedEnum;
 import org.travis.center.common.mapper.support.DynamicConfigInfoMapper;
 import org.travis.center.support.pojo.dto.DynamicConfigUpdateDTO;
 import org.travis.center.support.service.DynamicConfigInfoService;
@@ -51,7 +51,7 @@ public class DynamicConfigInfoServiceImpl extends ServiceImpl<DynamicConfigInfoM
         Optional<DynamicConfigInfo> configInfoOptional = Optional.ofNullable(getById(dynamicConfigUpdateDTO.getId()));
         Assert.isTrue(configInfoOptional.isPresent(), () -> new NotFoundException("未查询到当前配置!"));
         DynamicConfigInfo configInfo = configInfoOptional.get();
-        if (configInfo.getIsFixed().getValue().equals(DynamicConfigFixedEnum.DISALLOW_UPDATE.getValue())) {
+        if (configInfo.getIsFixed().getValue().equals(IsFixedEnum.DISALLOW_UPDATE.getValue())) {
             throw new ForbiddenException("当前动态配置禁止修改!");
         }
         // 2.修改动态配置 value

@@ -20,6 +20,11 @@ public class CrontabConstant {
     public static final Long LOG_TABLE_CREATE_INDEX_ID = 2L;
 
     /**
+     * 宿主机虚拟机状态更新定时任务 ID
+     */
+    public static final Long MACHINE_STATE_UPDATE_INDEX_ID = 3L;
+
+    /**
      * cron 描述模版
      */
     public static final String CRON_DESCRIPTION_TEMPLATE = "执行间隔秒数:{}";

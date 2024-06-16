@@ -95,6 +95,27 @@ public class CrontabScheduleService implements SchedulingConfigurer {
                 }
         );
 
+        // 3.宿主机虚拟机状态定时更新任务
+        taskRegistrar.addTriggerTask(
+                // 1.状态更新任务
+                this::operateMachineStateUpdateHandle,
+                // 2.设置任务执行周期
+                triggerContext -> {
+                    // 2.1.从缓存或数据库中获取执行周期
+                    String cronExpression = queryCronExpression(CrontabConstant.MACHINE_STATE_UPDATE_INDEX_ID);
+                    // 2.2.cron 合法性校验
+                    if (StrUtil.isBlank(cronExpression)) {
+                        log.warn("[Crontab-Machine-State-Update] No related expression is found, the default expression is used!");
+                        cronExpression = CrontabConstant.CRON_30_S;
+                    }
+                    // 2.3.返回执行周期
+                    return new CronTrigger(cronExpression).nextExecutionTime(triggerContext);
+                }
+        );
+    }
+
+    private void operateMachineStateUpdateHandle() {
+        // TODO
     }
 
     private void operateLogHandleMethod() {

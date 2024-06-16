@@ -15,5 +15,6 @@ import java.util.Map;
 @Data
 public class HostHealthyStateBO implements Serializable {
     private String hostIp;
+    private Long recordTime;
     private Map<String, String> vmwareUuidStateMap;
 }

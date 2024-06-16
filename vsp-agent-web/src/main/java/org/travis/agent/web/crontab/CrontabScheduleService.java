@@ -79,9 +79,10 @@ public class CrontabScheduleService implements SchedulingConfigurer {
             HostHealthyStateBO hostHealthyStateBO = new HostHealthyStateBO();
             hostHealthyStateBO.setHostIp(dubboAddrUtil.getRegisterToDubboIpAddr());
             hostHealthyStateBO.setVmwareUuidStateMap(vmwareUuidStateMap);
+            hostHealthyStateBO.setRecordTime(System.currentTimeMillis());
 
             // 4.sleep random seconds
-            Thread.sleep(RandomUtil.randomInt(20, 2000));
+            Thread.sleep(RandomUtil.randomInt(15, 1500));
 
             // 5.Dubbo-推送健康状态
             R<Void> pushR = centerHealthyClient.pushHostHealthyState(hostHealthyStateBO);

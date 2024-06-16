@@ -24,13 +24,13 @@ import javax.annotation.Resource;
 public class InitProgramStartTime implements CommandLineRunner {
 
     @Resource
-    public Cache<String, String> commonPermanentCache;
+    public Cache<String, Object> commonPermanentCache;
 
     @Override
     public void run(String... args) {
         long timeMillis = System.currentTimeMillis();
         log.info("[Eventual] Program started time:{} | {}", timeMillis, DateUtil.date(timeMillis));
-        commonPermanentCache.put(SystemConstant.PROGRAM_START_TIME_KEY, String.valueOf(timeMillis));
+        commonPermanentCache.put(SystemConstant.PROGRAM_START_TIME_KEY, timeMillis);
         log.info("[Eventual] Program started time cache finished!");
     }
 }

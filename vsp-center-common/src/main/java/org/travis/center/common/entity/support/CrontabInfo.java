@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.travis.center.common.enums.IsFixedEnum;
 
 /**
  * @ClassName CrontabInfo
@@ -66,6 +67,13 @@ public class CrontabInfo extends com.baomidou.mybatisplus.extension.activerecord
     private Integer isDeleted;
 
     /**
+     * 是否不可修改（0-可修改、1-禁止修改）
+     */
+    @TableField(value = "IS_FIXED")
+    @Schema(description="是否不可修改（0-可修改、1-禁止修改）")
+    private IsFixedEnum isFixed;
+
+    /**
      * 更新者
      */
     @TableField(value = "UPDATER")
@@ -104,6 +112,8 @@ public class CrontabInfo extends com.baomidou.mybatisplus.extension.activerecord
     public static final String COL_CRON_NAME = "CRON_NAME";
 
     public static final String COL_IS_DELETED = "IS_DELETED";
+
+    public static final String COL_IS_FIXED = "IS_FIXED";
 
     public static final String COL_UPDATER = "UPDATER";
 

@@ -7,14 +7,14 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 /**
- * @ClassName DynamicConfigFixedEnum
- * @Description 动态配置是否允许修改枚举类
+ * @ClassName IsFixedEnum
+ * @Description 是否允许修改枚举类
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/6/12
  */
 @Getter
-public enum DynamicConfigFixedEnum {
+public enum IsFixedEnum {
     ALLOW_UPDATE(0, "允许修改"),
     DISALLOW_UPDATE(1, "禁止修改"),
     ;
@@ -24,17 +24,17 @@ public enum DynamicConfigFixedEnum {
     @JsonValue
     private final String display;
 
-    DynamicConfigFixedEnum(Integer value, String display) {
+    IsFixedEnum(Integer value, String display) {
         this.value = value;
         this.display = display;
     }
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static DynamicConfigFixedEnum of(String display) {
+    public static IsFixedEnum of(String display) {
         if (StrUtil.isEmpty(display)) {
             return null;
         }
-        for (DynamicConfigFixedEnum anEnum : values()) {
+        for (IsFixedEnum anEnum : values()) {
             if (anEnum.getDisplay().equals(display)) {
                 return anEnum;
             }

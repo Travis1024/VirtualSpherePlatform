@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.travis.center.common.entity.support.CrontabInfo;
+import org.travis.center.common.enums.IsFixedEnum;
 import org.travis.center.common.mapper.support.CrontabInfoMapper;
 import org.travis.shared.common.constants.CrontabConstant;
 import org.travis.shared.common.utils.CrontabUtil;
@@ -41,6 +42,7 @@ public class CrontabInfoDatabaseInitializer implements CommandLineRunner {
                 .cronName("日志持久化定时任务")
                 .cronExpression(CrontabConstant.CRON_30_S)
                 .cronDescription(StrUtil.format(CrontabConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(CrontabConstant.CRON_30_S)))
+                .isFixed(IsFixedEnum.ALLOW_UPDATE)
                 .build();
 
         CrontabInfo logTableCreateCrontabInfo = CrontabInfo.builder()
@@ -48,10 +50,20 @@ public class CrontabInfoDatabaseInitializer implements CommandLineRunner {
                 .cronName("操作日志月份数据表定时创建任务")
                 .cronExpression(CrontabConstant.CRON_26_27_28_PER_MONTH)
                 .cronDescription("执行周期：每月 26-28 号 2:00 各执行一次")
+                .isFixed(IsFixedEnum.DISALLOW_UPDATE)
+                .build();
+
+        CrontabInfo machineStateUpdateCrontabInfo = CrontabInfo.builder()
+                .id(CrontabConstant.MACHINE_STATE_UPDATE_INDEX_ID)
+                .cronName("宿主机虚拟机状态定时更新任务")
+                .cronExpression(CrontabConstant.CRON_30_S)
+                .cronDescription(StrUtil.format(CrontabConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(CrontabConstant.CRON_30_S)))
+                .isFixed(IsFixedEnum.DISALLOW_UPDATE)
                 .build();
 
         CRONTAB_INFOS.add(logCrontabInfo);
         CRONTAB_INFOS.add(logTableCreateCrontabInfo);
+        CRONTAB_INFOS.add(machineStateUpdateCrontabInfo);
     }
 
     @Override

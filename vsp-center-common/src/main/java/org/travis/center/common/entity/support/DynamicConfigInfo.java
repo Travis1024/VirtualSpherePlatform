@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.Date;
@@ -14,7 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.travis.center.common.enums.DynamicConfigFixedEnum;
+import org.travis.center.common.enums.IsFixedEnum;
 import org.travis.center.common.enums.DynamicConfigTypeEnum;
 
 /**
@@ -79,8 +78,8 @@ public class DynamicConfigInfo extends com.baomidou.mybatisplus.extension.active
      * 是否不可修改（0-可修改、1-禁止修改）
      */
     @TableField(value = "IS_FIXED")
-    @Schema(description="不可修改")
-    private DynamicConfigFixedEnum isFixed;
+    @Schema(description="是否不可修改（0-可修改、1-禁止修改）")
+    private IsFixedEnum isFixed;
 
     /**
      * 更新者

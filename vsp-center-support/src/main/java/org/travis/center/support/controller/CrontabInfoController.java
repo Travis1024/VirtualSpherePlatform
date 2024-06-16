@@ -36,5 +36,4 @@ public class CrontabInfoController {
     public void updateCronExpression(@Valid @RequestBody CrontabUpdateDTO crontabUpdateDTO) {
         crontabInfoService.updateCronExpression(crontabUpdateDTO);
     }
-
 }

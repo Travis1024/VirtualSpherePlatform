@@ -5,6 +5,7 @@ import cn.hutool.system.oshi.OshiUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.stereotype.Component;
 import org.travis.agent.web.pojo.bo.BridgeInitResultMessageBO;
 import org.travis.api.client.agent.AgentHostClient;
 import org.travis.api.client.center.CenterMessageClient;

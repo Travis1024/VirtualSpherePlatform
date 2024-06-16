@@ -30,7 +30,7 @@ public class CacheManagerConfig {
     }
 
     @Bean("commonPermanentCache")
-    public Cache<String, String> getCommonPermanentCache() {
+    public Cache<String, Object> getCommonPermanentCache() {
         return Caffeine.newBuilder()
                 .initialCapacity(100)
                 .maximumSize(200)
