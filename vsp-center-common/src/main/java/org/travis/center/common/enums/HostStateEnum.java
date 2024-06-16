@@ -20,8 +20,9 @@ public enum HostStateEnum implements Serializable {
 
     IN_PREPARATION(0, "准备中"),
     READY(1, "就绪"),
-    ERROR(2, "异常"),
-    DISABLE(3, "停用")
+    INIT_ERROR(2, "初始化异常"),
+    DISABLE(3, "停用"),
+    HEART_BEAT_ERROR(4, "心跳异常")
     ;
 
     @EnumValue

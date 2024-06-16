@@ -43,7 +43,7 @@ public class CenterHealthyClientImpl implements CenterHealthyClient {
             scoredSortedSet.add(hostHealthyStateBO.getRecordTime(), String.valueOf(hostHealthyStateBO.getRecordTime()));
 
             // 2.处理虚拟机
-            RMap<Object, Object> rMap = redissonClient.getMap(RedissonConstant.HEALTHY_VMWARE_RECORDS);
+            RMap<String, String> rMap = redissonClient.getMap(RedissonConstant.HEALTHY_VMWARE_RECORDS);
             Map<String, String> vmwareUuidStateMap = hostHealthyStateBO.getVmwareUuidStateMap();
             for (Map.Entry<String, String> entry : vmwareUuidStateMap.entrySet()) {
                 String vmUuid = entry.getKey();

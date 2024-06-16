@@ -52,7 +52,7 @@ public class CenterMessageClientImpl implements CenterMessageClient {
                     Wrappers.<HostInfo>lambdaUpdate()
                             .eq(HostInfo::getId, hostId)
                             .set(HostInfo::getStateMessage, stateMessage)
-                            .set(HostInfo::getState, isSuccess ? HostStateEnum.READY : HostStateEnum.ERROR)
+                            .set(HostInfo::getState, isSuccess ? HostStateEnum.READY : HostStateEnum.INIT_ERROR)
             );
             Assert.isTrue(updated != 0, () -> new BadRequestException("宿主机状态更新失败, 未找到当前宿主机信息!"));
 
