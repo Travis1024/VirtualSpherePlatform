@@ -19,6 +19,7 @@ import org.travis.center.common.entity.manage.VmwareInfo;
 import org.travis.center.common.entity.support.CrontabInfo;
 import org.travis.center.common.entity.support.OperationLog;
 import org.travis.center.common.enums.HostStateEnum;
+import org.travis.center.common.enums.VmwareStateEnum;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.center.common.mapper.manage.VmwareInfoMapper;
 import org.travis.center.common.mapper.support.CrontabInfoMapper;
@@ -168,10 +169,24 @@ public class CrontabScheduleService implements SchedulingConfigurer {
             }
         }
 
-        // TODO 3.虚拟机状态判断及修改
+        // 3.虚拟机状态判断及修改
         List<VmwareInfo> vmwareInfoList = vmwareInfoMapper.selectList(Wrappers.<VmwareInfo>lambdaQuery().select(VmwareInfo::getId, VmwareInfo::getUuid, VmwareInfo::getState));
         RMap<String, String> rMap = redissonClient.getMap(RedissonConstant.HEALTHY_VMWARE_RECORDS);
-
+        for (VmwareInfo vmwareInfo : vmwareInfoList) {
+            // 3.1.获取虚拟机真实状态信息
+            String vmwareState = rMap.get(vmwareInfo.getUuid());
+            if (StrUtil.isBlank(vmwareState)) {
+                continue;
+            }
+            VmwareStateEnum vmwareStateEnum = VmwareStateEnum.ofTag(vmwareState);
+            if (ObjectUtil.isNull(vmwareStateEnum)) {
+                continue;
+            }
+            // 3.2.判断真实状态是否和数据库中相同
+            if (!vmwareStateEnum.equals(vmwareInfo.getState())) {
+                vmwareInfoMapper.update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, vmwareStateEnum).eq(VmwareInfo::getId, vmwareInfo.getId()));
+            }
+        }
     }
 
     private void operateLogHandleMethod() {

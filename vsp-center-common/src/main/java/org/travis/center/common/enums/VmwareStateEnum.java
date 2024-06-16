@@ -58,4 +58,16 @@ public enum VmwareStateEnum implements Serializable {
         }
         return null;
     }
+
+    public static VmwareStateEnum ofTag(String tag) {
+        if (StrUtil.isEmpty(tag)) {
+            return null;
+        }
+        for (VmwareStateEnum anEnum : values()) {
+            if (anEnum.getTag().equals(tag)) {
+                return anEnum;
+            }
+        }
+        return null;
+    }
 }
