@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.scheduling.support.CronExpression;
@@ -16,6 +17,8 @@ import org.travis.center.support.pojo.dto.CrontabUpdateDTO;
 import org.travis.center.support.service.CrontabInfoService;
 import org.travis.shared.common.constants.CrontabConstant;
 import org.travis.shared.common.constants.RedissonConstant;
+import org.travis.shared.common.domain.PageQuery;
+import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.exceptions.ForbiddenException;
 import org.travis.shared.common.exceptions.NotFoundException;
@@ -62,5 +65,11 @@ public class CrontabInfoServiceImpl extends ServiceImpl<CrontabInfoMapper, Cront
         // 3.2.删除 redis 缓存
         RMap<Long, CrontabInfo> rMap = redissonClient.getMap(RedissonConstant.CRONTAB_CACHE_KEY);
         rMap.remove(crontabUpdateDTO.getId());
+    }
+
+    @Override
+    public PageResult<CrontabInfo> pageSelectList(PageQuery pageQuery) {
+        Page<CrontabInfo> crontabInfoPage = getBaseMapper().selectPage(pageQuery.toMpPage(), null);
+        return PageResult.of(crontabInfoPage);
     }
 }

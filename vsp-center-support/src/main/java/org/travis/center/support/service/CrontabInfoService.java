@@ -3,6 +3,8 @@ package org.travis.center.support.service;
 import org.travis.center.common.entity.support.CrontabInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.travis.center.support.pojo.dto.CrontabUpdateDTO;
+import org.travis.shared.common.domain.PageQuery;
+import org.travis.shared.common.domain.PageResult;
 
 import java.util.List;
 
@@ -18,4 +20,6 @@ public interface CrontabInfoService extends IService<CrontabInfo>{
     List<CrontabInfo> selectList();
 
     void updateCronExpression(CrontabUpdateDTO crontabUpdateDTO);
+
+    PageResult<CrontabInfo> pageSelectList(PageQuery pageQuery);
 }
