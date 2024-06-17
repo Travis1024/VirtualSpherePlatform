@@ -88,8 +88,25 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     @Override
     public R<String> shutdownVmware(String targetAgentIp, String vmwareUuid) {
         try {
+            // 1.执行正常关机操作
             String execked = VspRuntimeUtil.execForStr("virsh shutdown " + vmwareUuid);
             Assert.isTrue(execked.contains("is being shutdown"), () -> new DubboFunctionException(StrUtil.format("虚拟机关机失败:{}", execked)));
+            long beginTimeMillis = System.currentTimeMillis();
+
+            // 2.循环等待关机
+            while (true) {
+                Thread.sleep(2000);
+                // 2.1.判断是否超时，超时执行强制关机
+                if (System.currentTimeMillis() - beginTimeMillis > VmwareConstant.VMWARE_SHUTDOWN_TIMEOUT) {
+                    log.warn("[AgentVmwareClientImpl::shutdownVmware] 正常关机超时, 尝试强制关机!");
+                    return destroyVmware(targetAgentIp, vmwareUuid);
+                }
+                // 2.2.判断虚拟机状态
+                String vmwareState = VspRuntimeUtil.execForStr("virsh domstate " + vmwareUuid).trim();
+                if (vmwareState.contains("shut off")) {
+                    break;
+                }
+            }
             return R.ok(execked);
         } catch (Exception e) {
             log.error("[AgentVmwareClientImpl::shutdownVmware] Agent Vmware Shutdown Error! -> {}", e.getMessage());

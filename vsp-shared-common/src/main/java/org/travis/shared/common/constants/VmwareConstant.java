@@ -20,4 +20,9 @@ public class VmwareConstant {
     public static final String XML_PARAM_SYSTEM_DISK_PATH = "systemDiskPath";
     public static final String XML_PARAM_ISO_PATH = "isoPath";
 
+    /**
+     * 虚拟机关闭超时时间：毫秒
+     */
+    public static final Long VMWARE_SHUTDOWN_TIMEOUT = 90 * 1000L;
+
 }
