@@ -9,6 +9,8 @@ import org.travis.center.common.enums.BusinessTypeEnum;
 import org.travis.center.manage.pojo.dto.NetworkInsertDTO;
 import org.travis.center.manage.service.NetworkLayerInfoService;
 import org.travis.center.support.aspect.Log;
+import org.travis.center.support.aspect.RequestLock;
+import org.travis.center.support.aspect.RequestLockKey;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.exceptions.BadRequestException;
@@ -27,6 +29,7 @@ public class NetworkLayerInfoController {
     @Resource
     public NetworkLayerInfoService networkLayerInfoService;
 
+    @RequestLock
     @Log(title = "新增二层网络信息", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "新增二层网络信息")
     @PostMapping("/insertOne")
@@ -35,10 +38,11 @@ public class NetworkLayerInfoController {
         return networkLayerInfoService.insertOne(networkInsertDTO);
     }
 
+    @RequestLock
     @Log(title = "删除二层网络信息", businessType = BusinessTypeEnum.DELETE)
     @Operation(summary = "删除二层网络信息")
     @DeleteMapping("/deleteOne")
-    public void deleteOne(@RequestParam("networkLayerId") Long networkLayerId) {
+    public void deleteOne(@RequestLockKey @RequestParam("networkLayerId") Long networkLayerId) {
         networkLayerInfoService.deleteOne(networkLayerId);
     }
 

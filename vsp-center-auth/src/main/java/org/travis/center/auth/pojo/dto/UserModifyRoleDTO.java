@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.travis.center.common.enums.UserRoleEnum;
+import org.travis.center.support.aspect.RequestLockKey;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -22,6 +23,7 @@ public class UserModifyRoleDTO implements Serializable {
     /**
      * ID
      */
+    @RequestLockKey
     @Schema(description="ID")
     @NotNull(message = "用户ID不能为空!")
     private Long id;

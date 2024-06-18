@@ -8,6 +8,8 @@ import org.travis.center.manage.pojo.dto.ImageUploadDTO;
 import org.travis.center.manage.pojo.vo.ImageUploadVO;
 import org.travis.center.manage.service.ImageInfoService;
 import org.travis.center.support.aspect.Log;
+import org.travis.center.support.aspect.RequestLock;
+import org.travis.center.support.aspect.RequestLockKey;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.utils.VspStrUtil;
@@ -27,6 +29,7 @@ public class ImageInfoController {
     @Resource
     public ImageInfoService imageInfoService;
 
+    @RequestLock(expire = 10)
     @Log(title = "上传新增镜像信息 & 获取镜像切片文件上传地址")
     @Operation(summary = "上传新增镜像信息 & 获取镜像切片文件上传地址")
     @PostMapping("/preUpload")
@@ -35,10 +38,11 @@ public class ImageInfoController {
         return imageInfoService.getImageUploadInfo(imageUploadDTO);
     }
 
+    @RequestLock
     @Log(title = "删除镜像信息及文件", businessType = BusinessTypeEnum.DELETE)
     @Operation(summary = "删除镜像信息及文件")
     @DeleteMapping("/delete")
-    public void deleteImageInfo(@RequestParam("imageId") Long imageId) {
+    public void deleteImageInfo(@RequestLockKey @RequestParam("imageId") Long imageId) {
         imageInfoService.deleteImageInfo(imageId);
     }
 

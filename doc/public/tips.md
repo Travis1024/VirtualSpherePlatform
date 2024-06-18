@@ -334,6 +334,43 @@ server.1=localhost:2888:3888;2181
 
 
 
+## 九、外部快照创建及恢复
+
+- 外部快照创建
+
+  ```shell
+  # 命令
+  virsh snapshot-create-as --domain a5c655a8-589a-4524-b338-fa9b947a334d --name snap-1-manual --atomic --disk-only --quiesce
+  # 结果
+  Domain snapshot snap-2-manual created
+  
+  
+  -rw------- 1 qemu qemu 21478375424 Jun 19 01:38 kylin2.qcow2
+  -rw------- 1 qemu qemu     1310720 Jun 19 01:40 kylin2.snap-1-manual
+  -rw------- 1 qemu qemu     1310720 Jun 19 01:43 kylin2.snap-2-manual
+  ```
+
+  - [参考-1](https://www.cnblogs.com/sammyliu/p/4468757.html)
+  - [参考-2](https://notes.wadeism.net/post/kvm-external-snapshot/)
+  - [参考-3](https://unix.stackexchange.com/questions/663372/error-creating-snapshot-operation-not-supported-internal-snapshots-of-a-vm-wit)
+  - [参考-4](https://www.cyberciti.biz/faq/how-to-create-create-snapshot-in-linux-kvm-vmdomain/)
+
+  
+
+- 查看虚拟机磁盘挂载情况
+
+  ```shell
+  virsh domblklist vm1
+  
+   Target   Source
+  --------------------------------------------------------
+   vda      /var/lib/libvirt/images/kylin2.snap-2-manual
+  ```
+
+  
+
+
+
 ## 其他 virsh 命令
 
 ```shell

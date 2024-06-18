@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import org.travis.center.common.enums.BusinessTypeEnum;
 import org.travis.center.support.aspect.Log;
+import org.travis.center.support.aspect.RequestLock;
+import org.travis.center.support.aspect.RequestLockKey;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.utils.UserThreadLocalUtil;
 
@@ -35,6 +37,7 @@ public class UserController {
         return userService.queryById(UserThreadLocalUtil.getUserId());
     }
 
+    @RequestLock
     @Log(title = "用户登录")
     @Operation(summary = "用户登录")
     @PostMapping("/login")
@@ -49,14 +52,16 @@ public class UserController {
         StpUtil.logout();
     }
 
+    @RequestLock
     @Log(title = "用户信息删除", businessType = BusinessTypeEnum.DELETE)
     @Operation(summary = "用户信息删除")
     @DeleteMapping("/delete")
-    public void userDelete(@RequestParam("userId") Long userId) {
+    public void userDelete(@RequestLockKey @RequestParam("userId") Long userId) {
         Assert.notNull(userId, () -> new BadRequestException("用户-ID不能为空!"));
         userService.userDelete(userId);
     }
 
+    @RequestLock
     @Log(title = "新用户注册", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "新用户注册")
     @PostMapping("/register")
@@ -64,6 +69,7 @@ public class UserController {
         userService.register(userRegisterDTO);
     }
 
+    @RequestLock
     @Log(title = "用户基础信息更新", businessType = BusinessTypeEnum.UPDATE)
     @Operation(summary = "用户基础信息更新")
     @PutMapping("/update")
@@ -71,6 +77,7 @@ public class UserController {
         userService.updateUserInfo(userUpdateDTO);
     }
 
+    @RequestLock
     @Log(title = "用户密码修改", businessType = BusinessTypeEnum.UPDATE)
     @Operation(summary = "用户密码修改")
     @PutMapping("/modifyPw")
@@ -78,6 +85,7 @@ public class UserController {
         userService.updatePassword(userModifyPasswordDTO);
     }
 
+    @RequestLock
     @Log(title = "用户角色修改", businessType = BusinessTypeEnum.UPDATE)
     @Operation(summary = "用户角色修改")
     @PutMapping("/modifyRole")

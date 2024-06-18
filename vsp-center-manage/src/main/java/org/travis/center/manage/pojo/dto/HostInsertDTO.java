@@ -2,6 +2,7 @@ package org.travis.center.manage.pojo.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.travis.center.support.aspect.RequestLockKey;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ public class HostInsertDTO implements Serializable {
     /**
      * 宿主机名称
      */
+    @RequestLockKey
     @Schema(description="宿主机名称")
     @NotBlank(message = "宿主机名称不能为空!")
     private String name;
@@ -32,6 +34,7 @@ public class HostInsertDTO implements Serializable {
     /**
      * 宿主机 IP 地址
      */
+    @RequestLockKey
     @Schema(description="宿主机 IP 地址")
     @NotBlank(message = "宿主机 IP 地址不能为空!")
     private String ip;

@@ -3,6 +3,7 @@ package org.travis.center.manage.pojo.dto;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.travis.center.support.aspect.RequestLockKey;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -20,6 +21,7 @@ public class NetworkInsertDTO implements Serializable {
     /**
      * 网卡名称（eg：p4p1）
      */
+    @RequestLockKey
     @Schema(description="网卡名称（eg：p4p1）", example = "p4p1")
     @NotBlank(message = "二层网络网卡名称不能为空!")
     private String nicName;
