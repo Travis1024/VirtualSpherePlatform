@@ -9,6 +9,8 @@ import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.center.manage.service.VmwareInfoService;
 import org.travis.center.support.aspect.Log;
+import org.travis.center.support.aspect.RequestLock;
+import org.travis.center.support.aspect.RequestLockKey;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
@@ -49,6 +51,7 @@ public class VmwareInfoController {
         return vmwareInfoService.pageSelectList(pageQuery);
     }
 
+    @RequestLock(expire = 60)
     @Log(title = "创建虚拟机", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "创建虚拟机")
     @PostMapping("/create")
@@ -56,63 +59,71 @@ public class VmwareInfoController {
         vmwareInfoService.createVmwareInfo(vmwareInsertDTO);
     }
 
+    @RequestLock(expire = 30)
     @Log(title = "删除虚拟机", businessType = BusinessTypeEnum.DELETE)
     @Operation(summary = "删除虚拟机")
     @DeleteMapping("/delete")
-    public List<VmwareErrorVO> deleteVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+    public List<VmwareErrorVO> deleteVmware(@RequestLockKey @RequestParam("vmwareIds") List<Long> vmwareIds) {
         return vmwareInfoService.deleteVmware(vmwareIds);
     }
 
+    @RequestLock(expire = 30)
     @Log(title = "启动虚拟机")
     @Operation(summary = "启动虚拟机")
     @PostMapping("/start")
-    public List<VmwareErrorVO> startVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+    public List<VmwareErrorVO> startVmware(@RequestLockKey @RequestParam("vmwareIds") List<Long> vmwareIds) {
         return vmwareInfoService.startVmware(vmwareIds);
     }
 
+    @RequestLock(expire = 30)
     @Log(title = "关闭虚拟机")
     @Operation(summary = "关闭虚拟机")
     @PostMapping("/shutdown")
-    public List<VmwareErrorVO> shutdownVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+    public List<VmwareErrorVO> shutdownVmware(@RequestLockKey @RequestParam("vmwareIds") List<Long> vmwareIds) {
         return vmwareInfoService.shutdownVmware(vmwareIds);
     }
 
+    @RequestLock(expire = 30)
     @Log(title = "强制关闭虚拟机")
     @Operation(summary = "强制关闭虚拟机")
     @PostMapping("/destroy")
-    public List<VmwareErrorVO> destroyVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+    public List<VmwareErrorVO> destroyVmware(@RequestLockKey @RequestParam("vmwareIds") List<Long> vmwareIds) {
         return vmwareInfoService.destroyVmware(vmwareIds);
     }
 
+    @RequestLock(expire = 30)
     @Log(title = "挂起虚拟机")
     @Operation(summary = "挂起虚拟机")
     @PostMapping("/suspend")
-    public List<VmwareErrorVO> suspendVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+    public List<VmwareErrorVO> suspendVmware(@RequestLockKey @RequestParam("vmwareIds") List<Long> vmwareIds) {
         return vmwareInfoService.suspendVmware(vmwareIds);
     }
 
+    @RequestLock(expire = 30)
     @Log(title = "恢复虚拟机")
     @Operation(summary = "恢复虚拟机")
     @PostMapping("/resume")
-    public List<VmwareErrorVO> resumeVmware(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+    public List<VmwareErrorVO> resumeVmware(@RequestLockKey @RequestParam("vmwareIds") List<Long> vmwareIds) {
         return vmwareInfoService.resumeVmware(vmwareIds);
     }
 
+    @RequestLock(expire = 60)
     @Log(title = "调整虚拟机内存大小", businessType = BusinessTypeEnum.UPDATE)
     @Operation(summary = "调整虚拟机内存大小")
     @PutMapping("/modifyMemory")
     public void modifyVmwareMemory(
-            @Parameter(description = "虚拟机ID", required = true) @RequestParam("vmwareId") Long vmwareId,
+            @RequestLockKey @Parameter(description = "虚拟机ID", required = true) @RequestParam("vmwareId") Long vmwareId,
             @Parameter(description = "内存大小(字节)", required = true) @RequestParam("memory") Long memory
     ) {
         vmwareInfoService.modifyVmwareMemory(vmwareId, memory);
     }
 
+    @RequestLock(expire = 60)
     @Log(title = "调整虚拟机虚拟CPU数量", businessType = BusinessTypeEnum.UPDATE)
     @Operation(summary = "调整虚拟机虚拟CPU数量")
     @PutMapping("/modifyVcpu")
     public void modifyVmwareVcpuNumber(
-            @Parameter(description = "虚拟机ID", required = true) @RequestParam("vmwareId") Long vmwareId,
+            @RequestLockKey @Parameter(description = "虚拟机ID", required = true) @RequestParam("vmwareId") Long vmwareId,
             @Parameter(description = "虚拟CPU数量", required = true) @RequestParam("vcpuNumber") Integer vcpuNumber
     ) {
         vmwareInfoService.modifyVmwareVcpuNumber(vmwareId, vcpuNumber);

@@ -11,6 +11,8 @@ import org.travis.center.manage.pojo.dto.HostUpdateDTO;
 import org.travis.center.manage.pojo.vo.HostErrorVO;
 import org.travis.center.manage.service.HostInfoService;
 import org.travis.center.support.aspect.Log;
+import org.travis.center.support.aspect.RequestLock;
+import org.travis.center.support.aspect.RequestLockKey;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.exceptions.BadRequestException;
@@ -41,6 +43,7 @@ public class HostInfoController {
         return hostInfoOptional.orElseThrow(() -> new BadRequestException("未查询到宿主机信息!"));
     }
 
+    @RequestLock
     @Log(title = "新增单条宿主机数据", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "新增单条宿主机数据")
     @PostMapping("/insertOne")
@@ -49,14 +52,16 @@ public class HostInfoController {
         return hostInfoService.insertOne(hostInsertDTO);
     }
 
+    @RequestLock
     @Log(title = "宿主机信息删除", businessType = BusinessTypeEnum.DELETE)
     @Operation(summary = "宿主机信息删除")
     @DeleteMapping("/delete")
-    public List<HostErrorVO> delete(@RequestParam("hostIds") List<Long> hostIdList) {
+    public List<HostErrorVO> delete(@RequestLockKey @RequestParam("hostIds") List<Long> hostIdList) {
         Assert.isFalse(hostIdList.isEmpty(), () -> new BadRequestException("宿主机 ID 列表为空!"));
         return hostInfoService.delete(hostIdList);
     }
 
+    @RequestLock
     @Log(title = "宿主机信息更新", businessType = BusinessTypeEnum.UPDATE)
     @Operation(summary = "宿主机信息更新")
     @PutMapping("/update")

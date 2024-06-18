@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.checkerframework.checker.units.qual.Length;
 import org.travis.center.common.enums.UserRoleEnum;
+import org.travis.center.support.aspect.RequestLockKey;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -20,6 +21,7 @@ public class UserRegisterDTO implements Serializable {
     /**
      * 登录用户名
      */
+    @RequestLockKey
     @Schema(description="登录用户名")
     @NotBlank(message = "登录用户名不能为空!")
     private String username;

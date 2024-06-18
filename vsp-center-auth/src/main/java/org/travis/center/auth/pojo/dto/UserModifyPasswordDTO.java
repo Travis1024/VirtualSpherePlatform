@@ -3,6 +3,7 @@ package org.travis.center.auth.pojo.dto;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.travis.center.support.aspect.RequestLockKey;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -21,6 +22,7 @@ public class UserModifyPasswordDTO implements Serializable {
     /**
      * ID
      */
+    @RequestLockKey
     @Schema(description="ID")
     @NotNull(message = "用户ID不能为空!")
     private Long id;

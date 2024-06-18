@@ -8,6 +8,8 @@ import org.travis.center.manage.pojo.dto.DiskPageSelectByVmwareDTO;
 import org.travis.center.manage.service.DiskInfoService;
 import org.springframework.web.bind.annotation.*;
 import org.travis.center.support.aspect.Log;
+import org.travis.center.support.aspect.RequestLock;
+import org.travis.center.support.aspect.RequestLockKey;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
@@ -61,6 +63,7 @@ public class DiskInfoController {
         return diskInfoService.pageSelectListByVmwareId(diskPageSelectByVmwareDTO.getPageQuery(), diskPageSelectByVmwareDTO.getVmwareId());
     }
 
+    @RequestLock
     @Log(title = "创建新磁盘信息", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "创建新磁盘信息")
     @PostMapping("/create")
@@ -68,10 +71,11 @@ public class DiskInfoController {
         return diskInfoService.createDisk(diskInsertDTO, true);
     }
 
+    @RequestLock
     @Log(title = "删除磁盘信息", businessType = BusinessTypeEnum.DELETE)
     @Operation(summary = "删除磁盘信息")
     @DeleteMapping("/delete")
-    public void deleteDisk(@RequestParam("diskId") Long diskId) {
+    public void deleteDisk(@RequestLockKey @RequestParam("diskId") Long diskId) {
         diskInfoService.deleteDisk(diskId, true);
     }
 }

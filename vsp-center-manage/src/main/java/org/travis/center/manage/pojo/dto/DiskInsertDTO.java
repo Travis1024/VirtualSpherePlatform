@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.travis.center.common.enums.DiskTypeEnum;
+import org.travis.center.support.aspect.RequestLockKey;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -36,6 +37,7 @@ public class DiskInsertDTO implements Serializable {
     /**
      * 磁盘所属虚拟机ID
      */
+    @RequestLockKey
     @Schema(description="磁盘所属虚拟机ID")
     @NotNull(message = "磁盘所属虚拟机ID不能为空!")
     private Long vmwareId;

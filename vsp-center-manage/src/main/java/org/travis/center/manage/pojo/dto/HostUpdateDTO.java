@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.travis.center.support.aspect.RequestLockKey;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,6 +22,7 @@ public class HostUpdateDTO implements Serializable {
     /**
      * ID
      */
+    @RequestLockKey
     @Schema(description="ID")
     @NotNull(message = "宿主机 ID 不能为空!")
     private Long id;

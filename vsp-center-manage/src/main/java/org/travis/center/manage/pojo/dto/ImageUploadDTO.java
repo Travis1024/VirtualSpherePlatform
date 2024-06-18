@@ -5,6 +5,7 @@ import lombok.Data;
 import org.travis.center.common.enums.ArchEnum;
 import org.travis.center.common.enums.ImagePlatformEnum;
 import org.travis.center.common.enums.ImageTypeEnum;
+import org.travis.center.support.aspect.RequestLockKey;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ public class ImageUploadDTO implements Serializable {
     /**
      * 镜像名字
      */
+    @RequestLockKey
     @Schema(description="镜像名字")
     @NotEmpty(message = "镜像名字不能为空!")
     private String name;

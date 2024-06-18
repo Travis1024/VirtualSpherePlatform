@@ -11,4 +11,5 @@ public class LockConstant {
     public static final String LOCK_FILE_PREFIX = "lock:file:";
     public static final String LOCK_VMWARE_PREFIX = "lock:vmware:";
     public static final String LOCK_HOST_PREFIX = "lock:host:";
+    public static final String LOCK_INTERFACE_PREFIX = "lock:itf:";
 }

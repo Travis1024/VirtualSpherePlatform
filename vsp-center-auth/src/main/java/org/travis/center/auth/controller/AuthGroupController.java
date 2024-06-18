@@ -9,6 +9,7 @@ import org.travis.center.common.entity.auth.AuthGroup;
 import org.springframework.web.bind.annotation.*;
 import org.travis.center.common.enums.BusinessTypeEnum;
 import org.travis.center.support.aspect.Log;
+import org.travis.center.support.aspect.RequestLock;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -32,6 +33,7 @@ public class AuthGroupController {
         return authGroupService.queryCurrentUserAuthGroup();
     }
 
+    @RequestLock
     @Log(title = "管理员新增权限组信息", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "管理员新增权限组信息")
     @PostMapping("/insert")
@@ -39,6 +41,7 @@ public class AuthGroupController {
         return authGroupService.insertOneAuthGroup(authGroupInsertDTO);
     }
 
+    @RequestLock
     @Log(title = "管理员更新权限组信息", businessType = BusinessTypeEnum.UPDATE)
     @Operation(summary = "管理员更新权限组信息")
     @PutMapping("/update")

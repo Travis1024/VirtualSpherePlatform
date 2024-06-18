@@ -9,6 +9,8 @@ import cn.hutool.core.util.StrUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.util.ReflectionUtils;
+import org.travis.shared.common.constants.LockConstant;
+import org.travis.shared.common.utils.ServletUtil;
 
 /**
  * @ClassName RequestLockKeyGenerator
@@ -22,7 +24,7 @@ public class RequestLockKeyGenerator {
      * 获取LockKey
      *
      * @param joinPoint 切入点
-     * @return
+     * @return lockKey
      */
     public static String getLockKey(ProceedingJoinPoint joinPoint) {
         // 获取连接点的方法签名对象
@@ -43,7 +45,7 @@ public class RequestLockKeyGenerator {
                 continue;
             }
             // 如果属性是 RequestLockKey 注解，则拼接 连接符 "& + RequestLockKey"
-            sb.append(requestLock.delimiter()).append(args[i]);
+            sb.append(requestLock.delimiter()).append(args[i].toString());
         }
         // 如果方法上没有加RequestKeyParam注解
         if (StrUtil.isEmpty(sb.toString())) {
@@ -68,7 +70,9 @@ public class RequestLockKeyGenerator {
                 }
             }
         }
-        // 返回指定前缀的key
-        return requestLock.prefix() + sb;
+        // _user_create
+        String requestUrl = StrUtil.sub(ServletUtil.getRequest().getRequestURI(), 0, 255).replace(StrUtil.SLASH, StrUtil.UNDERLINE);
+        // 返回指定前缀的key, eg: "lock:itf:_user_create:&admin"
+        return LockConstant.LOCK_INTERFACE_PREFIX + requestUrl + StrUtil.COLON + requestLock.prefix() + sb;
     }
 }

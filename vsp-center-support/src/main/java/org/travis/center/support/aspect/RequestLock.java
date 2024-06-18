@@ -25,9 +25,9 @@ public @interface RequestLock {
     /**
      * redis锁过期时间
      *
-     * @return 默认2秒
+     * @return 默认 5 秒
      */
-    int expire() default 2;
+    int expire() default 5;
 
     /**
      * redis锁过期时间单位

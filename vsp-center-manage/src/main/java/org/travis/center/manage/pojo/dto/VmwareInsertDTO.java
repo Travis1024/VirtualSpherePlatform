@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.travis.center.common.enums.ArchEnum;
 import org.travis.center.common.enums.VmwareCreateFormEnum;
+import org.travis.center.support.aspect.RequestLockKey;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -21,6 +22,7 @@ import java.io.Serializable;
 @Data
 public class VmwareInsertDTO implements Serializable {
 
+    @RequestLockKey
     @Schema(description="虚拟机名称")
     @NotBlank(message = "虚拟机名称不能为空!")
     private String name;

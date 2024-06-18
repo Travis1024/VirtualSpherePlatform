@@ -2,6 +2,7 @@ package org.travis.center.auth.pojo.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.travis.center.support.aspect.RequestLockKey;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -18,6 +19,7 @@ public class UserUpdateDTO implements Serializable {
     /**
      * ID
      */
+    @RequestLockKey
     @NotNull(message = "用户ID不能为空!")
     @Schema(description="ID")
     private Long id;
