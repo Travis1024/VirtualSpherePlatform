@@ -46,6 +46,7 @@ public class AgentDiskClientImpl implements AgentDiskClient {
             Assert.isTrue(execked.startsWith("Formatting"), () -> new DubboFunctionException("磁盘创建失败:" + execked));
             return R.ok("Disk Create Successfully");
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             log.error("[AgentDiskClientImpl::createDisk] Create Disk Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
@@ -59,6 +60,7 @@ public class AgentDiskClientImpl implements AgentDiskClient {
             boolean del = FileUtil.del(absolutePath);
             return R.ok(String.valueOf(del));
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             log.error("[AgentDiskClientImpl::deleteDisk] Delete Disk Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
@@ -71,6 +73,7 @@ public class AgentDiskClientImpl implements AgentDiskClient {
             Integer diskSize = Integer.parseInt(diskSizeStr);
             return R.ok(diskSize);
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             log.error("[AgentDiskClientImpl::queryDiskSize] Query Disk Size Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
@@ -82,7 +85,36 @@ public class AgentDiskClientImpl implements AgentDiskClient {
             VspRuntimeUtil.execForStr("cp " + originImagePath + " " + targetDiskPath);
             return R.ok();
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             log.error("[AgentDiskClientImpl::copyDiskFile] Copy Disk File Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<String> attachDisk(String targetAgentIp, String vmwareUuid, String diskFilePath, String targetDev) {
+        try {
+            String command = StrUtil.format("virsh attach-disk --domain {} --source {} --subdriver qcow2 --targetbus virtio --persistent --target {}", vmwareUuid, diskFilePath, targetDev);
+            String execked = VspRuntimeUtil.execForStr(command);
+            Assert.isTrue(execked.contains("Disk attached successfully"), () -> new DubboFunctionException("磁盘挂载失败:" + execked));
+            return R.ok(execked);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            log.error("[AgentDiskClientImpl::attachDisk] Attach Disk File Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<String> detachDisk(String targetAgentIp, String vmwareUuid, String targetDev) {
+        try {
+            String command = StrUtil.format("virsh detach-disk --domain {} --target {} --persistent", vmwareUuid, targetDev);
+            String execked = VspRuntimeUtil.execForStr(command);
+            Assert.isTrue(execked.contains("Disk detached successfully"), () -> new DubboFunctionException("磁盘卸载失败:" + execked));
+            return R.ok(execked);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            log.error("[AgentDiskClientImpl::detachDisk] Detach Disk File Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
     }

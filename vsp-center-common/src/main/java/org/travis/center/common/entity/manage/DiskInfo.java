@@ -79,6 +79,13 @@ public class DiskInfo extends com.baomidou.mybatisplus.extension.activerecord.Mo
     private DiskTypeEnum diskType;
 
     /**
+     * 磁盘符（eg:vda）
+     */
+    @TableField(value = "TARGET_DEV")
+    @Schema(description = "磁盘符（eg:vda）")
+    private String targetDev;
+
+    /**
      * 逻辑删除
      */
     @TableField(value = "IS_DELETED")

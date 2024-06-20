@@ -7,6 +7,7 @@
     <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
     <result column="SPACE_SIZE" jdbcType="BIGINT" property="spaceSize" />
     <result column="SUB_PATH" jdbcType="VARCHAR" property="subPath" />
+    <result column="TARGET_DEV" jdbcType="VARCHAR" property="targetDev" />
     <result column="VMWARE_ID" jdbcType="BIGINT" property="vmwareId" />
     <result column="DISK_TYPE" jdbcType="INTEGER" property="diskType" />
     <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
@@ -19,6 +20,6 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     ID, "NAME", DESCRIPTION, SPACE_SIZE, SUB_PATH, VMWARE_ID, DISK_TYPE, IS_DELETED, IS_MOUNT,
-    UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME
+    UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME, TARGET_DEV
   </sql>
 </mapper>

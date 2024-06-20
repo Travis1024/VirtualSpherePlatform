@@ -75,6 +75,7 @@ public class SystemDiskCreationService extends AbstractCreationService{
         targetDiskInfo.setSubPath(subPath);
         targetDiskInfo.setVmwareId(vmwareInfo.getId());
         targetDiskInfo.setDiskType(DiskTypeEnum.ROOT);
+        targetDiskInfo.setTargetDev("vda");
         // 设置磁盘默认为“未挂载”
         targetDiskInfo.setIsMount(DiskMountEnum.UN_MOUNTED);
         diskInfoMapper.insert(targetDiskInfo);

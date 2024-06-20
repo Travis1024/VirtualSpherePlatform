@@ -3,6 +3,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.validation.annotation.Validated;
 import org.travis.center.common.entity.manage.DiskInfo;
 import org.travis.center.common.enums.BusinessTypeEnum;
+import org.travis.center.manage.pojo.dto.DiskAttachDTO;
 import org.travis.center.manage.pojo.dto.DiskInsertDTO;
 import org.travis.center.manage.pojo.dto.DiskPageSelectByVmwareDTO;
 import org.travis.center.manage.service.DiskInfoService;
@@ -14,6 +15,7 @@ import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -64,11 +66,27 @@ public class DiskInfoController {
     }
 
     @RequestLock
-    @Log(title = "创建新磁盘信息", businessType = BusinessTypeEnum.INSERT)
-    @Operation(summary = "创建新磁盘信息")
+    @Log(title = "创建新数据磁盘信息", businessType = BusinessTypeEnum.INSERT)
+    @Operation(summary = "创建新数据磁盘信息")
     @PostMapping("/create")
     public DiskInfo createDisk(@Validated @RequestBody DiskInsertDTO diskInsertDTO) {
         return diskInfoService.createDisk(diskInsertDTO, true);
+    }
+
+    @RequestLock
+    @Log(title = "数据磁盘挂载", businessType = BusinessTypeEnum.OTHER)
+    @Operation(summary = "数据磁盘挂载")
+    @PostMapping("/attach")
+    public void attachDisk(@Validated @RequestBody DiskAttachDTO diskAttachDTO) {
+        diskInfoService.attachDisk(diskAttachDTO);
+    }
+
+    @RequestLock
+    @Log(title = "数据磁盘卸载", businessType = BusinessTypeEnum.OTHER)
+    @Operation(summary = "数据磁盘卸载")
+    @GetMapping("/detach")
+    public void detachDisk(@RequestLockKey @NotNull(message = "磁盘ID不能为空!") @RequestParam("diskId") Long diskId) {
+        diskInfoService.detachDisk(diskId);
     }
 
     @RequestLock

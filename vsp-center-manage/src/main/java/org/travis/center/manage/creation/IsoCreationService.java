@@ -3,9 +3,11 @@ package org.travis.center.manage.creation;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.travis.center.common.entity.manage.DiskInfo;
 import org.travis.center.common.enums.ArchEnum;
 import org.travis.center.common.enums.DiskTypeEnum;
 import org.travis.center.common.enums.VmwareCreateFormEnum;
+import org.travis.center.manage.pojo.dto.DiskAttachDTO;
 import org.travis.center.manage.pojo.dto.DiskInsertDTO;
 
 import java.io.IOException;
@@ -30,12 +32,11 @@ public class IsoCreationService extends AbstractCreationService{
     @Transactional
     @Override
     public void createSystemDisk() {
+        // 创建磁盘
         DiskInsertDTO diskInsertDTO = new DiskInsertDTO();
-        diskInsertDTO.setVmwareId(vmwareInfo.getId());
-        diskInsertDTO.setDiskType(DiskTypeEnum.ROOT);
         diskInsertDTO.setDescription("System disk is created automatically by the system!");
         diskInsertDTO.setSpaceSize(vmwareInsertDTO.getSystemDiskSize() * 1024L * 1024L * 1024L);
-        diskInfo = diskInfoService.createDisk(diskInsertDTO, false);
+        this.diskInfo = diskInfoService.createDisk(diskInsertDTO, false);
     }
 
     @Override

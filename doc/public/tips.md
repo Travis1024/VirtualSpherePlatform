@@ -355,7 +355,24 @@ server.1=localhost:2888:3888;2181
   - [参考-3](https://unix.stackexchange.com/questions/663372/error-creating-snapshot-operation-not-supported-internal-snapshots-of-a-vm-wit)
   - [参考-4](https://www.cyberciti.biz/faq/how-to-create-create-snapshot-in-linux-kvm-vmdomain/)
 
-  
+
+
+
+## 十、磁盘操作
+
+```shell
+# command
+virsh detach-disk --domain kylin10.0 --target vdb --persistent
+# response
+Disk detached successfully
+
+# command 
+virsh attach-disk --domain kylin10.0 --source /var/lib/libvirt/images/kylin10.0-attach-1.qcow2 --subdriver qcow2 --targetbus virtio --persistent --target vdb
+# response
+Disk attached successfully
+```
+
+
 
 - 查看虚拟机磁盘挂载情况
 
@@ -369,8 +386,6 @@ server.1=localhost:2888:3888;2181
 
   
 
-
-
 ## 其他 virsh 命令
 
 ```shell
@@ -383,6 +398,11 @@ virsh vncdisplay [vm]
 
 
 ## ⚠️注意事项
+
+- ```shell
+  # 设置 LANG 环境变量为 en_US.UTF-8
+  export LANG=en_US.UTF-8
+  ```
 
 - 镜像文件 + 磁盘文件 全部放在共享存储中
 
@@ -425,4 +445,53 @@ virsh vncdisplay [vm]
   echo $LANG
   ```
 
-  
+
+
+
+
+
+## 依赖包版本
+
+```shell
+libvirt-daemon-driver-qemu.aarch64                      6.2.0-16.p05.ky10                      @anaconda        
+libvirt-daemon-qemu.aarch64                             6.2.0-16.p05.ky10                      @anaconda        
+qemu.aarch64                                            2:4.1.0-63.p23.ky10                    @ks10-adv-updates
+qemu-block-curl.aarch64                                 2:4.1.0-63.p14.ky10                    @anaconda        
+qemu-block-iscsi.aarch64                                2:4.1.0-63.p14.ky10                    @anaconda        
+qemu-guest-agent.aarch64                                2:4.1.0-63.p14.ky10                    @anaconda        
+qemu-help.noarch                                        2:4.1.0-63.p14.ky10                    @anaconda        
+qemu-img.aarch64                                        2:4.1.0-63.p14.ky10                    @anaconda        
+ipxe-roms-qemu.noarch                                   20190930-5.ky10                        ks10-adv-os      
+libvirt-daemon-driver-qemu.aarch64                      6.2.0-16.p23.ky10                      ks10-adv-updates 
+libvirt-daemon-qemu.aarch64                             6.2.0-16.p23.ky10                      ks10-adv-updates 
+qemu.aarch64                                            2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-block-curl.aarch64                                 2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-block-iscsi.aarch64                                2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-block-rbd.aarch64                                  2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-block-ssh.aarch64                                  2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-guest-agent.aarch64                                2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-help.noarch                                        2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-img.aarch64                                        2:4.1.0-63.p35.ky10                    ks10-adv-updates
+
+
+
+libvirt-daemon-driver-qemu.x86_64                       6.2.0-16.p22.ky10                      @ks10-adv-updates
+qemu.x86_64                                             2:4.1.0-63.p32.ky10                    @ks10-adv-updates
+qemu-block-curl.x86_64                                  2:4.1.0-63.p32.ky10                    @ks10-adv-updates
+qemu-block-iscsi.x86_64                                 2:4.1.0-63.p32.ky10                    @ks10-adv-updates
+qemu-guest-agent.x86_64                                 2:4.1.0-63.p32.ky10                    @ks10-adv-updates
+qemu-img.x86_64                                         2:4.1.0-63.p32.ky10                    @ks10-adv-updates
+ipxe-roms-qemu.noarch                                   20190930-5.ky10                        ks10-adv-os      
+libvirt-daemon-driver-qemu.x86_64                       6.2.0-16.p23.ky10                      ks10-adv-updates 
+libvirt-daemon-qemu.x86_64                              6.2.0-16.p23.ky10                      ks10-adv-updates 
+qemu.x86_64                                             2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-block-curl.x86_64                                  2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-block-iscsi.x86_64                                 2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-block-rbd.x86_64                                   2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-block-ssh.x86_64                                   2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-guest-agent.x86_64                                 2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-help.noarch                                        2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-img.x86_64                                         2:4.1.0-63.p35.ky10                    ks10-adv-updates 
+qemu-seabios.x86_64                                     2:4.1.0-63.p35.ky10                    ks10-adv-updates
+```
+

@@ -2,6 +2,7 @@ package org.travis.center.manage.service;
 
 import org.travis.center.common.entity.manage.DiskInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.travis.center.manage.pojo.dto.DiskAttachDTO;
 import org.travis.center.manage.pojo.dto.DiskInsertDTO;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
@@ -23,4 +24,6 @@ public interface DiskInfoService extends IService<DiskInfo>{
     void deleteDisk(Long diskId, boolean isUserDelete);
     List<DiskInfo> selectListByVmwareId(Long vmwareId);
     PageResult<DiskInfo> pageSelectListByVmwareId(PageQuery pageQuery, Long vmwareId);
+    void attachDisk(DiskAttachDTO diskAttachDTO);
+    void detachDisk(Long diskId);
 }

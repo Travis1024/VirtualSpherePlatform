@@ -163,7 +163,12 @@ public abstract class AbstractCreationService {
     @Transactional
     public void stepSeven() {
         // 7.1.更新系统磁盘状态
-        diskInfoMapper.update(Wrappers.<DiskInfo>lambdaUpdate().set(DiskInfo::getIsMount, DiskMountEnum.MOUNTED).eq(DiskInfo::getId, diskInfo.getId()));
+        diskInfoMapper.update(
+                Wrappers.<DiskInfo>lambdaUpdate()
+                        .set(DiskInfo::getIsMount, DiskMountEnum.MOUNTED)
+                        .set(DiskInfo::getVmwareId, vmwareInfo.getId())
+                        .eq(DiskInfo::getId, diskInfo.getId())
+        );
         // 7.2.更新虚拟机状态
         vmwareInfoMapper.update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.SHUT_OFF).eq(VmwareInfo::getId, vmwareInfo.getId()));
     }

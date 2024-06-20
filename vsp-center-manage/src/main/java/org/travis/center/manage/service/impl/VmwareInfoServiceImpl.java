@@ -162,8 +162,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     private VmwareErrorVO startSingleVmware(VmwareInfo vmwareInfo) {
         VmwareErrorVO vmwareErrorVO = null;
-        RLock hostLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareInfo.getId());
-        RLock vmLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareInfo.getHostId());
+        RLock hostLock = redissonClient.getLock(LockConstant.LOCK_HOST_PREFIX + vmwareInfo.getHostId());
+        RLock vmLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareInfo.getId());
         try {
             // 1.1.根据宿主机 ID 加锁, 尝试拿锁
             Assert.isTrue(hostLock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("宿主机正在操作中，请稍后重试!"));

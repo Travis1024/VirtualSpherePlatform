@@ -62,6 +62,10 @@ public class AgentAssistService {
         return ipList;
     }
 
+    /**
+     * 获取宿主机共享存储路径，eg: /root/vsp/share
+     * @return 宿主机共享存储路径
+     */
     public String getHostSharedStoragePath() {
         return agentHostSharedStoragePath.endsWith(File.separator) ? agentHostSharedStoragePath.substring(0, agentHostSharedStoragePath.length() - File.separator.length()) : agentHostSharedStoragePath;
     }

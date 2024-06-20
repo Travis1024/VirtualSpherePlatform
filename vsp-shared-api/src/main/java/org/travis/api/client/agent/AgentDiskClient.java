@@ -17,4 +17,8 @@ public interface AgentDiskClient {
     R<Integer> queryDiskSize(String targetAgentIp, String originImagePath);
 
     R<Void> copyDiskFile(String targetAgentIp, String originImagePath, String targetDiskPath);
+
+    R<String> attachDisk(String targetAgentIp, String vmwareUuid, String diskFilePath, String targetDev);
+
+    R<String> detachDisk(String targetAgentIp, String vmwareUuid, String targetDev);
 }
