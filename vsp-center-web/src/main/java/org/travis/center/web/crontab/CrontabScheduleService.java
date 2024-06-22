@@ -66,7 +66,7 @@ public class CrontabScheduleService implements SchedulingConfigurer {
     @Resource
     public VmwareInfoMapper vmwareInfoMapper;
 
-    private static final Long millisecond_30s = 30 * 1000L;
+    private static final Long MILLISECOND_30S = 30 * 1000L;
 
 
     @Override
@@ -148,10 +148,10 @@ public class CrontabScheduleService implements SchedulingConfigurer {
             RScoredSortedSet<String> sortedSet = redissonClient.getScoredSortedSet(RedissonConstant.HEALTHY_HOST_RECORDS + hostInfo.getIp());
 
             // 2.1.判断是否健康
-            Collection<String> valuedRange = sortedSet.valueRange(currentTimeMillis - millisecond_30s, true, currentTimeMillis, true);
+            Collection<String> valuedRange = sortedSet.valueRange(currentTimeMillis - MILLISECOND_30S, true, currentTimeMillis, true);
             boolean isHealthy = !valuedRange.isEmpty();
             // 删除历史数据
-            sortedSet.removeRangeByScore(0, true, currentTimeMillis - millisecond_30s, true);
+            sortedSet.removeRangeByScore(0, true, currentTimeMillis - MILLISECOND_30S, true);
 
             // 2.1.「准备中」or「停用」or「初始化异常」状态忽略，不进行处理
             if (HostStateEnum.IN_PREPARATION.equals(hostInfo.getState()) || HostStateEnum.DISABLE.equals(hostInfo.getState()) || HostStateEnum.INIT_ERROR.equals(hostInfo.getState())) {
