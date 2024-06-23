@@ -8,6 +8,7 @@ import org.quartz.impl.triggers.CronTriggerImpl;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.travis.center.support.pojo.dto.QuartzCreateParamDTO;
 import org.travis.center.support.pojo.dto.QuartzJobKeyDTO;
 import org.travis.center.support.pojo.dto.QuartzUpdateParamDTO;
@@ -36,6 +37,7 @@ public class QuartzServiceImpl implements QuartzService {
     @Resource
     private SchedulerFactoryBean schedulerFactoryBean;
 
+    @Transactional
     @SuppressWarnings("unchecked")
     @Override
     public void addJob(QuartzCreateParamDTO param) throws SchedulerException {
@@ -90,6 +92,7 @@ public class QuartzServiceImpl implements QuartzService {
         }
     }
 
+    @Transactional
     @Override
     public void updateJob(QuartzUpdateParamDTO param) throws SchedulerException {
         String jobName = param.getJobName();
@@ -105,9 +108,8 @@ public class QuartzServiceImpl implements QuartzService {
         TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroup);
 
         // 3.构建新 Cron 触发器实例
-        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(triggerCrontab);
         TriggerBuilder<?> triggerBuilder = TriggerBuilder.newTrigger()
-                .withSchedule(scheduleBuilder)
+                .withSchedule(CronScheduleBuilder.cronSchedule(triggerCrontab))
                 .withIdentity(triggerKey);
         Trigger newTrigger = triggerBuilder.build();
 
