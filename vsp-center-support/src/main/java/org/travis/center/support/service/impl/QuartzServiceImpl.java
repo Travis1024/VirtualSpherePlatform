@@ -5,6 +5,9 @@ import cn.hutool.core.util.ClassUtil;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.impl.triggers.CronTriggerImpl;
+import org.quartz.spi.MutableTrigger;
+import org.quartz.spi.OperableTrigger;
+import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
@@ -78,13 +81,14 @@ public class QuartzServiceImpl implements QuartzService {
                 .build();
 
         // 4.2.构建 Cron 触发器实例
-        Trigger trigger = TriggerBuilder.newTrigger()
-                .withSchedule(CronScheduleBuilder.cronSchedule(triggerCrontab))
-                .withIdentity(TriggerKey.triggerKey(jobName, jobGroup))
+        CronTriggerImpl cronTrigger = (CronTriggerImpl) CronScheduleBuilder
+                .cronSchedule(triggerCrontab)
+                .withMisfireHandlingInstructionDoNothing()
                 .build();
+        cronTrigger.setKey(TriggerKey.triggerKey(jobName, jobGroup));
 
         // 4.3.安排定时任务
-        scheduler.scheduleJob(jobDetail, trigger);
+        scheduler.scheduleJob(jobDetail, cronTrigger);
 
         // 5.启动定时任务
         if (!scheduler.isShutdown()) {
@@ -108,13 +112,14 @@ public class QuartzServiceImpl implements QuartzService {
         TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroup);
 
         // 3.构建新 Cron 触发器实例
-        TriggerBuilder<?> triggerBuilder = TriggerBuilder.newTrigger()
-                .withSchedule(CronScheduleBuilder.cronSchedule(triggerCrontab))
-                .withIdentity(triggerKey);
-        Trigger newTrigger = triggerBuilder.build();
+        CronTriggerImpl cronTrigger = (CronTriggerImpl) CronScheduleBuilder
+                .cronSchedule(triggerCrontab)
+                .withMisfireHandlingInstructionDoNothing()
+                .build();
+        cronTrigger.setKey(TriggerKey.triggerKey(jobName, jobGroup));
 
         // 4.更新定时任务
-        scheduler.rescheduleJob(triggerKey, newTrigger);
+        scheduler.rescheduleJob(triggerKey, cronTrigger);
     }
 
     @Override

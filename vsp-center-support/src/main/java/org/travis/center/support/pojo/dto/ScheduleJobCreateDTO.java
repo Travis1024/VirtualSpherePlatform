@@ -1,7 +1,10 @@
 package org.travis.center.support.pojo.dto;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.Accessors;
 import org.travis.center.common.enums.IsFixedEnum;
 import org.travis.center.common.enums.ScheduleGroupEnum;
 import org.travis.center.common.enums.ScheduleStatusEnum;
@@ -18,8 +21,19 @@ import java.util.Map;
  * @Version v1.0
  * @Data 2024/6/23
  */
+@Schema
 @Data
+@Accessors(chain = true)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ScheduleJobCreateDTO implements Serializable {
+    /**
+     * ID
+     */
+    @Schema(description="ID, 不指定则自动生成")
+    private Long id;
+
     /**
      * 定时任务名称
      */

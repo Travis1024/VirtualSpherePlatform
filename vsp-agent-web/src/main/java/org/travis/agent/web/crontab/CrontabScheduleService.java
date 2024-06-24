@@ -15,12 +15,11 @@ import org.travis.agent.web.handler.VmwareStateAggregateHandler;
 import org.travis.agent.web.utils.DubboAddrUtil;
 import org.travis.api.client.center.CenterHealthyClient;
 import org.travis.api.pojo.bo.HostHealthyStateBO;
-import org.travis.shared.common.constants.CrontabConstant;
+import org.travis.shared.common.constants.ScheduleJobConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.exceptions.DubboFunctionException;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
@@ -60,7 +59,7 @@ public class CrontabScheduleService implements SchedulingConfigurer {
                 // 1.获取所有缓存操作日志列表
                 this::operateHandleHealthyStates,
                 // 2.设置任务执行周期
-                triggerContext -> new CronTrigger(CrontabConstant.CRON_10_S).nextExecutionTime(triggerContext)
+                triggerContext -> new CronTrigger(ScheduleJobConstant.CRON_10_S).nextExecutionTime(triggerContext)
         );
     }
 

@@ -7,22 +7,22 @@ package org.travis.shared.common.constants;
  * @Version v1.0
  * @Data 2024/5/31
  */
-public class CrontabConstant {
+public class ScheduleJobConstant {
 
     /**
      * 操作日志持久化定时任务 ID
      */
-    public static final Long LOG_TASK_INDEX_ID = 1L;
+    public static final Long OPERATION_LOG_PERSISTENT_JOB_INDEX_ID = 1L;
 
     /**
      * 操作日志月份表创建定时任务 ID
      */
-    public static final Long LOG_TABLE_CREATE_INDEX_ID = 2L;
+    public static final Long LOG_TABLE_CREATE_JOB_INDEX_ID = 2L;
 
     /**
      * 宿主机虚拟机状态更新定时任务 ID
      */
-    public static final Long MACHINE_STATE_UPDATE_INDEX_ID = 3L;
+    public static final Long MACHINE_STATE_UPDATE_JOB_INDEX_ID = 3L;
 
     /**
      * cron 描述模版

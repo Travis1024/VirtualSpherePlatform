@@ -1,6 +1,7 @@
 package org.travis.center.support.service.impl;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.quartz.SchedulerException;
@@ -14,6 +15,7 @@ import org.travis.center.common.enums.ScheduleStatusEnum;
 import org.travis.center.common.mapper.support.ScheduleJobMapper;
 import org.travis.center.common.entity.support.ScheduleJob;
 import org.travis.center.support.pojo.dto.*;
+import org.travis.center.support.pojo.vo.QuartzJobDetailVO;
 import org.travis.center.support.service.QuartzService;
 import org.travis.center.support.service.ScheduleJobService;
 import org.travis.shared.common.domain.PageQuery;
@@ -50,9 +52,10 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobMapper, Sched
 
         // 2.初始化 scheduleJob
         ScheduleJob scheduleJob = new ScheduleJob();
-        scheduleJob.setId(SnowflakeIdUtil.nextId());
-        scheduleJob.setScheduleStatus(ScheduleStatusEnum.RUNNING);
         BeanUtils.copyProperties(jobCreateDTO, scheduleJob);
+        scheduleJob.setScheduleStatus(ScheduleStatusEnum.RUNNING);
+        // 不指定 ID 则自动生成
+        scheduleJob.setId(ObjectUtil.isEmpty(scheduleJob.getId()) ? SnowflakeIdUtil.nextId() : scheduleJob.getId());
         save(scheduleJob);
 
         // 3.初始化 QuartzCreateParamDTO + 创建JOB
@@ -124,5 +127,57 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobMapper, Sched
     public PageResult<ScheduleJob> pageSelectList(PageQuery pageQuery) {
         Page<ScheduleJob> scheduleJobPage = getBaseMapper().selectPage(pageQuery.toMpPage(), null);
         return PageResult.of(scheduleJobPage);
+    }
+
+    @Transactional
+    @Override
+    public void pauseJob(Long jobId) throws SchedulerException {
+        // 1.查询定时任务信息
+        ScheduleJob scheduleJob = Optional.ofNullable(getById(jobId)).orElseThrow(() -> new NotFoundException("未找到相关定时任务!"));
+
+        // 2.修改数据库任务状态
+        getBaseMapper().update(
+                Wrappers.<ScheduleJob>lambdaUpdate()
+                        .set(ScheduleJob::getScheduleStatus, ScheduleStatusEnum.STOPPING)
+                        .eq(ScheduleJob::getId, jobId)
+        );
+
+        // 3.暂停定时任务
+        QuartzJobKeyDTO quartzJobKeyDTO = new QuartzJobKeyDTO();
+        quartzJobKeyDTO.setJobGroup(scheduleJob.getJobGroup().getTag());
+        quartzJobKeyDTO.setJobName(jobId.toString());
+        quartzService.pauseJob(quartzJobKeyDTO);
+    }
+
+    @Transactional
+    @Override
+    public void resumeJob(Long jobId) throws SchedulerException {
+        // 1.查询定时任务信息
+        ScheduleJob scheduleJob = Optional.ofNullable(getById(jobId)).orElseThrow(() -> new NotFoundException("未找到相关定时任务!"));
+
+        // 2.修改数据库任务状态
+        getBaseMapper().update(
+                Wrappers.<ScheduleJob>lambdaUpdate()
+                        .set(ScheduleJob::getScheduleStatus, ScheduleStatusEnum.RUNNING)
+                        .eq(ScheduleJob::getId, jobId)
+        );
+
+        // 3.暂停定时任务
+        QuartzJobKeyDTO quartzJobKeyDTO = new QuartzJobKeyDTO();
+        quartzJobKeyDTO.setJobGroup(scheduleJob.getJobGroup().getTag());
+        quartzJobKeyDTO.setJobName(jobId.toString());
+        quartzService.resumeJob(quartzJobKeyDTO);
+    }
+
+    @Override
+    public QuartzJobDetailVO queryScheduleJobDetails(Long jobId) throws SchedulerException {
+        // 1.查询定时任务信息
+        ScheduleJob scheduleJob = Optional.ofNullable(getById(jobId)).orElseThrow(() -> new NotFoundException("未找到相关定时任务!"));
+
+        // 2.查询详细信息
+        QuartzJobKeyDTO quartzJobKeyDTO = new QuartzJobKeyDTO();
+        quartzJobKeyDTO.setJobGroup(scheduleJob.getJobGroup().getTag());
+        quartzJobKeyDTO.setJobName(jobId.toString());
+        return quartzService.jobDetail(quartzJobKeyDTO);
     }
 }

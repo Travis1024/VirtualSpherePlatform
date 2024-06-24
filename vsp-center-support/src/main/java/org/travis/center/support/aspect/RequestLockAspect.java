@@ -34,9 +34,9 @@ public class RequestLockAspect {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         RequestLock requestLock = method.getAnnotation(RequestLock.class);
-        if (StrUtil.isEmpty(requestLock.prefix())) {
-            throw new InterfaceAntiShakeException("[接口防抖] 前缀不能为空!");
-        }
+        // if (StrUtil.isEmpty(requestLock.prefix())) {
+        //     throw new InterfaceAntiShakeException("[接口防抖] 前缀不能为空!");
+        // }
         // 获取自定义 key
         final String lockKey = RequestLockKeyGenerator.getLockKey(joinPoint);
         // 使用 Redisson 分布式锁的方式判断是否重复提交
