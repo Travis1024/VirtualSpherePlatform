@@ -15,10 +15,12 @@
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="CONFIG_EXAMPLE" jdbcType="VARCHAR" property="configExample" />
+    <result column="AFFILIATION_MACHINE_ID" jdbcType="BIGINT" property="affiliationMachineId" />
+    <result column="AFFILIATION_TYPE" jdbcType="INTEGER" property="affiliationType" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     ID, CONFIG_NAME, CONFIG_VALUE, CONFIG_DESCRIPTION, CONFIG_TYPE, IS_DELETED,
-    UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME, CONFIG_EXAMPLE, IS_FIXED
+    UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME, CONFIG_EXAMPLE, IS_FIXED, AFFILIATION_MACHINE_ID, AFFILIATION_TYPE
   </sql>
 </mapper>

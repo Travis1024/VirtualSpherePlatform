@@ -16,13 +16,15 @@ import org.travis.api.client.agent.AgentHostClient;
 import org.travis.api.client.agent.AgentVmwareClient;
 import org.travis.api.pojo.bo.HostResourceInfoBO;
 import org.travis.center.common.entity.manage.*;
-import org.travis.center.common.enums.DiskMountEnum;
-import org.travis.center.common.enums.VmwareCreateFormEnum;
-import org.travis.center.common.enums.VmwareStateEnum;
+import org.travis.center.common.entity.support.DynamicConfigInfo;
+import org.travis.center.common.enums.*;
 import org.travis.center.common.mapper.manage.*;
+import org.travis.center.common.mapper.support.DynamicConfigInfoMapper;
 import org.travis.center.common.service.AgentAssistService;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.service.DiskInfoService;
+import org.travis.center.support.utils.DynamicConfigPeriodUtil;
+import org.travis.center.support.utils.DynamicConfigUtil;
 import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.exceptions.BadRequestException;
@@ -67,6 +69,10 @@ public abstract class AbstractCreationService {
     public AgentVmwareClient agentVmwareClient;
     @Resource
     public VmwareXmlDetailsMapper vmwareXmlDetailsMapper;
+    @Resource
+    public DynamicConfigPeriodUtil dynamicConfigPeriodUtil;
+    @Resource
+    public DynamicConfigInfoMapper dynamicConfigInfoMapper;
 
     // step 0
     protected Integer vmwareCreateFormValue;
@@ -109,6 +115,8 @@ public abstract class AbstractCreationService {
         creationService.stepSix(xmlContent);
         // 7.修改系统磁盘状态、修改虚拟机状态
         creationService.stepSeven();
+        // 8.新增动态配置-监测周期(s)
+        creationService.stepEight();
     }
 
     public void stepOne() {
@@ -171,6 +179,26 @@ public abstract class AbstractCreationService {
         );
         // 7.2.更新虚拟机状态
         vmwareInfoMapper.update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.SHUT_OFF).eq(VmwareInfo::getId, vmwareInfo.getId()));
+    }
+
+    @Transactional
+    public void stepEight() {
+        // 8.1.新增动态配置-监测周期(s)
+        dynamicConfigInfoMapper.insert(
+                DynamicConfigInfo.builder()
+                        .id(SnowflakeIdUtil.nextId())
+                        .configName(DynamicConfigNameEnum.VMWARE_MONITOR_PERIOD_SECONDS.getDisplay())
+                        .configValue(String.valueOf(vmwareInsertDTO.getMonitorPeriodSeconds().getValue()))
+                        .configType(DynamicConfigTypeEnum.MONITOR)
+                        .isFixed(IsFixedEnum.ALLOW_UPDATE)
+                        .configExample("5")
+                        .affiliationType(DynamicConfigAffiliationTypeEnum.VMWARE)
+                        .affiliationMachineId(vmwareInfo.getId())
+                        .build()
+        );
+
+        // 8.2.缓存到 Caffeine
+        dynamicConfigPeriodUtil.put(vmwareInsertDTO.getMonitorPeriodSeconds(), vmwareInfo.getUuid());
     }
 
     private String replaceXmlParams(XmlParamBO xmlParamBO) throws IOException {

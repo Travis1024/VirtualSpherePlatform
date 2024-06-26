@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.travis.center.common.enums.DynamicConfigAffiliationTypeEnum;
 import org.travis.center.common.enums.IsFixedEnum;
 import org.travis.center.common.enums.DynamicConfigTypeEnum;
 
@@ -116,6 +117,20 @@ public class DynamicConfigInfo extends com.baomidou.mybatisplus.extension.active
     @Schema(description="动态配置示例值")
     private String configExample;
 
+    /**
+     * 配置归属主机 ID（系统默认为 0）
+     */
+    @TableField(value = "AFFILIATION_MACHINE_ID")
+    @Schema(description = "配置归属主机 ID（系统默认为 0）")
+    private Long affiliationMachineId;
+
+    /**
+     * 配置归属主机类型（0-系统、1-宿主机、2-虚拟机）
+     */
+    @TableField(value = "AFFILIATION_TYPE")
+    @Schema(description = "配置归属主机类型（0-系统、1-宿主机、2-虚拟机）")
+    private DynamicConfigAffiliationTypeEnum affiliationType;
+
     private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "ID";
@@ -139,4 +154,8 @@ public class DynamicConfigInfo extends com.baomidou.mybatisplus.extension.active
     public static final String COL_CREATE_TIME = "CREATE_TIME";
 
     public static final String COL_CONFIG_EXAMPLE = "CONFIG_EXAMPLE";
+
+    public static final String COL_AFFILIATION_MACHINE_ID = "AFFILIATION_MACHINE_ID";
+
+    public static final String COL_AFFILIATION_TYPE = "AFFILIATION_TYPE";
 }

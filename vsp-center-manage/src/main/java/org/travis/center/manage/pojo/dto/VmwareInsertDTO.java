@@ -5,6 +5,7 @@ import lombok.Data;
 import org.travis.center.common.enums.ArchEnum;
 import org.travis.center.common.enums.VmwareCreateFormEnum;
 import org.travis.center.support.aspect.RequestLockKey;
+import org.travis.shared.common.enums.MonitorPeriodEnum;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -58,4 +59,8 @@ public class VmwareInsertDTO implements Serializable {
     @Min(value = 10, message = "虚拟机系统磁盘容量最小为 10 GB")
     @Max(value = 1024, message = "虚拟机系统磁盘容量最大为 1024 GB")
     private Integer systemDiskSize;
+
+    @Schema(description = "虚拟机监控周期（单位: 秒）")
+    @NotNull(message = "虚拟机监控周期不能为空!")
+    private MonitorPeriodEnum monitorPeriodSeconds;
 }
