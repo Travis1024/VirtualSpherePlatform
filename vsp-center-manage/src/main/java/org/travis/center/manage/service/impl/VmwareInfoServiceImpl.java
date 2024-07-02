@@ -95,7 +95,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         // TODO 添加虚拟机与权限组关联关系
         // 获取虚拟机创建持有者
         AbstractCreationService creationService = CreationHolder.getCreationService(vmwareInsertDTO.getCreateForm().getValue());
-        Assert.isNull(creationService, () -> new BadRequestException("虚拟机创建形式错误!"));
+        Assert.notNull(creationService, () -> new BadRequestException("虚拟机创建形式错误!"));
         // 异步创建虚拟机
         CompletableFuture.runAsync(() -> {
                     try {

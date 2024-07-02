@@ -38,7 +38,7 @@ public class QuartzMonitorPeriodJob extends QuartzJobBean {
         Integer second = (Integer) context.getJobDetail().getJobDataMap().get(QuartzJobsDatabaseInitializer.PERIOD_KEY);
         log.info("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s", second);
         ConcurrentHashSet<String> hashSet = (ConcurrentHashSet<String>) commonPermanentCache.getIfPresent(MonitorPeriodEnum.ofValue(second).getDisplay());
-        Assert.isNull(hashSet, () -> {
+        Assert.notNull(hashSet, () -> {
             log.error("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s, 缓存中不存在该队列！", second);
             return null;
         });
