@@ -8,6 +8,7 @@ package org.travis.shared.common.constants;
  * @Data 2024/5/31
  */
 public class RedissonConstant {
+    public static final String WAIT_MONITOR_VMWARE_UUID_LIST = "wait-monitor:vmware";
     public static final String CRONTAB_CACHE_KEY = "crontab:cache";
     public static final String LOG_CACHE_DATA_KEY = "log:cache";
     public static final String DYNAMIC_TABLE_TIMES_PREFIX = "dynamic-table-times:";
