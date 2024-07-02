@@ -6,6 +6,7 @@ import org.travis.center.common.entity.support.DynamicConfigInfo;
 import org.travis.center.common.enums.BusinessTypeEnum;
 import org.travis.center.common.enums.DynamicConfigTypeEnum;
 import org.travis.center.support.aspect.Log;
+import org.travis.center.support.aspect.RequestLock;
 import org.travis.center.support.pojo.dto.DynamicConfigUpdateDTO;
 import org.travis.center.support.pojo.vo.MonitorPeriodEnumVO;
 import org.travis.center.support.processor.AbstractDynamicConfigHolder;
@@ -14,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
-import org.travis.shared.common.enums.MonitorPeriodEnum;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -41,11 +41,12 @@ public class DynamicConfigInfoController {
 
     @Log(title = "分页查询动态配置信息列表", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "分页查询动态配置信息列表")
-    @GetMapping("/pageSelect")
+    @PostMapping("/pageSelect")
     public PageResult<DynamicConfigInfo> pageSelectList(@Validated @RequestBody PageQuery pageQuery) {
         return dynamicConfigInfoService.pageSelectList(pageQuery);
     }
 
+    @RequestLock
     @Log(title = "修改动态配置VALUE", businessType = BusinessTypeEnum.UPDATE)
     @Operation(summary = "修改动态配置VALUE")
     @PutMapping("/update")

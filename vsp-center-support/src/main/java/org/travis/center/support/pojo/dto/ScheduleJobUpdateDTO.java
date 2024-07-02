@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.travis.center.support.aspect.RequestLockKey;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -22,6 +23,7 @@ public class ScheduleJobUpdateDTO implements Serializable {
     /**
      * ID
      */
+    @RequestLockKey
     @Schema(description="ID")
     @NotNull(message = "ID不能为空")
     private Long id;

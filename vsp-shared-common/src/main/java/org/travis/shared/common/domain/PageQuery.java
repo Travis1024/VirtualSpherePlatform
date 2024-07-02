@@ -9,8 +9,6 @@ import lombok.experimental.Accessors;
 import org.travis.shared.common.constants.SystemConstant;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * @ClassName PageQuery

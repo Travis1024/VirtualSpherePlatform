@@ -46,7 +46,7 @@ public class VmwareInfoController {
 
     @Log(title = "分页查询虚拟机信息列表", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "分页查询虚拟机信息列表")
-    @GetMapping("/pageSelect")
+    @PostMapping("/pageSelect")
     public PageResult<VmwareInfo> pageSelectList(@Validated @RequestBody PageQuery pageQuery) {
         return vmwareInfoService.pageSelectList(pageQuery);
     }
