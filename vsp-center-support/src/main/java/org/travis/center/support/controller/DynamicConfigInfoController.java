@@ -7,6 +7,7 @@ import org.travis.center.common.enums.BusinessTypeEnum;
 import org.travis.center.common.enums.DynamicConfigTypeEnum;
 import org.travis.center.support.aspect.Log;
 import org.travis.center.support.pojo.dto.DynamicConfigUpdateDTO;
+import org.travis.center.support.pojo.vo.MonitorPeriodEnumVO;
 import org.travis.center.support.processor.AbstractDynamicConfigHolder;
 import org.travis.center.support.service.DynamicConfigInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -54,8 +55,8 @@ public class DynamicConfigInfoController {
 
     @Log(title = "查询[监测周期]配置可选择值", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "查询[监测周期]配置可选择值")
-    @PutMapping("/monitorPeriodSelectableList")
-    public List<MonitorPeriodEnum> queryMonitorPeriodSelectableList() {
+    @GetMapping("/monitorPeriodSelectableList")
+    public List<MonitorPeriodEnumVO> queryMonitorPeriodSelectableList() {
         return dynamicConfigInfoService.queryMonitorPeriodSelectableList();
     }
 

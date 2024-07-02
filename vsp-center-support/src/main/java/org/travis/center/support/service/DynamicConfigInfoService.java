@@ -3,6 +3,7 @@ package org.travis.center.support.service;
 import org.travis.center.common.entity.support.DynamicConfigInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.travis.center.support.pojo.dto.DynamicConfigUpdateDTO;
+import org.travis.center.support.pojo.vo.MonitorPeriodEnumVO;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.enums.MonitorPeriodEnum;
@@ -24,5 +25,5 @@ public interface DynamicConfigInfoService extends IService<DynamicConfigInfo>{
 
     void updateConfigValue(DynamicConfigUpdateDTO dynamicConfigUpdateDTO);
 
-    List<MonitorPeriodEnum> queryMonitorPeriodSelectableList();
+    List<MonitorPeriodEnumVO> queryMonitorPeriodSelectableList();
 }

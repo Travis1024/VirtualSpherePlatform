@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.travis.center.common.entity.support.DynamicConfigInfo;
 import org.travis.center.common.mapper.support.DynamicConfigInfoMapper;
 import org.travis.center.support.pojo.dto.DynamicConfigUpdateDTO;
+import org.travis.center.support.pojo.vo.MonitorPeriodEnumVO;
 import org.travis.center.support.processor.AbstractDynamicConfigHolder;
 import org.travis.center.support.service.DynamicConfigInfoService;
 import org.travis.shared.common.domain.PageQuery;
@@ -49,7 +51,16 @@ public class DynamicConfigInfoServiceImpl extends ServiceImpl<DynamicConfigInfoM
     }
 
     @Override
-    public List<MonitorPeriodEnum> queryMonitorPeriodSelectableList() {
-        return List.of(MonitorPeriodEnum.values());
+    public List<MonitorPeriodEnumVO> queryMonitorPeriodSelectableList() {
+        List<MonitorPeriodEnumVO> monitorPeriodEnumList = new ArrayList<>();
+        for (MonitorPeriodEnum anEnum : MonitorPeriodEnum.values()) {
+            monitorPeriodEnumList.add(
+                    MonitorPeriodEnumVO.builder()
+                            .display(anEnum.getDisplay())
+                            .value(anEnum.getValue())
+                            .build()
+            );
+        }
+        return monitorPeriodEnumList;
     }
 }
