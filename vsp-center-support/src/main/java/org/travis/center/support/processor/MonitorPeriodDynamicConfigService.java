@@ -1,6 +1,7 @@
 package org.travis.center.support.processor;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
+import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,27 +51,20 @@ public class MonitorPeriodDynamicConfigService extends AbstractDynamicConfigServ
         if (oldObjectOptional.isPresent()) {
             ConcurrentHashSet<String> vmwareUuids = (ConcurrentHashSet<String>) oldObjectOptional.get();
             vmwareUuids.remove(dynamicConfigInfo.getAffiliationMachineUuid());
-            // TODO 判断 Set 是否需要重新 put 到缓存中
-            // commonPermanentCache.put(monitorPeriodEnum.getDisplay(), vmwareUuids);
         }
 
         // 4.向新缓存队列中添加配置 <监测周期display, 「虚拟机UUID」Set>
-        Optional<Object> newObjectOptional = Optional.ofNullable(commonPermanentCache.getIfPresent(newMonitorPeriodEnum.getDisplay()));
-        if (newObjectOptional.isPresent()) {
-            // 4.1.存在，则向监测周期队列中添加「虚拟机UUID」
-            ConcurrentHashSet<String> vmwareUuids = (ConcurrentHashSet<String>) newObjectOptional.get();
-            vmwareUuids.add(dynamicConfigInfo.getAffiliationMachineUuid());
-            // TODO 判断 Set 是否需要重新 put 到缓存中
-            // commonPermanentCache.put(monitorPeriodEnum.getDisplay(), vmwareUuids);
-        } else {
-            // 4.2.不存在，则创建监测周期 Set，添加「虚拟机UUID」
-            ConcurrentHashSet<String> vmwareUuids = new ConcurrentHashSet<>();
-            vmwareUuids.add(dynamicConfigInfo.getAffiliationMachineUuid());
-            commonPermanentCache.put(newMonitorPeriodEnum.getDisplay(), vmwareUuids);
-        }
+        Optional.ofNullable((ConcurrentHashSet<String>) commonPermanentCache.getIfPresent(newMonitorPeriodEnum.getDisplay())).ifPresentOrElse(
+                vmwareUuidSet -> vmwareUuidSet.add(dynamicConfigInfo.getAffiliationMachineUuid()),
+                () -> {
+                    ConcurrentHashSet<String> vmwareUuidSet = new ConcurrentHashSet<>();
+                    vmwareUuidSet.add(dynamicConfigInfo.getAffiliationMachineUuid());
+                    commonPermanentCache.put(newMonitorPeriodEnum.getDisplay(), vmwareUuidSet);
+                }
+        );
 
         // 5.新增「虚拟机UUID」与「监测周期 display」映射
-        commonPermanentCache.put(dynamicConfigInfo.getAffiliationMachineUuid(), newMonitorPeriodEnum.getDisplay());
+        // commonPermanentCache.put(dynamicConfigInfo.getAffiliationMachineUuid(), newMonitorPeriodEnum.getDisplay());
     }
 
     @SuppressWarnings("unchecked")
@@ -86,23 +80,18 @@ public class MonitorPeriodDynamicConfigService extends AbstractDynamicConfigServ
             // 3.向缓存队列中添加配置 <监测周期display, 「虚拟机UUID」Set>
             // 3.1.解析当前动态配置-监测周期
             MonitorPeriodEnum monitorPeriodEnum = MonitorPeriodEnum.ofValue(Integer.valueOf(dynamicConfigInfo.getConfigValue()));
-            Optional<Object> objectOptional = Optional.ofNullable(commonPermanentCache.getIfPresent(monitorPeriodEnum.getDisplay()));
-
-            if (objectOptional.isPresent()) {
-                // 3.2.1.存在，则向监测周期队列中添加虚拟机 UUID
-                ConcurrentHashSet<String> vmwareUuids = (ConcurrentHashSet<String>) objectOptional.get();
-                vmwareUuids.add(dynamicConfigInfo.getAffiliationMachineUuid());
-                // TODO 判断 Set 是否需要重新 put 到缓存中
-                // commonPermanentCache.put(monitorPeriodEnum.getDisplay(), vmwareUuids);
-            } else {
-                // 3.2.2.不存在，则创建监测周期 Set，添加虚拟机 UUID
-                ConcurrentHashSet<String> vmwareUuids = new ConcurrentHashSet<>();
-                vmwareUuids.add(dynamicConfigInfo.getAffiliationMachineUuid());
-                commonPermanentCache.put(monitorPeriodEnum.getDisplay(), vmwareUuids);
-            }
+            // 3.2.向监测周期队列中添加虚拟机 UUID
+            Optional.ofNullable((ConcurrentHashSet<String>) commonPermanentCache.getIfPresent(monitorPeriodEnum.getDisplay())).ifPresentOrElse(
+                    vmwareUuidSet -> vmwareUuidSet.add(dynamicConfigInfo.getAffiliationMachineUuid()),
+                    () -> {
+                        ConcurrentHashSet<String> vmwareUuidSet = new ConcurrentHashSet<>();
+                        vmwareUuidSet.add(dynamicConfigInfo.getAffiliationMachineUuid());
+                        commonPermanentCache.put(monitorPeriodEnum.getDisplay(), vmwareUuidSet);
+                    }
+            );
 
             // 4.新增「虚拟机UUID」与「监测周期 display」映射
-            commonPermanentCache.put(dynamicConfigInfo.getAffiliationMachineUuid(), monitorPeriodEnum.getDisplay());
+            // commonPermanentCache.put(dynamicConfigInfo.getAffiliationMachineUuid(), monitorPeriodEnum.getDisplay());
         }
     }
 

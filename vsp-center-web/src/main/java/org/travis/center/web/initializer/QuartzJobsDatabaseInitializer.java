@@ -16,14 +16,13 @@ import org.travis.center.support.pojo.dto.ScheduleJobCreateDTO;
 import org.travis.center.support.service.ScheduleJobService;
 import org.travis.center.web.jobs.QuartzLogTableCreateJob;
 import org.travis.center.web.jobs.QuartzMachineStateUpdateJob;
+import org.travis.center.web.jobs.QuartzMonitorPeriodJob;
 import org.travis.center.web.jobs.QuartzOperationLogPersistentJob;
 import org.travis.shared.common.constants.ScheduleJobConstant;
 import org.travis.shared.common.utils.CrontabUtil;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +42,7 @@ public class QuartzJobsDatabaseInitializer implements CommandLineRunner {
     @Resource
     public ScheduleJobMapper scheduleJobMapper;
 
+    public static final String PERIOD_KEY = "period";
     public static final List<ScheduleJobCreateDTO> SCHEDULE_JOB_INFOS = new ArrayList<>();
 
     static {
@@ -79,9 +79,118 @@ public class QuartzJobsDatabaseInitializer implements CommandLineRunner {
                 .jobDataMap(null)
                 .build();
 
+        ScheduleJobCreateDTO periodicMonitoringJob1s = ScheduleJobCreateDTO.builder()
+                .id(ScheduleJobConstant.PERIODIC_MONITOR_JOB_1S_INDEX_ID)
+                .scheduleName("周期性监测任务-1s")
+                .jobGroup(ScheduleGroupEnum.VMWARE)
+                .jobClass(ClassUtil.getClassName(QuartzMonitorPeriodJob.class, false))
+                .isFixed(IsFixedEnum.DISALLOW_UPDATE)
+                .cronExpression(ScheduleJobConstant.CRON_1_S)
+                .cronDescription(StrUtil.format(ScheduleJobConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(ScheduleJobConstant.CRON_1_S)))
+                .jobDataMap(Collections.singletonMap(PERIOD_KEY, 1))
+                .build();
+
+        ScheduleJobCreateDTO periodicMonitoringJob2s = ScheduleJobCreateDTO.builder()
+                .id(ScheduleJobConstant.PERIODIC_MONITOR_JOB_2S_INDEX_ID)
+                .scheduleName("周期性监测任务-2s")
+                .jobGroup(ScheduleGroupEnum.VMWARE)
+                .jobClass(ClassUtil.getClassName(QuartzMonitorPeriodJob.class, false))
+                .isFixed(IsFixedEnum.DISALLOW_UPDATE)
+                .cronExpression(ScheduleJobConstant.CRON_2_S)
+                .cronDescription(StrUtil.format(ScheduleJobConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(ScheduleJobConstant.CRON_2_S)))
+                .jobDataMap(Collections.singletonMap(PERIOD_KEY, 2))
+                .build();
+
+        ScheduleJobCreateDTO periodicMonitoringJob3s = ScheduleJobCreateDTO.builder()
+                .id(ScheduleJobConstant.PERIODIC_MONITOR_JOB_3S_INDEX_ID)
+                .scheduleName("周期性监测任务-3s")
+                .jobGroup(ScheduleGroupEnum.VMWARE)
+                .jobClass(ClassUtil.getClassName(QuartzMonitorPeriodJob.class, false))
+                .isFixed(IsFixedEnum.DISALLOW_UPDATE)
+                .cronExpression(ScheduleJobConstant.CRON_3_S)
+                .cronDescription(StrUtil.format(ScheduleJobConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(ScheduleJobConstant.CRON_3_S)))
+                .jobDataMap(Collections.singletonMap(PERIOD_KEY, 3))
+                .build();
+
+        ScheduleJobCreateDTO periodicMonitoringJob5s = ScheduleJobCreateDTO.builder()
+                .id(ScheduleJobConstant.PERIODIC_MONITOR_JOB_5S_INDEX_ID)
+                .scheduleName("周期性监测任务-5s")
+                .jobGroup(ScheduleGroupEnum.VMWARE)
+                .jobClass(ClassUtil.getClassName(QuartzMonitorPeriodJob.class, false))
+                .isFixed(IsFixedEnum.DISALLOW_UPDATE)
+                .cronExpression(ScheduleJobConstant.CRON_5_S)
+                .cronDescription(StrUtil.format(ScheduleJobConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(ScheduleJobConstant.CRON_5_S)))
+                .jobDataMap(Collections.singletonMap(PERIOD_KEY, 5))
+                .build();
+
+        ScheduleJobCreateDTO periodicMonitoringJob8s = ScheduleJobCreateDTO.builder()
+                .id(ScheduleJobConstant.PERIODIC_MONITOR_JOB_8S_INDEX_ID)
+                .scheduleName("周期性监测任务-8s")
+                .jobGroup(ScheduleGroupEnum.VMWARE)
+                .jobClass(ClassUtil.getClassName(QuartzMonitorPeriodJob.class, false))
+                .isFixed(IsFixedEnum.DISALLOW_UPDATE)
+                .cronExpression(ScheduleJobConstant.CRON_8_S)
+                .cronDescription(StrUtil.format(ScheduleJobConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(ScheduleJobConstant.CRON_8_S)))
+                .jobDataMap(Collections.singletonMap(PERIOD_KEY, 8))
+                .build();
+
+        ScheduleJobCreateDTO periodicMonitoringJob10s = ScheduleJobCreateDTO.builder()
+                .id(ScheduleJobConstant.PERIODIC_MONITOR_JOB_10S_INDEX_ID)
+                .scheduleName("周期性监测任务-10s")
+                .jobGroup(ScheduleGroupEnum.VMWARE)
+                .jobClass(ClassUtil.getClassName(QuartzMonitorPeriodJob.class, false))
+                .isFixed(IsFixedEnum.DISALLOW_UPDATE)
+                .cronExpression(ScheduleJobConstant.CRON_10_S)
+                .cronDescription(StrUtil.format(ScheduleJobConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(ScheduleJobConstant.CRON_10_S)))
+                .jobDataMap(Collections.singletonMap(PERIOD_KEY, 10))
+                .build();
+
+        ScheduleJobCreateDTO periodicMonitoringJob15s = ScheduleJobCreateDTO.builder()
+                .id(ScheduleJobConstant.PERIODIC_MONITOR_JOB_15S_INDEX_ID)
+                .scheduleName("周期性监测任务-15s")
+                .jobGroup(ScheduleGroupEnum.VMWARE)
+                .jobClass(ClassUtil.getClassName(QuartzMonitorPeriodJob.class, false))
+                .isFixed(IsFixedEnum.DISALLOW_UPDATE)
+                .cronExpression(ScheduleJobConstant.CRON_15_S)
+                .cronDescription(StrUtil.format(ScheduleJobConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(ScheduleJobConstant.CRON_15_S)))
+                .jobDataMap(Collections.singletonMap(PERIOD_KEY, 15))
+                .build();
+
+        ScheduleJobCreateDTO periodicMonitoringJob20s = ScheduleJobCreateDTO.builder()
+                .id(ScheduleJobConstant.PERIODIC_MONITOR_JOB_20S_INDEX_ID)
+                .scheduleName("周期性监测任务-20s")
+                .jobGroup(ScheduleGroupEnum.VMWARE)
+                .jobClass(ClassUtil.getClassName(QuartzMonitorPeriodJob.class, false))
+                .isFixed(IsFixedEnum.DISALLOW_UPDATE)
+                .cronExpression(ScheduleJobConstant.CRON_20_S)
+                .cronDescription(StrUtil.format(ScheduleJobConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(ScheduleJobConstant.CRON_20_S)))
+                .jobDataMap(Collections.singletonMap(PERIOD_KEY, 20))
+                .build();
+
+        ScheduleJobCreateDTO periodicMonitoringJob30s = ScheduleJobCreateDTO.builder()
+                .id(ScheduleJobConstant.PERIODIC_MONITOR_JOB_30S_INDEX_ID)
+                .scheduleName("周期性监测任务-30s")
+                .jobGroup(ScheduleGroupEnum.VMWARE)
+                .jobClass(ClassUtil.getClassName(QuartzMonitorPeriodJob.class, false))
+                .isFixed(IsFixedEnum.DISALLOW_UPDATE)
+                .cronExpression(ScheduleJobConstant.CRON_30_S)
+                .cronDescription(StrUtil.format(ScheduleJobConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(ScheduleJobConstant.CRON_30_S)))
+                .jobDataMap(Collections.singletonMap(PERIOD_KEY, 30))
+                .build();
+
         SCHEDULE_JOB_INFOS.add(operationLogPersistentJob);
         SCHEDULE_JOB_INFOS.add(logTableCreateJob);
         SCHEDULE_JOB_INFOS.add(machineStateUpdateJob);
+
+        SCHEDULE_JOB_INFOS.add(periodicMonitoringJob1s);
+        SCHEDULE_JOB_INFOS.add(periodicMonitoringJob2s);
+        SCHEDULE_JOB_INFOS.add(periodicMonitoringJob3s);
+        SCHEDULE_JOB_INFOS.add(periodicMonitoringJob5s);
+        SCHEDULE_JOB_INFOS.add(periodicMonitoringJob8s);
+        SCHEDULE_JOB_INFOS.add(periodicMonitoringJob10s);
+        SCHEDULE_JOB_INFOS.add(periodicMonitoringJob15s);
+        SCHEDULE_JOB_INFOS.add(periodicMonitoringJob20s);
+        SCHEDULE_JOB_INFOS.add(periodicMonitoringJob30s);
     }
 
     @Override
