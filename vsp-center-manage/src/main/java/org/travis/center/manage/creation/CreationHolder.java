@@ -1,8 +1,5 @@
 package org.travis.center.manage.creation;
 
-import org.springframework.stereotype.Component;
-import org.travis.center.common.enums.VmwareCreateFormEnum;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -13,15 +10,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Version v1.0
  * @Data 2024/5/29
  */
-@Component
 public class CreationHolder {
-    private final Map<Integer, AbstractCreationService> creationHolder = new ConcurrentHashMap<>(2);
+    private static final Map<Integer, AbstractCreationService> CREATION_HOLDER = new ConcurrentHashMap<>(2);
 
-    public AbstractCreationService getCreationService(Integer vmwareCreateFormValue) {
-        return creationHolder.get(vmwareCreateFormValue);
+    public static AbstractCreationService getCreationService(Integer vmwareCreateFormValue) {
+        return CREATION_HOLDER.get(vmwareCreateFormValue);
     }
 
-    public void addCreationService(Integer vmwareCreateFormValue, AbstractCreationService creationService) {
-        creationHolder.put(vmwareCreateFormValue, creationService);
+    public static void addCreationService(Integer vmwareCreateFormValue, AbstractCreationService creationService) {
+        CREATION_HOLDER.put(vmwareCreateFormValue, creationService);
     }
 }

@@ -125,6 +125,13 @@ public class DynamicConfigInfo extends com.baomidou.mybatisplus.extension.active
     private Long affiliationMachineId;
 
     /**
+     * 配置归属主机 UUID
+     */
+    @TableField(value = "AFFILIATION_MACHINE_UUID")
+    @Schema(description = "配置归属主机 UUID")
+    private String affiliationMachineUuid;
+
+    /**
      * 配置归属主机类型（0-系统、1-宿主机、2-虚拟机）
      */
     @TableField(value = "AFFILIATION_TYPE")
@@ -156,6 +163,8 @@ public class DynamicConfigInfo extends com.baomidou.mybatisplus.extension.active
     public static final String COL_CONFIG_EXAMPLE = "CONFIG_EXAMPLE";
 
     public static final String COL_AFFILIATION_MACHINE_ID = "AFFILIATION_MACHINE_ID";
+
+    public static final String COL_AFFILIATION_MACHINE_UUID = "AFFILIATION_MACHINE_UUID";
 
     public static final String COL_AFFILIATION_TYPE = "AFFILIATION_TYPE";
 }

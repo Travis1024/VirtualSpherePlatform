@@ -46,4 +46,16 @@ public enum MonitorPeriodEnum {
         }
         return null;
     }
+
+    public static MonitorPeriodEnum ofValue(Integer value) {
+        if (value == null) {
+            return null;
+        }
+        for (MonitorPeriodEnum anEnum : values()) {
+            if (anEnum.getValue().equals(value)) {
+                return anEnum;
+            }
+        }
+        return null;
+    }
 }

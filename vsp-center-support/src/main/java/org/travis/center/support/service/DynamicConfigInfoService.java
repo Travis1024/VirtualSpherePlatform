@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.travis.center.support.pojo.dto.DynamicConfigUpdateDTO;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
+import org.travis.shared.common.enums.MonitorPeriodEnum;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface DynamicConfigInfoService extends IService<DynamicConfigInfo>{
     PageResult<DynamicConfigInfo> pageSelectList(PageQuery pageQuery);
 
     void updateConfigValue(DynamicConfigUpdateDTO dynamicConfigUpdateDTO);
+
+    List<MonitorPeriodEnum> queryMonitorPeriodSelectableList();
 }

@@ -1,18 +1,19 @@
 package org.travis.center.support.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.validation.annotation.Validated;
 import org.travis.center.common.entity.support.DynamicConfigInfo;
 import org.travis.center.common.enums.BusinessTypeEnum;
+import org.travis.center.common.enums.DynamicConfigTypeEnum;
 import org.travis.center.support.aspect.Log;
 import org.travis.center.support.pojo.dto.DynamicConfigUpdateDTO;
+import org.travis.center.support.processor.AbstractDynamicConfigHolder;
 import org.travis.center.support.service.DynamicConfigInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.travis.center.support.utils.DynamicConfigUtil;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
+import org.travis.shared.common.enums.MonitorPeriodEnum;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -26,9 +27,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/dynamic")
 public class DynamicConfigInfoController {
-
-    @Resource
-    public DynamicConfigUtil dynamicConfigUtil;
 
     @Resource
     public DynamicConfigInfoService dynamicConfigInfoService;
@@ -54,10 +52,17 @@ public class DynamicConfigInfoController {
         dynamicConfigInfoService.updateConfigValue(dynamicConfigUpdateDTO);
     }
 
+    @Log(title = "查询[监测周期]配置可选择值", businessType = BusinessTypeEnum.QUERY)
+    @Operation(summary = "查询[监测周期]配置可选择值")
+    @PutMapping("/monitorPeriodSelectableList")
+    public List<MonitorPeriodEnum> queryMonitorPeriodSelectableList() {
+        return dynamicConfigInfoService.queryMonitorPeriodSelectableList();
+    }
+
     @Log(title = "「测试使用」查询缓存中动态配置VALUE", businessType = BusinessTypeEnum.QUERY)
     @Operation(summary = "「测试使用」查询缓存中动态配置VALUE")
     @GetMapping("/selectCacheValue")
     public String selectCacheValue(@RequestParam("configId") Long configId) {
-        return dynamicConfigUtil.getConfigValue(configId);
+        return AbstractDynamicConfigHolder.getDynamicConfigHandler(DynamicConfigTypeEnum.UNIVERSAL).executeQueryValue(configId);
     }
 }

@@ -23,8 +23,8 @@ import org.travis.center.common.mapper.support.DynamicConfigInfoMapper;
 import org.travis.center.common.service.AgentAssistService;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.service.DiskInfoService;
-import org.travis.center.support.utils.DynamicConfigPeriodUtil;
-import org.travis.center.support.utils.DynamicConfigUtil;
+import org.travis.center.support.processor.AbstractDynamicConfigHolder;
+import org.travis.center.support.utils.DynamicConfigLockUtil;
 import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.exceptions.BadRequestException;
@@ -58,8 +58,6 @@ public abstract class AbstractCreationService {
     @Resource
     public DiskInfoService diskInfoService;
     @Resource
-    public CreationHolder creationHolder;
-    @Resource
     public AgentAssistService agentAssistService;
     @Resource
     public ImageInfoMapper imageInfoMapper;
@@ -70,7 +68,7 @@ public abstract class AbstractCreationService {
     @Resource
     public VmwareXmlDetailsMapper vmwareXmlDetailsMapper;
     @Resource
-    public DynamicConfigPeriodUtil dynamicConfigPeriodUtil;
+    public DynamicConfigLockUtil dynamicConfigLockUtil;
     @Resource
     public DynamicConfigInfoMapper dynamicConfigInfoMapper;
 
@@ -92,7 +90,7 @@ public abstract class AbstractCreationService {
 
     @PostConstruct
     public void init() {
-        creationHolder.addCreationService(vmwareCreateFormValue, this);
+        CreationHolder.addCreationService(vmwareCreateFormValue, this);
         creationService = this;
     }
 
@@ -183,22 +181,20 @@ public abstract class AbstractCreationService {
 
     @Transactional
     public void stepEight() {
-        // 8.1.新增动态配置-监测周期(s)
-        dynamicConfigInfoMapper.insert(
-                DynamicConfigInfo.builder()
-                        .id(SnowflakeIdUtil.nextId())
-                        .configName(DynamicConfigNameEnum.VMWARE_MONITOR_PERIOD_SECONDS.getDisplay())
-                        .configValue(String.valueOf(vmwareInsertDTO.getMonitorPeriodSeconds().getValue()))
-                        .configType(DynamicConfigTypeEnum.MONITOR)
-                        .isFixed(IsFixedEnum.ALLOW_UPDATE)
-                        .configExample("5")
-                        .affiliationType(DynamicConfigAffiliationTypeEnum.VMWARE)
-                        .affiliationMachineId(vmwareInfo.getId())
-                        .build()
-        );
-
-        // 8.2.缓存到 Caffeine
-        dynamicConfigPeriodUtil.put(vmwareInsertDTO.getMonitorPeriodSeconds(), vmwareInfo.getUuid());
+        // 1.构建 DynamicConfigInfo
+        DynamicConfigInfo dynamicConfigInfo = DynamicConfigInfo.builder()
+                .id(SnowflakeIdUtil.nextId())
+                .configName(DynamicConfigNameEnum.VMWARE_MONITOR_PERIOD_SECONDS.getDisplay())
+                .configValue(String.valueOf(vmwareInsertDTO.getMonitorPeriodSeconds().getValue()))
+                .configType(DynamicConfigTypeEnum.MONITOR_PERIOD)
+                .isFixed(IsFixedEnum.ALLOW_UPDATE)
+                .configExample("5")
+                .affiliationType(DynamicConfigAffiliationTypeEnum.VMWARE)
+                .affiliationMachineId(vmwareInfo.getId())
+                .affiliationMachineUuid(vmwareInfo.getUuid())
+                .build();
+        // 2.存储 DynamicConfigInfo
+        AbstractDynamicConfigHolder.getDynamicConfigHandler(DynamicConfigTypeEnum.MONITOR_PERIOD).executeInsertValue(dynamicConfigInfo);
     }
 
     private String replaceXmlParams(XmlParamBO xmlParamBO) throws IOException {

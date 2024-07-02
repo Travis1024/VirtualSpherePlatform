@@ -62,8 +62,6 @@ import javax.annotation.Resource;
 public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareInfo> implements VmwareInfoService{
 
     @Resource
-    public CreationHolder creationHolder;
-    @Resource
     public HostInfoMapper hostInfoMapper;
     @DubboReference
     public AgentVmwareClient agentVmwareClient;
@@ -96,7 +94,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     public void createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) {
         // TODO 添加虚拟机与权限组关联关系
         // 获取虚拟机创建持有者
-        AbstractCreationService creationService = creationHolder.getCreationService(vmwareInsertDTO.getCreateForm().getValue());
+        AbstractCreationService creationService = CreationHolder.getCreationService(vmwareInsertDTO.getCreateForm().getValue());
+        Assert.isNull(creationService, () -> new BadRequestException("虚拟机创建形式错误!"));
         // 异步创建虚拟机
         CompletableFuture.runAsync(() -> {
                     try {

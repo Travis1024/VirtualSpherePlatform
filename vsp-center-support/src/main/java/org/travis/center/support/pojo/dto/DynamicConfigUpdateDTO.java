@@ -26,7 +26,7 @@ public class DynamicConfigUpdateDTO implements Serializable {
     /**
      * 动态配置 VALUE
      */
-    @Schema(description="动态配置 VALUE")
+    @Schema(description="动态配置 VALUE (只接收字符串)")
     @NotBlank(message = "动态配置 VALUE 不能为空!")
     private String configValue;
 }

@@ -17,8 +17,13 @@ import lombok.Getter;
 public enum DynamicConfigTypeEnum {
 
     OTHER(0, "其他配置"),
-    MONITOR(1, "指标监控配置"),
-    THRESHOLD(2, "阈值配置")
+    MONITOR_PERIOD(1, "监测周期配置"),
+    THRESHOLD(2, "阈值配置"),
+
+    /**
+     * 不要使用（对齐配置项）
+     */
+    UNIVERSAL(999, "通用配置")
     ;
 
     @EnumValue

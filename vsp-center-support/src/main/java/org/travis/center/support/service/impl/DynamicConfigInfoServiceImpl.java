@@ -9,17 +9,14 @@ import java.util.Optional;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.travis.center.common.entity.support.DynamicConfigInfo;
-import org.travis.center.common.enums.IsFixedEnum;
 import org.travis.center.common.mapper.support.DynamicConfigInfoMapper;
 import org.travis.center.support.pojo.dto.DynamicConfigUpdateDTO;
+import org.travis.center.support.processor.AbstractDynamicConfigHolder;
 import org.travis.center.support.service.DynamicConfigInfoService;
-import org.travis.center.support.utils.DynamicConfigUtil;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
-import org.travis.shared.common.exceptions.ForbiddenException;
+import org.travis.shared.common.enums.MonitorPeriodEnum;
 import org.travis.shared.common.exceptions.NotFoundException;
-
-import javax.annotation.Resource;
 
 /**
  * @ClassName DynamicConfigInfoServiceImpl
@@ -31,8 +28,6 @@ import javax.annotation.Resource;
 @Service
 public class DynamicConfigInfoServiceImpl extends ServiceImpl<DynamicConfigInfoMapper, DynamicConfigInfo> implements DynamicConfigInfoService{
 
-    @Resource
-    public DynamicConfigUtil dynamicConfigUtil;
 
     @Override
     public List<DynamicConfigInfo> selectList() {
@@ -47,14 +42,14 @@ public class DynamicConfigInfoServiceImpl extends ServiceImpl<DynamicConfigInfoM
 
     @Override
     public void updateConfigValue(DynamicConfigUpdateDTO dynamicConfigUpdateDTO) {
-        // 1.判断当前动态配置是否允许修改
-        Optional<DynamicConfigInfo> configInfoOptional = Optional.ofNullable(getById(dynamicConfigUpdateDTO.getId()));
-        Assert.isTrue(configInfoOptional.isPresent(), () -> new NotFoundException("未查询到当前配置!"));
-        DynamicConfigInfo configInfo = configInfoOptional.get();
-        if (configInfo.getIsFixed().getValue().equals(IsFixedEnum.DISALLOW_UPDATE.getValue())) {
-            throw new ForbiddenException("当前动态配置禁止修改!");
-        }
-        // 2.修改动态配置 value
-        dynamicConfigUtil.updateConfigValue(dynamicConfigUpdateDTO.getId(), dynamicConfigUpdateDTO.getConfigValue().trim());
+        // 1.查询动态配置信息
+        DynamicConfigInfo dynamicConfigInfo = Optional.ofNullable(getById(dynamicConfigUpdateDTO.getId())).orElseThrow(() -> new NotFoundException("未查询到当前配置!"));
+        // 2.修改动态配置值
+        AbstractDynamicConfigHolder.getDynamicConfigHandler(dynamicConfigInfo.getConfigType()).executeUpdateValue(dynamicConfigInfo, dynamicConfigUpdateDTO.getConfigValue());
+    }
+
+    @Override
+    public List<MonitorPeriodEnum> queryMonitorPeriodSelectableList() {
+        return List.of(MonitorPeriodEnum.values());
     }
 }
