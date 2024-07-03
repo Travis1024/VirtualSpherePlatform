@@ -8,8 +8,6 @@ import org.travis.center.common.enums.ArchEnum;
 import org.travis.center.common.enums.DiskMountEnum;
 import org.travis.center.common.enums.DiskTypeEnum;
 import org.travis.center.common.enums.VmwareCreateFormEnum;
-import org.travis.center.manage.pojo.dto.DiskAttachDTO;
-import org.travis.center.manage.pojo.dto.DiskInsertDTO;
 import org.travis.shared.common.constants.DiskConstant;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
 
@@ -27,10 +25,10 @@ import java.nio.file.Paths;
  * @Data 2024/5/29
  */
 @Service
-public class IsoCreationService extends AbstractCreationService{
+public class IsoCreationService extends AbstractCreationService {
 
     public IsoCreationService() {
-        vmwareCreateFormValue = VmwareCreateFormEnum.ISO.getValue();
+        vmwareCreateFormEnum = VmwareCreateFormEnum.ISO;
     }
 
     @Transactional

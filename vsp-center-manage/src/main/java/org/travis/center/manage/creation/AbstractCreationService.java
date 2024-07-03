@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentDiskClient;
 import org.travis.api.client.agent.AgentHostClient;
@@ -19,7 +20,6 @@ import org.travis.center.common.entity.manage.*;
 import org.travis.center.common.entity.support.DynamicConfigInfo;
 import org.travis.center.common.enums.*;
 import org.travis.center.common.mapper.manage.*;
-import org.travis.center.common.mapper.support.DynamicConfigInfoMapper;
 import org.travis.center.common.service.AgentAssistService;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.service.DiskInfoService;
@@ -66,11 +66,15 @@ public abstract class AbstractCreationService {
     public AgentVmwareClient agentVmwareClient;
     @Resource
     public VmwareXmlDetailsMapper vmwareXmlDetailsMapper;
+    @Lazy
+    @Resource
+    public IsoCreationService isoCreationService;
+    @Lazy
+    @Resource
+    public SystemDiskCreationService systemDiskCreationService;
 
     // step 0
-    protected Integer vmwareCreateFormValue;
-    // step 0
-    protected AbstractCreationService creationService;
+    protected VmwareCreateFormEnum vmwareCreateFormEnum;
     // step 0
     protected VmwareInsertDTO vmwareInsertDTO;
     // step 1
@@ -85,31 +89,51 @@ public abstract class AbstractCreationService {
 
     @PostConstruct
     public void init() {
-        CreationHolder.addCreationService(vmwareCreateFormValue, this);
-        creationService = this;
+        CreationHolder.addCreationService(vmwareCreateFormEnum, this);
     }
 
     @Transactional
     public void build(VmwareInsertDTO vmwareInsertDTO) throws IOException {
+        AbstractCreationService creationService;
+        switch (vmwareCreateFormEnum) {
+            case ISO:
+                creationService = isoCreationService;
+                break;
+            case IMAGE:
+                creationService = systemDiskCreationService;
+                break;
+            default:
+                throw new BadRequestException("vmwareCreateFormEnum is error");
+        }
+
         this.vmwareInsertDTO = vmwareInsertDTO;
 
         // 1.查询宿主机信息并验证
+        log.debug("1.查询宿主机信息并验证");
         creationService.stepOne();
         // 2.封装并保存虚拟机信息
+        log.debug("2.封装并保存虚拟机信息");
         creationService.stepTwo();
         // 3.创建系统磁盘
+        log.debug("3.创建系统磁盘");
         creationService.createSystemDisk();
         // 4.替换 xml 文件字段
+        log.debug("4.替换 xml 文件字段");
         String xmlContent = creationService.stepFour();
         // 5.Dubbo-远程定义虚拟机
+        log.debug("5.Dubbo-远程定义虚拟机");
         R<Void> vmwareCreateR = agentVmwareClient.createVmware(hostInfo.getIp(), xmlContent, vmwareInfo.getId());
         Assert.isTrue(vmwareCreateR.checkSuccess(), () -> new DubboFunctionException("vmware create failed -> " + vmwareCreateR.getMsg()));
         // 6.xml 存储到数据库中
+        log.debug("6.xml 存储到数据库中");
         creationService.stepSix(xmlContent);
         // 7.修改系统磁盘状态、修改虚拟机状态
+        log.debug("7.修改系统磁盘状态、修改虚拟机状态");
         creationService.stepSeven();
         // 8.新增动态配置-监测周期(s)
+        log.debug("8.新增动态配置-监测周期(s)");
         creationService.stepEight();
+        log.debug("[AbstractCreationService-{}] 虚拟机创建成功!", vmwareInsertDTO.getName());
     }
 
     public void stepOne() {

@@ -35,7 +35,7 @@ import java.util.Optional;
 public class SystemDiskCreationService extends AbstractCreationService{
 
     public SystemDiskCreationService() {
-        vmwareCreateFormValue = VmwareCreateFormEnum.IMAGE.getValue();
+        vmwareCreateFormEnum = VmwareCreateFormEnum.IMAGE;
     }
 
     @Transactional

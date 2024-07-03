@@ -1,5 +1,7 @@
 package org.travis.center.manage.creation;
 
+import org.travis.center.common.enums.VmwareCreateFormEnum;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,13 +13,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Data 2024/5/29
  */
 public class CreationHolder {
-    private static final Map<Integer, AbstractCreationService> CREATION_HOLDER = new ConcurrentHashMap<>(2);
+    private static final Map<VmwareCreateFormEnum, AbstractCreationService> CREATION_HOLDER = new ConcurrentHashMap<>(2);
 
-    public static AbstractCreationService getCreationService(Integer vmwareCreateFormValue) {
-        return CREATION_HOLDER.get(vmwareCreateFormValue);
+    public static AbstractCreationService getCreationService(VmwareCreateFormEnum vmwareCreateFormEnum) {
+        return CREATION_HOLDER.get(vmwareCreateFormEnum);
     }
 
-    public static void addCreationService(Integer vmwareCreateFormValue, AbstractCreationService creationService) {
-        CREATION_HOLDER.put(vmwareCreateFormValue, creationService);
+    public static void addCreationService(VmwareCreateFormEnum vmwareCreateFormEnum, AbstractCreationService creationService) {
+        CREATION_HOLDER.put(vmwareCreateFormEnum, creationService);
     }
 }

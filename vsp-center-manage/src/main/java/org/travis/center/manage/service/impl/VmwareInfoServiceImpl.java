@@ -27,6 +27,8 @@ import org.travis.api.client.agent.AgentHostClient;
 import org.travis.api.client.agent.AgentVmwareClient;
 import org.travis.api.pojo.bo.HostResourceInfoBO;
 import org.travis.center.common.entity.manage.HostInfo;
+import org.travis.center.manage.creation.IsoCreationService;
+import org.travis.center.manage.creation.SystemDiskCreationService;
 import org.travis.shared.common.enums.MsgModuleEnum;
 import org.travis.shared.common.enums.MsgStateEnum;
 import org.travis.center.common.enums.VmwareStateEnum;
@@ -35,7 +37,6 @@ import org.travis.center.common.mapper.manage.VmwareInfoMapper;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import org.travis.center.common.utils.ManageThreadPoolConfig;
 import org.travis.center.manage.creation.AbstractCreationService;
-import org.travis.center.manage.creation.CreationHolder;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.center.manage.service.VmwareInfoService;
@@ -71,6 +72,10 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     public WsMessageHolder wsMessageHolder;
     @Resource
     public AgentHostClient agentHostClient;
+    @Resource
+    public IsoCreationService isoCreationService;
+    @Resource
+    public SystemDiskCreationService systemDiskCreationService;
 
     @Override
     public VmwareInfo selectOne(Long id) {
@@ -94,8 +99,17 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     public void createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) {
         // TODO 添加虚拟机与权限组关联关系
         // 获取虚拟机创建持有者
-        AbstractCreationService creationService = CreationHolder.getCreationService(vmwareInsertDTO.getCreateForm().getValue());
-        Assert.notNull(creationService, () -> new BadRequestException("虚拟机创建形式错误!"));
+        AbstractCreationService creationService;
+        switch (vmwareInsertDTO.getCreateForm()) {
+            case ISO:
+                creationService = isoCreationService;
+                break;
+            case IMAGE:
+                creationService = systemDiskCreationService;
+                break;
+            default:
+                throw new BadRequestException("虚拟机创建形式错误!");
+        }
         // 异步创建虚拟机
         CompletableFuture.runAsync(() -> {
                     try {
