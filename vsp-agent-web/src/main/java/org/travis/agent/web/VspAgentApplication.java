@@ -7,9 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 
 /**
@@ -19,6 +18,7 @@ import java.util.Arrays;
  * @Version v1.0
  * @Data 2024/5/10
  */
+@EnableScheduling
 @EnableDubbo
 @ComponentScan(basePackages = {"org.travis.agent", "org.travis.shared", "org.travis.api"})
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})

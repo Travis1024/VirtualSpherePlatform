@@ -23,7 +23,7 @@ while IFS= read -r line; do
     # 检查是否成功获取 UUID
     if [ -n "$uuid" ]; then
       # 输出 UUID 和状态字段
-      echo "$uuid|$state"
+      echo "$uuid:$state"
     fi
   fi
 done <<< "$vms"
