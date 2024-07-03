@@ -98,13 +98,21 @@ public class QuartzMachineStateUpdateJob extends QuartzJobBean {
         List<VmwareInfo> vmwareInfoList = vmwareInfoMapper.selectList(Wrappers.<VmwareInfo>lambdaQuery().select(VmwareInfo::getId, VmwareInfo::getUuid, VmwareInfo::getState));
         RMap<String, String> rMap = redissonClient.getMap(RedissonConstant.HEALTHY_VMWARE_RECORDS);
         for (VmwareInfo vmwareInfo : vmwareInfoList) {
-            // 3.1.获取虚拟机真实状态信息
+            // 3.1.获取虚拟机真实状态信息 + 删除当前状态信息
             String vmwareState = rMap.get(vmwareInfo.getUuid());
+            rMap.remove(vmwareInfo.getUuid());
+
             if (StrUtil.isBlank(vmwareState)) {
+                if (!VmwareStateEnum.HEART_BEAT_ERROR.equals(vmwareInfo.getState())) {
+                    vmwareInfoMapper.update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.HEART_BEAT_ERROR).eq(VmwareInfo::getId, vmwareInfo.getId()));
+                }
                 continue;
             }
             VmwareStateEnum vmwareStateEnum = VmwareStateEnum.ofTag(vmwareState);
             if (ObjectUtil.isNull(vmwareStateEnum)) {
+                if (!VmwareStateEnum.UNKNOW.equals(vmwareInfo.getState())) {
+                    vmwareInfoMapper.update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getState, VmwareStateEnum.UNKNOW).eq(VmwareInfo::getId, vmwareInfo.getId()));
+                }
                 continue;
             }
             // 3.2.判断真实状态是否和数据库中相同

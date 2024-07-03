@@ -31,7 +31,8 @@ public enum VmwareStateEnum implements Serializable {
 
     // Custom state
     UNKNOW(20, "unknow", "未知"),
-    ERROR(21, "error", "异常"),
+    ERROR(21, "error", "错误"),
+    HEART_BEAT_ERROR(22, "heart_beat_error", "心跳异常"),
     ;
 
     @EnumValue
