@@ -1,9 +1,7 @@
 package org.travis.center.web;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
-import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,10 +11,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.travis.shared.common.utils.NetworkUtil;
-
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 
 /**
