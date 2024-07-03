@@ -50,10 +50,10 @@ public class SystemDiskCreationService extends AbstractCreationService{
         long diskId = SnowflakeIdUtil.nextId();
         // /root/vsp/share/share_image/kylin-v10.qcow2
         String originImagePath = agentAssistService.getHostSharedStoragePath() + imageInfo.getSubPath();
-        // Root-Disk-89as8282nd912h.qcow2
-        String diskName = DiskConstant.DISK_NAME_ROOT_PREFIX + diskId + DiskConstant.DISK_NAME_SUFFIX;
+        // Root-Disk-89as8282nd912h
+        String diskName = DiskConstant.DISK_NAME_ROOT_PREFIX + diskId;
         // /share_disk/Root-Disk-89as8282nd912h.qcow2
-        String subPath = DiskConstant.SUB_DISK_PATH_PREFIX + File.separator + diskName;
+        String subPath = DiskConstant.SUB_DISK_PATH_PREFIX + File.separator + diskName + DiskConstant.DISK_NAME_SUFFIX;
         // /root/vsp/share/share_disk/Root-Disk-89as8282nd912h.qcow2
         String targetDiskPath = agentAssistService.getHostSharedStoragePath() + subPath;
 
@@ -76,7 +76,6 @@ public class SystemDiskCreationService extends AbstractCreationService{
         targetDiskInfo.setVmwareId(vmwareInfo.getId());
         targetDiskInfo.setDiskType(DiskTypeEnum.ROOT);
         targetDiskInfo.setTargetDev("vda");
-        // 设置磁盘默认为“未挂载”
         targetDiskInfo.setIsMount(DiskMountEnum.UN_MOUNTED);
         diskInfoMapper.insert(targetDiskInfo);
 

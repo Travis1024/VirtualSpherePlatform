@@ -70,7 +70,7 @@ public class DiskInfoController {
     @Operation(summary = "创建新数据磁盘信息")
     @PostMapping("/create")
     public DiskInfo createDisk(@Validated @RequestBody DiskInsertDTO diskInsertDTO) {
-        return diskInfoService.createDisk(diskInsertDTO, true);
+        return diskInfoService.createDisk(diskInsertDTO);
     }
 
     @RequestLock

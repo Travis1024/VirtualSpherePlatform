@@ -215,6 +215,7 @@ public abstract class AbstractCreationService {
         return resourceInfoBO;
     }
 
+    @Transactional
     public abstract void createSystemDisk();
 
     public abstract String getXmlTemplateContent() throws IOException;

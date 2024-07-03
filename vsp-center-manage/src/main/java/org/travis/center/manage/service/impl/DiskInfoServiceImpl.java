@@ -84,45 +84,45 @@ public class DiskInfoServiceImpl extends ServiceImpl<DiskInfoMapper, DiskInfo> i
 
     @Transactional
     @Override
-    public DiskInfo createDisk(DiskInsertDTO diskInsertDTO, boolean isUserCreate) {
+    public DiskInfo createDisk(DiskInsertDTO diskInsertDTO) {
         /*
           1.组装并保存磁盘信息
          */
         DiskInfo diskInfo = new DiskInfo();
-        if (isUserCreate) {
-            // 用户创建的磁盘默认为“DATA”类型
-            diskInfo.setDiskType(DiskTypeEnum.DATA);
-        } else {
-            // 系统创建的磁盘默认为“ROOT”类型
-            diskInfo.setDiskType(DiskTypeEnum.ROOT);
-        }
         diskInfo.setId(SnowflakeIdUtil.nextId());
-        // 设置磁盘默认为“未挂载”
-        diskInfo.setIsMount(DiskMountEnum.UN_MOUNTED);
-        BeanUtils.copyProperties(diskInsertDTO, diskInfo);
-        // 组织磁盘子路径
-        String diskFileName = diskInfo.getId() + DiskConstant.DISK_NAME_SUFFIX;
-        String subPath = DiskConstant.SUB_DISK_PATH_PREFIX + File.separator + diskFileName;
+        diskInfo.setName(diskInsertDTO.getName());
+        diskInfo.setDescription(diskInsertDTO.getDescription());
+        diskInfo.setSpaceSize(diskInsertDTO.getSpaceSize());
+
         // 设置磁盘子路径（包含文件名）
+        String subPath = DiskConstant.SUB_DISK_PATH_PREFIX + File.separator + DiskConstant.DISK_NAME_DATA_PREFIX + diskInfo.getId() + DiskConstant.DISK_NAME_SUFFIX;
         diskInfo.setSubPath(subPath);
-        // 校验磁盘大小（必须以 GB 为整数单位）
-        Assert.isTrue(diskInfo.getSpaceSize() % SystemConstant.GB_UNIT == 0, () -> new BadRequestException("磁盘大小必须为整-GB!"));
-        VspStrUtil.trimStr(diskInfo);
-        save(diskInfo);
+
+        diskInfo.setDiskType(DiskTypeEnum.DATA);
+        diskInfo.setIsMount(DiskMountEnum.UN_MOUNTED);
 
         /*
-          2.发送磁盘创建请求
+          2.发送创建磁盘请求
          */
-        // 组装请求参数
+        createDiskRequest(diskInfo);
+        return diskInfo;
+    }
+
+    @Override
+    public void createDiskRequest(DiskInfo diskInfo) {
+        // 1.校验磁盘大小（必须以 GB 为整数单位）
+        Assert.isTrue(diskInfo.getSpaceSize() % SystemConstant.GB_UNIT == 0, () -> new BadRequestException("磁盘大小必须为整-GB!"));
+        // 2.持久化到数据库
+        VspStrUtil.trimStr(diskInfo);
+        save(diskInfo);
+        // 3.组装请求参数
         List<String> agentIpList = agentAssistService.getHealthyHostAgentIpList();
         String serverAgentIp = agentIpList.get(RandomUtil.randomInt(0, agentIpList.size()));
         String sharedStoragePath = agentAssistService.getHostSharedStoragePath();
-        // Dubbo 创建磁盘
-        R<String> createDiskR = agentDiskClient.createDisk(serverAgentIp, sharedStoragePath + subPath, diskInfo.getSpaceSize() / SystemConstant.GB_UNIT);
+        // 4.Dubbo 创建磁盘
+        R<String> createDiskR = agentDiskClient.createDisk(serverAgentIp, sharedStoragePath + diskInfo.getSubPath(), diskInfo.getSpaceSize() / SystemConstant.GB_UNIT);
         Assert.isTrue(createDiskR.checkSuccess(), () -> new DubboFunctionException(createDiskR.getMsg()));
-        log.info("磁盘创建成功! -> {}", sharedStoragePath + subPath);
-
-        return diskInfo;
+        log.info("磁盘创建成功! -> {}", sharedStoragePath + diskInfo.getSubPath());
     }
 
     @Transactional

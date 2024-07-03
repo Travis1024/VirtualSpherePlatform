@@ -5,11 +5,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.center.common.entity.manage.DiskInfo;
 import org.travis.center.common.enums.ArchEnum;
+import org.travis.center.common.enums.DiskMountEnum;
 import org.travis.center.common.enums.DiskTypeEnum;
 import org.travis.center.common.enums.VmwareCreateFormEnum;
 import org.travis.center.manage.pojo.dto.DiskAttachDTO;
 import org.travis.center.manage.pojo.dto.DiskInsertDTO;
+import org.travis.shared.common.constants.DiskConstant;
+import org.travis.shared.common.utils.SnowflakeIdUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,11 +36,29 @@ public class IsoCreationService extends AbstractCreationService{
     @Transactional
     @Override
     public void createSystemDisk() {
-        // 创建磁盘
-        DiskInsertDTO diskInsertDTO = new DiskInsertDTO();
-        diskInsertDTO.setDescription("System disk is created automatically by the system!");
-        diskInsertDTO.setSpaceSize(vmwareInsertDTO.getSystemDiskSize() * 1024L * 1024L * 1024L);
-        this.diskInfo = diskInfoService.createDisk(diskInsertDTO, false);
+        // 1.拼接参数
+        long diskId = SnowflakeIdUtil.nextId();
+        // Root-Disk-89as8282nd912h
+        String diskName = DiskConstant.DISK_NAME_ROOT_PREFIX + diskId;
+        // /share_disk/Root-Disk-89as8282nd912h.qcow2
+        String subPath = DiskConstant.SUB_DISK_PATH_PREFIX + File.separator + diskName + DiskConstant.DISK_NAME_SUFFIX;
+
+        // 2.组装 DiskInfo
+        DiskInfo targetDiskInfo = new DiskInfo();
+        targetDiskInfo.setId(diskId);
+        targetDiskInfo.setName(diskName);
+        targetDiskInfo.setDescription("System disk is created automatically by the system!");
+        targetDiskInfo.setSpaceSize(vmwareInsertDTO.getSystemDiskSize() * 1024L * 1024L * 1024L);
+        targetDiskInfo.setSubPath(subPath);
+        targetDiskInfo.setVmwareId(vmwareInfo.getId());
+        targetDiskInfo.setDiskType(DiskTypeEnum.ROOT);
+        targetDiskInfo.setTargetDev("vda");
+        targetDiskInfo.setIsMount(DiskMountEnum.UN_MOUNTED);
+
+        // 3.创建磁盘
+        diskInfoService.createDiskRequest(targetDiskInfo);
+
+        this.diskInfo = targetDiskInfo;
     }
 
     @Override
