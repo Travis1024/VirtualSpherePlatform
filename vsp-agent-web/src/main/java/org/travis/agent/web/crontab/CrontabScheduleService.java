@@ -68,11 +68,13 @@ public class CrontabScheduleService implements SchedulingConfigurer {
             String uuid = IdUtil.fastSimpleUUID();
             log.info("[Healthy-Push-Task-Start-{}] Healthy States Push Crontab Schedule Started", uuid);
             // 1.Dubbo-检测 Center 健康状态
-            R<Void> centerHealthyCheckR = centerHealthyClient.dubboHealthyCheck();
-            Assert.isTrue(centerHealthyCheckR.checkSuccess(), () -> {
+            try {
+                R<Void> centerHealthyCheckR = centerHealthyClient.dubboHealthyCheck();
+                Assert.isTrue(centerHealthyCheckR.checkSuccess(), () -> new DubboFunctionException(centerHealthyCheckR.getMsg()));
+            } catch (Exception e) {
                 log.error("[Agent-CrontabScheduleService] Dubbo-未检测到健康的「Center节点」");
-                return null;
-            });
+                return;
+            }
 
             // 2.获取虚拟机状态信息
             Map<String, String> vmwareUuidStateMap = vmwareStateAggregateHandler.queryVmwareUuidStatesMap();
