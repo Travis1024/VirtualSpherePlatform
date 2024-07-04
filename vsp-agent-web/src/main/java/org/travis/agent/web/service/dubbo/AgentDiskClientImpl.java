@@ -72,7 +72,7 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     public R<Integer> queryDiskSize(String targetAgentIp, String originImagePath) {
         try {
             R<String> stringR = VspRuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_DISK_SIZE_CALC_KEY));
-            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException("磁盘大小查询失败:" + stringR.getMsg());
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException("磁盘大小查询失败:" + stringR.getMsg()));
             String data = stringR.getData();
             String diskSizeStr = data.trim() + StrUtil.SPACE + originImagePath;
             Integer diskSize = Integer.parseInt(diskSizeStr);
