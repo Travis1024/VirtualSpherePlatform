@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
  * @Version v1.0
  * @Data 2024/6/2
  */
+@Deprecated
 @EnableCaching
 @Configuration
 public class CacheManagerConfig {
