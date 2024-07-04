@@ -33,10 +33,10 @@ public class QuartzMonitorPeriodJob extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext context) {
         Integer second = (Integer) context.getJobDetail().getJobDataMap().get(QuartzJobsDatabaseInitializer.PERIOD_KEY);
-        log.info("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s", second);
+        // log.debug("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s", second);
         RSet<String> rSet = redissonClient.getSet(RedissonConstant.MONITOR_PERIOD_MACHINE_QUEUE_PREFIX + MonitorPeriodEnum.ofValue(second).getDisplay());
         if (rSet.isEmpty()) {
-            log.warn("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s, 无刷新任务!", second);
+            // log.debug("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s, 无刷新任务!", second);
             return;
         }
 

@@ -35,7 +35,9 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
             FileUtil.mkParentDirs(tmpPath);
             FileUtil.writeString(xmlContent, tmpPath, StandardCharsets.UTF_8);
             // 2.执行虚拟机定义
-            String execked = VspRuntimeUtil.execForStr("virsh define " + tmpPath);
+            R<String> stringR = VspRuntimeUtil.execForStr("virsh define " + tmpPath);
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException(StrUtil.format("虚拟机创建失败:{}", stringR.getMsg())));
+            String execked = stringR.getData();
             Assert.isTrue(execked.contains("defined from"), () -> new DubboFunctionException(StrUtil.format("虚拟机创建失败:{}", execked)));
             return R.ok();
         } catch (Exception e) {
@@ -47,7 +49,9 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     @Override
     public R<String> startVmware(String targetAgentIp, String vmwareUuid) {
         try {
-            String execked = VspRuntimeUtil.execForStr("virsh start " + vmwareUuid);
+            R<String> stringR = VspRuntimeUtil.execForStr("virsh start " + vmwareUuid);
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException(StrUtil.format("虚拟机启动失败:{}", stringR.getMsg())));
+            String execked = stringR.getData();
             Assert.isTrue(execked.contains("started"), () -> new DubboFunctionException(StrUtil.format("虚拟机启动失败:{}", execked)));
             return R.ok(execked);
         } catch (Exception e) {
@@ -59,7 +63,9 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     @Override
     public R<String> suspendVmware(String targetAgentIp, String vmwareUuid) {
         try {
-            String execked = VspRuntimeUtil.execForStr("virsh suspend " + vmwareUuid);
+            R<String> stringR = VspRuntimeUtil.execForStr("virsh suspend " + vmwareUuid);
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException(StrUtil.format("虚拟机暂停失败:{}", stringR.getMsg())));
+            String execked = stringR.getData();
             Assert.isTrue(execked.contains("suspended"), () -> new DubboFunctionException(StrUtil.format("虚拟机暂停失败:{}", execked)));
             return R.ok(execked);
         } catch (Exception e) {
@@ -76,7 +82,9 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     @Override
     public R<String> resumeVmware(String targetAgentIp, String vmwareUuid) {
         try {
-            String execked = VspRuntimeUtil.execForStr("virsh resume " + vmwareUuid);
+            R<String> stringR = VspRuntimeUtil.execForStr("virsh resume " + vmwareUuid);
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException(StrUtil.format("虚拟机恢复失败:{}", stringR.getMsg())));
+            String execked = stringR.getData();
             Assert.isTrue(execked.contains("resumed"), () -> new DubboFunctionException(StrUtil.format("虚拟机恢复失败:{}", execked)));
             return R.ok(execked);
         } catch (Exception e) {
@@ -89,7 +97,9 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     public R<String> shutdownVmware(String targetAgentIp, String vmwareUuid) {
         try {
             // 1.执行正常关机操作
-            String execked = VspRuntimeUtil.execForStr("virsh shutdown " + vmwareUuid);
+            R<String> stringR = VspRuntimeUtil.execForStr("virsh shutdown " + vmwareUuid);
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException(StrUtil.format("虚拟机关机失败:{}", stringR.getMsg())));
+            String execked = stringR.getData();
             Assert.isTrue(execked.contains("is being shutdown"), () -> new DubboFunctionException(StrUtil.format("虚拟机关机失败:{}", execked)));
             long beginTimeMillis = System.currentTimeMillis();
 
@@ -102,7 +112,9 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
                     return destroyVmware(targetAgentIp, vmwareUuid);
                 }
                 // 2.2.判断虚拟机状态
-                String vmwareState = VspRuntimeUtil.execForStr("virsh domstate " + vmwareUuid).trim();
+                R<String> stringR1 = VspRuntimeUtil.execForStr("virsh domstate " + vmwareUuid);
+                Assert.isTrue(stringR1.checkSuccess(), () -> new DubboFunctionException(StrUtil.format("虚拟机状态查询失败:{}", stringR1.getMsg())));
+                String vmwareState = stringR1.getData();
                 if (vmwareState.contains("shut off")) {
                     break;
                 }
@@ -117,7 +129,9 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     @Override
     public R<String> destroyVmware(String targetAgentIp, String vmwareUuid) {
         try {
-            String execked = VspRuntimeUtil.execForStr("virsh destroy " + vmwareUuid);
+            R<String> stringR = VspRuntimeUtil.execForStr("virsh destroy " + vmwareUuid);
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException(StrUtil.format("虚拟机强制关机失败:{}", stringR.getMsg())));
+            String execked = stringR.getData();
             Assert.isTrue(execked.contains("destroyed"), () -> new DubboFunctionException(StrUtil.format("虚拟机强制关机失败:{}", execked)));
             return R.ok(execked);
         } catch (Exception e) {
@@ -129,7 +143,9 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     @Override
     public R<String> undefineVmware(String targetAgentIp, String vmwareUuid) {
         try {
-            String execked = VspRuntimeUtil.execForStr("virsh undefine " + vmwareUuid);
+            R<String> stringR = VspRuntimeUtil.execForStr("virsh undefine " + vmwareUuid);
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException(StrUtil.format("虚拟机删除失败:{}", stringR.getMsg())));
+            String execked = stringR.getData();
             Assert.isTrue(execked.contains("has been undefined"), () -> new DubboFunctionException(StrUtil.format("虚拟机删除失败:{}", execked)));
             return R.ok(execked);
         } catch (Exception e) {
@@ -143,11 +159,15 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
         try {
             // 非关机状态-内存临时生效
             if (!isPowerOff) {
-                String execked = VspRuntimeUtil.execForStr("virsh setmem " + vmwareUuid + " " + memory / SystemConstant.KB_UNIT);
+                R<String> stringR = VspRuntimeUtil.execForStr("virsh setmem " + vmwareUuid + " " + memory / SystemConstant.KB_UNIT);
+                Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException("虚拟机 live 内存修改失败:" + stringR.getMsg()));
+                String execked = stringR.getData();
                 Assert.isFalse(execked.contains("error"), () -> new DubboFunctionException("live:" + execked));
             }
             // 虚拟内存下次启动生效并持久化
-            String execked = VspRuntimeUtil.execForStr("virsh setmem " + vmwareUuid + " " + memory / SystemConstant.KB_UNIT + " --config");
+            R<String> stringR = VspRuntimeUtil.execForStr("virsh setmem " + vmwareUuid + " " + memory / SystemConstant.KB_UNIT + " --config");
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException("虚拟机 config 内存修改失败:" + stringR.getMsg()));
+            String execked = stringR.getData();
             Assert.isTrue(StrUtil.isEmpty(execked.trim()), () -> new DubboFunctionException("config:" + execked));
             return R.ok();
         } catch (Exception e) {
@@ -161,11 +181,15 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
         try {
             // 非关机状态-虚拟CPU临时生效
             if (!isPowerOff) {
-                String execked = VspRuntimeUtil.execForStr("virsh setvcpus " + vmwareUuid + " " + vcpuNumber + " --live");
+                R<String> stringR = VspRuntimeUtil.execForStr("virsh setvcpus " + vmwareUuid + " " + vcpuNumber + " --live");
+                Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException("虚拟机 live vcpu 修改失败:" + stringR.getMsg()));
+                String execked = stringR.getData();
                 Assert.isFalse(execked.contains("error"), () -> new DubboFunctionException("live:" + execked));
             }
             // 虚拟CPU下次启动生效并持久化
-            String execked = VspRuntimeUtil.execForStr("virsh setvcpus " + vmwareUuid + " " + vcpuNumber + " --config");
+            R<String> stringR = VspRuntimeUtil.execForStr("virsh setvcpus " + vmwareUuid + " " + vcpuNumber + " --config");
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException("虚拟机 config vcpu 修改失败:" + stringR.getMsg()));
+            String execked = stringR.getData();
             Assert.isTrue(StrUtil.isEmpty(execked.trim()), () -> new DubboFunctionException("config:" + execked));
             return R.ok();
         } catch (Exception e) {
@@ -178,7 +202,9 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     public R<String> queryVncAddress(String targetAgentIp, String vmwareUuid) {
         try {
             // 1.查询 VNC 端口
-            String execked = VspRuntimeUtil.execForStr("virsh vncdisplay " + vmwareUuid).trim();
+            R<String> stringR = VspRuntimeUtil.execForStr("virsh vncdisplay " + vmwareUuid);
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException("VNC查询失败:" + stringR.getMsg()));
+            String execked = stringR.getData().trim();
             Assert.isTrue(execked.startsWith(StrUtil.COLON), () -> new DubboFunctionException("VNC查询失败:" + execked));
             // 2.组装真实端口
             String portStr = execked.substring(1);

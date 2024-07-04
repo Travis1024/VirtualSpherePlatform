@@ -7,10 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.travis.agent.web.config.StartDependentConfig;
 import org.travis.shared.common.constants.AgentDependentConstant;
+import org.travis.shared.common.domain.R;
 import org.travis.shared.common.utils.VspRuntimeUtil;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +32,13 @@ public class VmwareStateAggregateHandler {
     public StartDependentConfig startDependentConfig;
 
     public Map<String, String> queryVmwareUuidStatesMap() {
-        List<String> execkedForLineList = VspRuntimeUtil.execForLines("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_QUERY_VM_STATES_KEY));
+        R<List<String>> listR = VspRuntimeUtil.execForLines("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_QUERY_VM_STATES_KEY));
+        if (listR.checkFail()) {
+            log.error("[VmwareStateAggregateHandler::queryVmwareUuidStatesMap] execForLines error: {}", listR.getMsg());
+            return Collections.emptyMap();
+        }
+        List<String> execkedForLineList = listR.getData();
+
         Map<String, String> vmwareUuidStatesMap = new HashMap<>();
         for (String line : execkedForLineList) {
             String[] lineSplit = line.split(StrUtil.COLON);

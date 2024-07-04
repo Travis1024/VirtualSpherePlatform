@@ -41,6 +41,8 @@ public enum BizCodeEnum {
     INTERFACE_ANTI_SHAKE_ERROR(950, "接口防抖异常"),
 
     HOST_RESOURCE_LACK(960, "宿主机资源不足"),
+
+    INTERNAL_MESSAGE(1000, "内部处理消息"),
     /**
      * 未知错误
      */

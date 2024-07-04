@@ -76,7 +76,11 @@ public class AgentHostClientImpl implements AgentHostClient {
     }
 
     private List<String> execQueryCpuNumberInfo() {
-        List<String> execkedForLineList = VspRuntimeUtil.execForLines("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_CPU_NUMBER_KEY));
+        R<List<String>> listR = VspRuntimeUtil.execForLines("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_CPU_NUMBER_KEY));
+        if (listR.checkFail()) {
+            throw new DubboFunctionException("虚拟核数 Shell 脚本查询任务执行失败! -> " + listR.getMsg());
+        }
+        List<String> execkedForLineList = listR.getData();
         if (execkedForLineList == null || execkedForLineList.size() != 3) {
             throw new DubboFunctionException("虚拟核数 Shell 脚本查询任务执行失败! -> " + JSONUtil.toJsonStr(execkedForLineList));
         }

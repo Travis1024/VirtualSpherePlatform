@@ -42,7 +42,9 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     public R<String> createDisk(String targetAgentIp, String path, Long unitGbSize) {
         try {
             checkFileSuffix(path);
-            String execked = VspRuntimeUtil.execForStr("qemu-img create -f qcow2 -o preallocation=off " + path + " " + unitGbSize.toString() + "G");
+            R<String> stringR = VspRuntimeUtil.execForStr("qemu-img create -f qcow2 -o preallocation=off " + path + " " + unitGbSize.toString() + "G");
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException("磁盘创建失败:" + stringR.getMsg()));
+            String execked = stringR.getData();
             Assert.isTrue(execked.startsWith("Formatting"), () -> new DubboFunctionException("磁盘创建失败:" + execked));
             return R.ok("Disk Create Successfully");
         } catch (Exception e) {
@@ -69,7 +71,10 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     @Override
     public R<Integer> queryDiskSize(String targetAgentIp, String originImagePath) {
         try {
-            String diskSizeStr = VspRuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_DISK_SIZE_CALC_KEY)).trim() + StrUtil.SPACE + originImagePath;
+            R<String> stringR = VspRuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_DISK_SIZE_CALC_KEY));
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException("磁盘大小查询失败:" + stringR.getMsg());
+            String data = stringR.getData();
+            String diskSizeStr = data.trim() + StrUtil.SPACE + originImagePath;
             Integer diskSize = Integer.parseInt(diskSizeStr);
             return R.ok(diskSize);
         } catch (Exception e) {
@@ -82,7 +87,8 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     @Override
     public R<Void> copyDiskFile(String targetAgentIp, String originImagePath, String targetDiskPath) {
         try {
-            VspRuntimeUtil.execForStr("cp " + originImagePath + " " + targetDiskPath);
+            R<String> stringR = VspRuntimeUtil.execForStr("cp " + originImagePath + " " + targetDiskPath);
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException("磁盘复制失败:" + stringR.getMsg()));
             return R.ok();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -95,7 +101,9 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     public R<String> attachDisk(String targetAgentIp, String vmwareUuid, String diskFilePath, String targetDev) {
         try {
             String command = StrUtil.format("virsh attach-disk --domain {} --source {} --subdriver qcow2 --targetbus virtio --persistent --target {}", vmwareUuid, diskFilePath, targetDev);
-            String execked = VspRuntimeUtil.execForStr(command);
+            R<String> stringR = VspRuntimeUtil.execForStr(command);
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException("磁盘挂载失败:" + stringR.getMsg()));
+            String execked = stringR.getData();
             Assert.isTrue(execked.contains("Disk attached successfully"), () -> new DubboFunctionException("磁盘挂载失败:" + execked));
             return R.ok(execked);
         } catch (Exception e) {
@@ -109,7 +117,9 @@ public class AgentDiskClientImpl implements AgentDiskClient {
     public R<String> detachDisk(String targetAgentIp, String vmwareUuid, String targetDev) {
         try {
             String command = StrUtil.format("virsh detach-disk --domain {} --target {} --persistent", vmwareUuid, targetDev);
-            String execked = VspRuntimeUtil.execForStr(command);
+            R<String> stringR = VspRuntimeUtil.execForStr(command);
+            Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException("磁盘卸载失败:" + stringR.getMsg()));
+            String execked = stringR.getData();
             Assert.isTrue(execked.contains("Disk detached successfully"), () -> new DubboFunctionException("磁盘卸载失败:" + execked));
             return R.ok(execked);
         } catch (Exception e) {
