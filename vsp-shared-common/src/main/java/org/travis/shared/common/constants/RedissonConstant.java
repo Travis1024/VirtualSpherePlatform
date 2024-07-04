@@ -15,4 +15,8 @@ public class RedissonConstant {
     public static final String HEALTHY_PREFIX = "healthy:";
     public static final String HEALTHY_HOST_RECORDS = HEALTHY_PREFIX + "host:";
     public static final String HEALTHY_VMWARE_RECORDS = HEALTHY_PREFIX + "vmware";
+
+    public static final String DYNAMIC_CONFIG_LIST_KEY = "dynamic-config:list";
+
+    public static final String MONITOR_PERIOD_MACHINE_QUEUE_PREFIX = "monitor-period:";
 }

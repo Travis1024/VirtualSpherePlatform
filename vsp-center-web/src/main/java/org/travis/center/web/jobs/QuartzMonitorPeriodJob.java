@@ -29,22 +29,19 @@ public class QuartzMonitorPeriodJob extends QuartzJobBean {
 
     @Resource
     private RedissonClient redissonClient;
-    @Resource
-    private Cache<String, Object> commonPermanentCache;
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void executeInternal(JobExecutionContext context) {
         Integer second = (Integer) context.getJobDetail().getJobDataMap().get(QuartzJobsDatabaseInitializer.PERIOD_KEY);
         log.info("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s", second);
-        ConcurrentHashSet<String> hashSet = (ConcurrentHashSet<String>) commonPermanentCache.getIfPresent(MonitorPeriodEnum.ofValue(second).getDisplay());
-        Assert.notNull(hashSet, () -> {
-            log.error("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s, 缓存中不存在该队列！", second);
+        RSet<String> rSet = redissonClient.getSet(RedissonConstant.MONITOR_PERIOD_MACHINE_QUEUE_PREFIX + MonitorPeriodEnum.ofValue(second).getDisplay());
+        Assert.isFalse(rSet.isEmpty(), () -> {
+            log.warn("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s, 无刷新任务!", second);
             return null;
         });
 
-        RSet<String> rSet = redissonClient.getSet(RedissonConstant.WAIT_MONITOR_VMWARE_UUID_LIST);
-        rSet.addAll(hashSet);
-        log.info("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s, 刷新数量: {}, 刷新成功！", second, hashSet.size());
+        RSet<String> waitRedisSet = redissonClient.getSet(RedissonConstant.WAIT_MONITOR_VMWARE_UUID_LIST);
+        waitRedisSet.addAll(rSet.readAll());
+        log.info("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s, 刷新数量: {}, 刷新成功！", second, rSet.size());
     }
 }

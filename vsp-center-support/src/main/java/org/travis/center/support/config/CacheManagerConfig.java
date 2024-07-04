@@ -18,17 +18,6 @@ import org.springframework.stereotype.Component;
 @Configuration
 public class CacheManagerConfig {
 
-    /**
-     * Caffeine 永久缓存
-     */
-    @Bean("configPermanentCache")
-    public Cache<Long, String> getConfigPermanentCache() {
-        return Caffeine.newBuilder()
-                .initialCapacity(200)
-                .maximumSize(400)
-                .build();
-    }
-
     @Bean("commonPermanentCache")
     public Cache<String, Object> getCommonPermanentCache() {
         return Caffeine.newBuilder()

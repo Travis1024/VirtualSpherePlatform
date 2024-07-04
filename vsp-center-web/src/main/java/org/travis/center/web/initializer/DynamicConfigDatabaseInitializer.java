@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-@Order(4)
+@Order(3)
 public class DynamicConfigDatabaseInitializer implements CommandLineRunner {
 
     @Resource
@@ -48,7 +48,7 @@ public class DynamicConfigDatabaseInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        log.info("[4] Initializing Dynamic Config Database");
+        log.info("[3] Initializing Dynamic Config Database");
         Set<Long> initIds = DYNAMIC_CONFIG_INFOS.stream().map(DynamicConfigInfo::getId).collect(Collectors.toSet());
 
         if (!initIds.isEmpty()) {
@@ -62,6 +62,6 @@ public class DynamicConfigDatabaseInitializer implements CommandLineRunner {
             });
         }
 
-        log.info("[4] Initializing Dynamic Config Database Completed.");
+        log.info("[3] Initializing Dynamic Config Database Completed.");
     }
 }

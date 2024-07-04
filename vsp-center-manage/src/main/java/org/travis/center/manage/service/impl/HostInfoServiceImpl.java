@@ -2,6 +2,7 @@ package org.travis.center.manage.service.impl;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -101,6 +102,7 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
         // 4.数据库记录存储
         HostInfo hostInfo = new HostInfo();
         BeanUtils.copyProperties(hostInsertDTO, hostInfo);
+        hostInfo.setUuid(IdUtil.fastUUID());
         hostInfo.setId(SnowflakeIdUtil.nextId());
         hostInfo.setArchitecture(hostDetailsBO.getOsArch());
         hostInfo.setCpuNumber(hostDetailsBO.getCpuNum());

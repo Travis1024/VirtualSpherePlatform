@@ -37,6 +37,13 @@ public class HostInfo extends com.baomidou.mybatisplus.extension.activerecord.Mo
     private Long id;
 
     /**
+     * 宿主机 UUID
+     */
+    @TableField(value = "UUID")
+    @Schema(description="宿主机 UUID")
+    private String uuid;
+
+    /**
      * 宿主机名称
      */
     @TableField(value = "\"NAME\"")
@@ -173,6 +180,8 @@ public class HostInfo extends com.baomidou.mybatisplus.extension.activerecord.Mo
     private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "ID";
+
+    public static final String COL_UUID = "UUID";
 
     public static final String COL_NAME = "NAME";
 

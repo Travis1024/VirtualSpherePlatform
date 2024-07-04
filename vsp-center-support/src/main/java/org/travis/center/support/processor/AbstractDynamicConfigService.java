@@ -1,16 +1,17 @@
 package org.travis.center.support.processor;
 
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.github.benmanes.caffeine.cache.Cache;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RMap;
+import org.redisson.api.RedissonClient;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.center.common.entity.support.DynamicConfigInfo;
 import org.travis.center.common.enums.DynamicConfigTypeEnum;
 import org.travis.center.common.enums.IsFixedEnum;
 import org.travis.center.common.mapper.support.DynamicConfigInfoMapper;
 import org.travis.center.support.utils.DynamicConfigLockUtil;
+import org.travis.shared.common.constants.RedissonConstant;
 import org.travis.shared.common.enums.MonitorPeriodEnum;
 import org.travis.shared.common.exceptions.ForbiddenException;
 import org.travis.shared.common.exceptions.NotFoundException;
@@ -31,11 +32,9 @@ import java.util.Optional;
 public abstract class AbstractDynamicConfigService {
 
     @Resource
-    public Cache<Long, String> configPermanentCache;
-    @Resource
-    public Cache<String, Object> commonPermanentCache;
-    @Resource
     public DynamicConfigInfoMapper dynamicConfigInfoMapper;
+    @Resource
+    public RedissonClient redissonClient;
 
     protected DynamicConfigInfo dynamicConfigInfo;
     protected DynamicConfigTypeEnum dynamicConfigTypeEnum;
@@ -73,17 +72,24 @@ public abstract class AbstractDynamicConfigService {
         log.info("执行查询配置：{} - {}", dynamicConfigTypeEnum, configId);
         // 1.获取配置锁
         synchronized (DynamicConfigLockUtil.getConfigLock(configId)) {
-            // 2.查询缓存是否命中
-            String cacheValue = configPermanentCache.getIfPresent(configId);
 
-            if (StrUtil.isBlank(cacheValue)) {
+            // 2.查询缓存是否命中
+            String cacheValue;
+            RMap<Long, DynamicConfigInfo> rMap = redissonClient.getMap(RedissonConstant.DYNAMIC_CONFIG_LIST_KEY);
+            DynamicConfigInfo dynamicConfigInfo = rMap.get(configId);
+
+            if (null == dynamicConfigInfo) {
                 // 3.1.缓存未命中：查询数据库
                 DynamicConfigInfo configInfo = Optional.ofNullable(dynamicConfigInfoMapper.selectById(configId)).orElseThrow(() -> new NotFoundException("未找到相关配置!"));
                 cacheValue = configInfo.getConfigValue();
                 // 3.2.缓存未命中 + 查询成功：缓存数据
-                configPermanentCache.put(configId, cacheValue);
+                rMap.put(configId, configInfo);
+            } else {
+                // 缓存命中
+                cacheValue = dynamicConfigInfo.getConfigValue();
             }
-            // 3.返回数据
+
+            // 4.返回数据
             log.info("执行查询配置成功：{} - {}", configId, cacheValue);
             return cacheValue;
         }

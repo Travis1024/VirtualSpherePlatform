@@ -1,17 +1,16 @@
 package org.travis.center.web.initializer;
 
-import cn.hutool.core.collection.ConcurrentHashSet;
-import com.github.benmanes.caffeine.cache.Cache;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RMap;
+import org.redisson.api.RedissonClient;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.travis.center.common.entity.support.DynamicConfigInfo;
 import org.travis.center.common.mapper.support.DynamicConfigInfoMapper;
-import org.travis.shared.common.enums.MonitorPeriodEnum;
+import org.travis.shared.common.constants.RedissonConstant;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,31 +23,26 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-@Order(5)
+@Order(4)
 public class DynamicConfigCacheInitializer implements CommandLineRunner {
 
     @Resource
     public DynamicConfigInfoMapper dynamicConfigInfoMapper;
     @Resource
-    public Cache<Long, String> configPermanentCache;
-    @Resource
-    public Cache<String, Object> commonPermanentCache;
+    public RedissonClient redissonClient;
 
     @Override
     public void run(String... args) {
-        log.info("[5] Initializing Dynamic Config Cache");
+        log.info("[4] Initializing Dynamic Config Cache");
         // 1.1.查询所有动态配置 ID 列表
         List<Long> configIds = DynamicConfigDatabaseInitializer.DYNAMIC_CONFIG_INFOS.stream().map(DynamicConfigInfo::getId).collect(Collectors.toList());
         if (!configIds.isEmpty()) {
             // 1.2.根据 ID 列表查询动态配置信息
             List<DynamicConfigInfo> dynamicConfigInfos = dynamicConfigInfoMapper.selectBatchIds(configIds);
-            // 1.3.缓存到 Caffeine 本地缓存
-            dynamicConfigInfos.forEach(dynamicConfigInfo -> configPermanentCache.put(dynamicConfigInfo.getId(), dynamicConfigInfo.getConfigValue()));
+            // 1.3.缓存到 redis
+            RMap<Long, DynamicConfigInfo> rMap = redissonClient.getMap(RedissonConstant.DYNAMIC_CONFIG_LIST_KEY);
+            dynamicConfigInfos.forEach(dynamicConfigInfo -> rMap.put(dynamicConfigInfo.getId(), dynamicConfigInfo));
         }
-
-        // 2.初始化监测周期缓存队列
-        Arrays.stream(MonitorPeriodEnum.values()).forEach(monitorPeriodEnum -> commonPermanentCache.put(monitorPeriodEnum.getDisplay(), new ConcurrentHashSet<String>()));
-
-        log.info("[5] Initializing Dynamic Config Cache Completed.");
+        log.info("[4] Initializing Dynamic Config Cache Completed.");
     }
 }

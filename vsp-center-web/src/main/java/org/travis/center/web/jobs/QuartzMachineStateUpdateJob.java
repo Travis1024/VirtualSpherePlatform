@@ -7,6 +7,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.redisson.api.RBucket;
 import org.redisson.api.RMap;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.api.RedissonClient;
@@ -24,6 +25,7 @@ import org.travis.shared.common.constants.SystemConstant;
 import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @ClassName QuartzMachineStateUpdateJob
@@ -39,8 +41,6 @@ public class QuartzMachineStateUpdateJob extends QuartzJobBean {
     @Resource
     public RedissonClient redissonClient;
     @Resource
-    public Cache<String, Object> commonPermanentCache;
-    @Resource
     public HostInfoMapper hostInfoMapper;
     @Resource
     public VmwareInfoMapper vmwareInfoMapper;
@@ -54,7 +54,9 @@ public class QuartzMachineStateUpdateJob extends QuartzJobBean {
 
     private void operateMachineStateUpdateHandle() {
         // 1.程序启动预热期判断
-        Long startTime = ((Long) commonPermanentCache.getIfPresent(SystemConstant.PROGRAM_START_TIME_KEY));
+        RBucket<Long> rBucket = redissonClient.getBucket(SystemConstant.PROGRAM_START_TIME_KEY);
+        Long startTime = Optional.ofNullable(rBucket.get()).orElse(System.currentTimeMillis());
+
         if (ObjectUtil.isNull(startTime)) {
             log.error("[CrontabScheduleService::operateMachineStateUpdateHandle] No start time is found!");
             return;
