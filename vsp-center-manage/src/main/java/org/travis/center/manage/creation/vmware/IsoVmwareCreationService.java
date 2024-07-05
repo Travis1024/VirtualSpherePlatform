@@ -1,4 +1,4 @@
-package org.travis.center.manage.creation;
+package org.travis.center.manage.creation.vmware;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -25,9 +25,9 @@ import java.nio.file.Paths;
  * @Data 2024/5/29
  */
 @Service
-public class IsoCreationService extends AbstractCreationService {
+public class IsoVmwareCreationService extends AbstractVmwareCreationService {
 
-    public IsoCreationService() {
+    public IsoVmwareCreationService() {
         vmwareCreateFormEnum = VmwareCreateFormEnum.ISO;
     }
 

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.travis.center.common.mapper.manage.SnapshotInfoMapper">
+  <resultMap id="BaseResultMap" type="org.travis.center.common.entity.manage.SnapshotInfo">
+    <!--@mbg.generated-->
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="SNAPSHOT_NAME" jdbcType="VARCHAR" property="snapshotName" />
+    <result column="VMWARE_ID" jdbcType="BIGINT" property="vmwareId" />
+    <result column="VMWARE_UUID" jdbcType="VARCHAR" property="vmwareUuid" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="VERSION_TYPE" jdbcType="INTEGER" property="versionType" />
+    <result column="SUB_PATH" jdbcType="VARCHAR" property="subPath" />
+    <result column="AUTO_SNAPSHOT_NAME" jdbcType="VARCHAR" property="autoSnapshotName" />
+    <result column="TARGET_DEV" jdbcType="VARCHAR" property="targetDev" />
+    <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
+    <result column="UPDATER" jdbcType="BIGINT" property="updater" />
+    <result column="CREATOR" jdbcType="BIGINT" property="creator" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    ID, SNAPSHOT_NAME, VMWARE_ID, VMWARE_UUID, DESCRIPTION, VERSION_TYPE, SUB_PATH, AUTO_SNAPSHOT_NAME,
+    TARGET_DEV, IS_DELETED, UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME
+  </sql>
+</mapper>

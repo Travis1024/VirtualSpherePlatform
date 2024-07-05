@@ -1,4 +1,4 @@
-package org.travis.center.manage.creation;
+package org.travis.center.manage.creation.vmware;
 
 import cn.hutool.core.lang.Assert;
 import org.springframework.core.io.ClassPathResource;
@@ -32,9 +32,9 @@ import java.util.Optional;
  * @Data 2024/5/29
  */
 @Service
-public class SystemDiskCreationService extends AbstractCreationService{
+public class SystemDiskVmwareCreationService extends AbstractVmwareCreationService {
 
-    public SystemDiskCreationService() {
+    public SystemDiskVmwareCreationService() {
         vmwareCreateFormEnum = VmwareCreateFormEnum.IMAGE;
     }
 

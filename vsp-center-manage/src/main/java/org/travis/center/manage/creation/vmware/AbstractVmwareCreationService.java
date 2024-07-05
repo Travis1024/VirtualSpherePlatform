@@ -1,4 +1,4 @@
-package org.travis.center.manage.creation;
+package org.travis.center.manage.creation.vmware;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;
@@ -23,6 +23,7 @@ import org.travis.center.common.mapper.manage.*;
 import org.travis.center.common.service.AgentAssistService;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.service.DiskInfoService;
+import org.travis.center.manage.service.impl.DiskInfoServiceImpl;
 import org.travis.center.support.processor.AbstractDynamicConfigHolder;
 import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.domain.R;
@@ -44,7 +45,7 @@ import java.util.Optional;
  * @Data 2024/5/29
  */
 @Slf4j
-public abstract class AbstractCreationService {
+public abstract class AbstractVmwareCreationService {
 
     @Resource
     public HostInfoMapper hostInfoMapper;
@@ -68,10 +69,10 @@ public abstract class AbstractCreationService {
     public VmwareXmlDetailsMapper vmwareXmlDetailsMapper;
     @Lazy
     @Resource
-    public IsoCreationService isoCreationService;
+    public IsoVmwareCreationService isoCreationService;
     @Lazy
     @Resource
-    public SystemDiskCreationService systemDiskCreationService;
+    public SystemDiskVmwareCreationService systemDiskCreationService;
 
     // step 0
     protected VmwareCreateFormEnum vmwareCreateFormEnum;
@@ -94,7 +95,7 @@ public abstract class AbstractCreationService {
 
     @Transactional
     public void build(VmwareInsertDTO vmwareInsertDTO) throws IOException {
-        AbstractCreationService creationService;
+        AbstractVmwareCreationService creationService;
         switch (vmwareCreateFormEnum) {
             case ISO:
                 creationService = isoCreationService;

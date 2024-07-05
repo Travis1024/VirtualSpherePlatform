@@ -336,7 +336,7 @@ server.1=localhost:2888:3888;2181
 
 ## 九、外部快照创建及恢复
 
-- 外部快照创建
+- 外部快照创建 (开机关机状态均可)
 
   ```shell
   # 命令
@@ -344,29 +344,79 @@ server.1=localhost:2888:3888;2181
   # 结果
   Domain snapshot snap-2-manual created
   
-  
   -rw------- 1 qemu qemu 21478375424 Jun 19 01:38 kylin2.qcow2
   -rw------- 1 qemu qemu     1310720 Jun 19 01:40 kylin2.snap-1-manual
   -rw------- 1 qemu qemu     1310720 Jun 19 01:43 kylin2.snap-2-manual
   ```
-
+  
   - [参考-1](https://www.cnblogs.com/sammyliu/p/4468757.html)
   - [参考-2](https://notes.wadeism.net/post/kvm-external-snapshot/)
   - [参考-3](https://unix.stackexchange.com/questions/663372/error-creating-snapshot-operation-not-supported-internal-snapshots-of-a-vm-wit)
   - [参考-4](https://www.cyberciti.biz/faq/how-to-create-create-snapshot-in-linux-kvm-vmdomain/)
 
+- 外部快照合并（虚拟机必须处于`运行`状态）
+
+  **在使用 `virsh blockcommit` 命令合并外部快照时，如果不指定 `--path` 参数，该命令不会自动合并所有磁盘。`--path` 参数是必须的，用于指定要合并的磁盘路径。如果你希望合并多个磁盘，需要分别对每个磁盘执行 `virsh blockcommit` 命令。**
+
+  ```shell
+  # 合并命令
+  virsh blockcommit --domain a5c655a8-589a-4524-b338-fa9b947a334d --path vda --verbose --pivot --active
+  # 结果
+  Block commit: [100 %]
+  Successfully pivoted
+  ```
+
+- 外部快照合并后历史快照删除
+
+  ```shell
+  # 合并后历史快照删除命令
+  virsh snapshot-delete --domain a5c655a8-589a-4524-b338-fa9b947a334d --snapshotname snap-1-manual --children --metadata
+  
+  # 结果
+  Domain snapshot snap-1-manual deleted
+  
+  # 手动删除快照文件
+  TODO
+  ```
+
+- 查询虚拟机磁盘及快照状态
+
+  ```shell
+  # 查询虚拟机当前使用的磁盘
+  virsh domblklist a5c655a8-589a-4524-b338-fa9b947a334d --details
+  
+  # 结果
+   Type   Device   Target   Source
+  ------------------------------------------------------------------------
+   file   disk     vda      /var/lib/libvirt/images/kylin2.snap-4-manual
+   
+   # 查询虚拟机所有快照列表
+  virsh snapshot-list --domain a5c655a8-589a-4524-b338-fa9b947a334d
+   # 结果
+    Name            Creation Time               State
+  ------------------------------------------------------------
+   snap-1-manual   2024-06-19 01:38:00 +0800   disk-snapshot
+   snap-2-manual   2024-06-19 01:40:32 +0800   disk-snapshot
+   snap-3-manual   2024-07-05 09:57:29 +0800   disk-snapshot
+   snap-4-manual   2024-07-05 09:58:38 +0800   shutoff
+  ```
 
 
 
 ## 十、磁盘操作
 
 ```shell
-# command
+# 创建磁盘
+qemu-img create -f qcow2 -o preallocation=off /var/lib/libvirt/images/kylin2-attach-1.qcow2 20G
+# response
+Formatting '/var/lib/libvirt/images/kylin2-attach-1.qcow2', fmt=qcow2 size=21474836480 cluster_size=65536 preallocation=off lazy_refcounts=off refcount_bits=16
+
+# 磁盘卸载
 virsh detach-disk --domain kylin10.0 --target vdb --persistent
 # response
 Disk detached successfully
 
-# command 
+# 磁盘挂载 
 virsh attach-disk --domain kylin10.0 --source /var/lib/libvirt/images/kylin10.0-attach-1.qcow2 --subdriver qcow2 --targetbus virtio --persistent --target vdb
 # response
 Disk attached successfully
@@ -444,8 +494,6 @@ virsh vncdisplay [vm]
   export LANG=en_US.UTF-8
   echo $LANG
   ```
-
-
 
 
 

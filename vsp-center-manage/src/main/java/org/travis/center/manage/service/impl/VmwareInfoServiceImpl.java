@@ -27,8 +27,8 @@ import org.travis.api.client.agent.AgentHostClient;
 import org.travis.api.client.agent.AgentVmwareClient;
 import org.travis.api.pojo.bo.HostResourceInfoBO;
 import org.travis.center.common.entity.manage.HostInfo;
-import org.travis.center.manage.creation.IsoCreationService;
-import org.travis.center.manage.creation.SystemDiskCreationService;
+import org.travis.center.manage.creation.vmware.IsoVmwareCreationService;
+import org.travis.center.manage.creation.vmware.SystemDiskVmwareCreationService;
 import org.travis.shared.common.enums.MsgModuleEnum;
 import org.travis.shared.common.enums.MsgStateEnum;
 import org.travis.center.common.enums.VmwareStateEnum;
@@ -36,7 +36,7 @@ import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.center.common.mapper.manage.VmwareInfoMapper;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import org.travis.center.common.utils.ManageThreadPoolConfig;
-import org.travis.center.manage.creation.AbstractCreationService;
+import org.travis.center.manage.creation.vmware.AbstractVmwareCreationService;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.center.manage.service.VmwareInfoService;
@@ -73,9 +73,9 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     @Resource
     public AgentHostClient agentHostClient;
     @Resource
-    public IsoCreationService isoCreationService;
+    public IsoVmwareCreationService isoCreationService;
     @Resource
-    public SystemDiskCreationService systemDiskCreationService;
+    public SystemDiskVmwareCreationService systemDiskCreationService;
 
     @Override
     public VmwareInfo selectOne(Long id) {
@@ -99,7 +99,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     public void createVmwareInfo(VmwareInsertDTO vmwareInsertDTO) {
         // TODO 添加虚拟机与权限组关联关系
         // 获取虚拟机创建持有者
-        AbstractCreationService creationService;
+        AbstractVmwareCreationService creationService;
         switch (vmwareInsertDTO.getCreateForm()) {
             case ISO:
                 creationService = isoCreationService;
