@@ -1,11 +1,7 @@
 package org.travis.center.web.jobs;
 
-import cn.hutool.core.collection.ConcurrentHashSet;
-import cn.hutool.core.lang.Assert;
-import com.github.benmanes.caffeine.cache.Cache;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.springframework.scheduling.quartz.QuartzJobBean;

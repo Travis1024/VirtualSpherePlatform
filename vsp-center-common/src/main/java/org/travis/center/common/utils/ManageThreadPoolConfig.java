@@ -1,7 +1,6 @@
 package org.travis.center.common.utils;
 
 import cn.hutool.core.thread.ExecutorBuilder;
-import lombok.Getter;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;

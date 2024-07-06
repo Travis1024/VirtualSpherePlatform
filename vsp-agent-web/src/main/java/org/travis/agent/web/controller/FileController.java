@@ -14,9 +14,7 @@ import org.travis.agent.web.pojo.dto.FileMergeDTO;
 import org.travis.shared.common.constants.ImageConstant;
 import org.travis.shared.common.constants.LockConstant;
 import org.travis.shared.common.constants.SystemConstant;
-import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.BadRequestException;
-import org.travis.shared.common.exceptions.CommonException;
 import org.travis.shared.common.exceptions.LockConflictException;
 import org.travis.shared.common.exceptions.ServerErrorException;
 

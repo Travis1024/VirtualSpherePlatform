@@ -6,7 +6,6 @@ import org.travis.center.support.pojo.dto.DynamicConfigUpdateDTO;
 import org.travis.center.support.pojo.vo.MonitorPeriodEnumVO;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
-import org.travis.shared.common.enums.MonitorPeriodEnum;
 
 import java.util.List;
 

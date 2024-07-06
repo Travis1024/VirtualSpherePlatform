@@ -17,7 +17,6 @@ import org.travis.center.common.mapper.auth.UserMapper;
 import org.travis.center.common.entity.auth.User;
 import org.travis.center.auth.service.UserService;
 import org.travis.center.common.service.UserAssistService;
-import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.exceptions.ForbiddenException;
 import org.travis.shared.common.utils.SnowflakeIdUtil;

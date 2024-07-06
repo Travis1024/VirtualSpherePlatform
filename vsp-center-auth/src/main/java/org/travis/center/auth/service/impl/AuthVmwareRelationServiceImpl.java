@@ -13,17 +13,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.center.auth.pojo.dto.AuthVmwareDeleteDTO;
 import org.travis.center.auth.pojo.dto.AuthVmwareInsertDTO;
-import org.travis.center.auth.service.UserService;
 import org.travis.center.common.entity.auth.AuthVmwareRelation;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import org.travis.center.common.mapper.auth.AuthVmwareRelationMapper;
 import org.travis.center.auth.service.AuthVmwareRelationService;
 import org.travis.center.common.mapper.manage.VmwareInfoMapper;
 import org.travis.center.common.service.UserAssistService;
-import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.ForbiddenException;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
-import org.travis.shared.common.utils.UserThreadLocalUtil;
 
 import javax.annotation.Resource;
 

@@ -42,11 +42,15 @@ public enum BizCodeEnum {
 
     HOST_RESOURCE_LACK(960, "宿主机资源不足"),
 
+    PIPELINE_ERROR(990, "责任链纸执行异常"),
+    PIPELINE_CONTEXT_IS_NULL(991, "责任链上下文为空"),
+    PIPELINE_BUSINESS_CODE_IS_NULL(992, "责任链业务状态码为空"),
+    PIPELINE_PROCESS_TEMPLATE_IS_NULL(993, "责任链流程模板为空"),
+    PIPELINE_PROCESS_TEMPLATE_EXECUTOR_ACTION_LIST_IS_NULL(994, "责任链流程模板动作列表为空"),
+
+    UNKNOW(999, "未知错误"),
+
     INTERNAL_MESSAGE(1000, "内部处理消息"),
-    /**
-     * 未知错误
-     */
-    UNKNOW(999, "未知错误")
     ;
 
     /**

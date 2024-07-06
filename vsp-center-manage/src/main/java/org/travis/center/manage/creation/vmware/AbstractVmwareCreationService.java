@@ -23,7 +23,6 @@ import org.travis.center.common.mapper.manage.*;
 import org.travis.center.common.service.AgentAssistService;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
 import org.travis.center.manage.service.DiskInfoService;
-import org.travis.center.manage.service.impl.DiskInfoServiceImpl;
 import org.travis.center.support.processor.AbstractDynamicConfigHolder;
 import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.domain.R;

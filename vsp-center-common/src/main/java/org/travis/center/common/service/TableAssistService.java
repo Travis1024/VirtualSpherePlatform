@@ -3,7 +3,6 @@ package org.travis.center.common.service;
 import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
-import org.travis.center.common.mapper.table.TableMapper;
 import org.travis.shared.common.constants.RedissonConstant;
 
 import javax.annotation.Resource;

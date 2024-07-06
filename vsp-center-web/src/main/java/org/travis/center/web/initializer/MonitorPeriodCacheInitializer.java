@@ -1,10 +1,7 @@
 package org.travis.center.web.initializer;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.github.benmanes.caffeine.cache.Cache;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RSet;
-import org.redisson.api.RedissonClient;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -12,8 +9,6 @@ import org.travis.center.common.entity.support.DynamicConfigInfo;
 import org.travis.center.common.enums.DynamicConfigTypeEnum;
 import org.travis.center.common.mapper.support.DynamicConfigInfoMapper;
 import org.travis.center.support.processor.MonitorPeriodDynamicConfigService;
-import org.travis.shared.common.constants.RedissonConstant;
-import org.travis.shared.common.enums.MonitorPeriodEnum;
 
 import javax.annotation.Resource;
 import java.util.List;

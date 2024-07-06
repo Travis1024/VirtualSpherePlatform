@@ -1,7 +1,6 @@
 package org.travis.center.web.initializer;
 
 import cn.hutool.core.date.DateUtil;
-import com.github.benmanes.caffeine.cache.Cache;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;

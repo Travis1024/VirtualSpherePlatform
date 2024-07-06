@@ -11,8 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.travis.shared.common.constants.DatabaseConstant;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

@@ -1,17 +1,5 @@
 package org.travis.center.web.initializer;
 
-import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RMap;
-import org.redisson.api.RedissonClient;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-import org.travis.shared.common.constants.RedissonConstant;
-
-import javax.annotation.Resource;
-import java.util.*;
-import java.util.stream.Collectors;
-
 /**
  * @ClassName CenterRedisInitializer
  * @Description CenterRedisInitializer

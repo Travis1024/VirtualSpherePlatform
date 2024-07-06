@@ -3,7 +3,6 @@ package org.travis.center.common.config.mybatis;
 import com.baomidou.mybatisplus.extension.plugins.handler.TableNameHandler;
 import org.travis.shared.common.utils.TableMonthThreadLocalUtil;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**

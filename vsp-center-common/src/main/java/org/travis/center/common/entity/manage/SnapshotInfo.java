@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.travis.center.common.enums.SnapshotVersionTypeEnum;
+import org.travis.shared.common.pipeline.ProcessModel;
 
 /**
  * @ClassName SnapshotInfo

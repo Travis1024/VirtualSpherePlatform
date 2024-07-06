@@ -1,7 +1,6 @@
 package org.travis.center.common.interceptor;
 
 import cn.dev33.satoken.stp.StpUtil;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.travis.shared.common.utils.UserThreadLocalUtil;
 

@@ -1,6 +1,5 @@
 package org.travis.center.web.dubbo;
 
-import cn.hutool.core.util.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.redisson.api.RMap;
