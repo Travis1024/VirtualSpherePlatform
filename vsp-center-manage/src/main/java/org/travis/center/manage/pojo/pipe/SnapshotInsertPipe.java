@@ -22,9 +22,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SnapshotInsertPipe implements Serializable, ProcessModel {
-    private List<SnapshotInfo> snapshotInfoList;
+    private List<SnapshotInfo> latestSnapshotInfoList;
+    private List<SnapshotInfo> historySnapshotInfoList;
     private String snapshotName;
     private Long vmwareId;
     private String vmwareUuid;
+    private String hostIp;
     private String description;
 }

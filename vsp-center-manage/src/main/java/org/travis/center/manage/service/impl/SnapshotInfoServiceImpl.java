@@ -13,8 +13,11 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.travis.center.common.entity.manage.HostInfo;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import org.travis.center.common.enums.PipelineBusinessCodeEnum;
+import org.travis.center.common.enums.VmwareStateEnum;
+import org.travis.center.common.mapper.manage.HostInfoMapper;
 import org.travis.center.common.mapper.manage.SnapshotInfoMapper;
 import org.travis.center.common.entity.manage.SnapshotInfo;
 import org.travis.center.common.mapper.manage.VmwareInfoMapper;
@@ -26,6 +29,7 @@ import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
+import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.exceptions.CommonException;
 import org.travis.shared.common.exceptions.LockConflictException;
 import org.travis.shared.common.exceptions.PipelineProcessException;
@@ -48,6 +52,8 @@ public class SnapshotInfoServiceImpl extends ServiceImpl<SnapshotInfoMapper, Sna
     private RedissonClient redissonClient;
     @Resource
     private VmwareInfoMapper vmwareInfoMapper;
+    @Resource
+    private HostInfoMapper hostInfoMapper;
     @Resource(name = "resourceFlowController")
     private FlowController resourceFlowController;
 
@@ -75,23 +81,35 @@ public class SnapshotInfoServiceImpl extends ServiceImpl<SnapshotInfoMapper, Sna
             // 2.查询虚拟机 UUID 信息
             VmwareInfo vmwareInfo = Optional.ofNullable(vmwareInfoMapper.selectOne(
                     Wrappers.<VmwareInfo>lambdaQuery()
-                            .select(VmwareInfo::getId, VmwareInfo::getUuid)
+                            .select(VmwareInfo::getId, VmwareInfo::getUuid, VmwareInfo::getState, VmwareInfo::getHostId)
                             .eq(VmwareInfo::getId, snapshotInsertDTO.getVmwareId())
             )).orElseThrow(() -> new CommonException(BizCodeEnum.NOT_FOUND.getCode(), "虚拟机信息查询失败!"));
 
+            if (!VmwareStateEnum.RUNNING.equals(vmwareInfo.getState())) {
+                throw new BadRequestException(BizCodeEnum.BAD_REQUEST.getCode(), "虚拟机处于非运行状态, 无法创建快照!");
+            }
+
+            // 3.查询虚拟机所在宿主机 IP 地址
+            HostInfo hostInfo = Optional.ofNullable(hostInfoMapper.selectOne(
+                    Wrappers.<HostInfo>lambdaQuery()
+                            .select(HostInfo::getIp)
+                            .eq(HostInfo::getId, vmwareInfo.getHostId())
+            )).orElseThrow(() -> new CommonException(BizCodeEnum.NOT_FOUND.getCode(), "虚拟机所在宿主机IP查询失败!"));
+
             /**
-             * 3.封装责任链上下文数据模型
+             * 4.封装责任链上下文数据模型
              */
             SnapshotInsertPipe snapshotInsertPipe = SnapshotInsertPipe.builder()
                     .snapshotName(snapshotInsertDTO.getSnapshotName())
                     .vmwareId(snapshotInsertDTO.getVmwareId())
                     .vmwareUuid(vmwareInfo.getUuid())
+                    .hostIp(hostInfo.getIp())
                     .description(snapshotInsertDTO.getDescription())
-                    .snapshotInfoList(new ArrayList<>())
+                    .latestSnapshotInfoList(new ArrayList<>())
                     .build();
 
             /**
-             * 4.封装执行的责任链上下文
+             * 5.封装执行的责任链上下文
              */
             ProcessContext<?> processContext = ProcessContext.builder()
                     .businessCode(PipelineBusinessCodeEnum.SNAPSHOT_CREATE.getCode())
@@ -101,9 +119,9 @@ public class SnapshotInfoServiceImpl extends ServiceImpl<SnapshotInfoMapper, Sna
                     .build();
 
             /**
-             * 5.责任链流执行器执行
+             * 6.责任链流执行器执行 (事务)
              */
-            ProcessContext<?> resultContext = resourceFlowController.process(processContext);
+            ProcessContext<?> resultContext = resourceFlowController.processInTransaction(processContext);
             Assert.isTrue(resultContext.checkSuccess(), () -> new PipelineProcessException(resultContext.getResponse().getCode(), resultContext.getResponse().getMsg()));
 
         }catch (CommonException commonException) {

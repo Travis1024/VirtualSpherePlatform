@@ -9,6 +9,7 @@ import org.travis.center.manage.service.SnapshotInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.travis.center.support.aspect.Log;
+import org.travis.center.support.aspect.RequestLock;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
@@ -42,6 +43,7 @@ public class SnapshotInfoController {
         return snapshotInfoService.pageSelectSnapshotList(pageQuery);
     }
 
+    @RequestLock
     @Log(title = "创建虚拟机快照", businessType = BusinessTypeEnum.INSERT)
     @Operation(summary = "创建虚拟机快照")
     @PostMapping("/create")

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.travis.center.support.aspect.RequestLockKey;
 import org.travis.shared.common.pipeline.ProcessModel;
 
 import javax.validation.constraints.NotBlank;
@@ -30,6 +31,7 @@ public class SnapshotInsertDTO implements Serializable {
     /**
      * 所属虚拟机 ID
      */
+    @RequestLockKey
     @Schema(description="所属虚拟机 ID")
     @NotNull(message = "所属虚拟机 ID 不能为空!")
     private Long vmwareId;

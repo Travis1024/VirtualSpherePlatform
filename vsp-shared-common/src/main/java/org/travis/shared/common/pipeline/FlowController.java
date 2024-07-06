@@ -3,6 +3,7 @@ package org.travis.shared.common.pipeline;
 import lombok.Data;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.PipelineProcessException;
@@ -71,6 +72,7 @@ public class FlowController {
      * @params {@link ProcessContext}
      * @return 返回上下文内容
      */
+    @Transactional
     @SuppressWarnings({"rawtypes", "unchecked"})
     public ProcessContext<?> processInTransaction(ProcessContext<?> processContext) {
         // 1.前置检查（责任链上下文、业务代码、执行模版、执行动作列表）
@@ -86,7 +88,8 @@ public class FlowController {
         // 3.遍历流程模版中的每一步业务动作，并执行；每一步执行完成之后判断是否因为异常需要中断执行。
         for (BusinessExecutor businessProcess : processTemplateActionList) {
             try {
-                businessProcess.execute(processContext);
+                BusinessExecutor proxy = applicationContext.getBean(businessProcess.getClass());
+                proxy.execute(processContext);
             } catch (Exception e) {
                 processContext.setNeedBreak(true);
                 processContext.setResponse(R.error(BizCodeEnum.PIPELINE_ERROR.getCode(), e.getMessage()));
