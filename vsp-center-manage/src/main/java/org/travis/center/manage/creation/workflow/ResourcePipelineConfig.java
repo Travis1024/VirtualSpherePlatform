@@ -41,8 +41,11 @@ public class ResourcePipelineConfig {
         ProcessTemplate processTemplate = new ProcessTemplate();
         processTemplate.setProcessTemplateActionList(
                 Arrays.asList(
+                        // 创建前检查
                         snapshotCreatePreCheckAction,
+                        // 历史快照合并
                         snapshotHistoryMergeAction,
+                        // 最新快照创建
                         snapshotLatestCreateAction
                 )
         );
