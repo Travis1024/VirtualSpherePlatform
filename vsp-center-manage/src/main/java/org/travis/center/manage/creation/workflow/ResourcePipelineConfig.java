@@ -36,7 +36,6 @@ public class ResourcePipelineConfig {
      * 2. 历史快照合并
      * 3. 最新快照创建
      */
-    @Bean("snapshotCreateTemplate")
     public ProcessTemplate snapshotCreateTemplate() {
         ProcessTemplate processTemplate = new ProcessTemplate();
         processTemplate.setProcessTemplateActionList(
