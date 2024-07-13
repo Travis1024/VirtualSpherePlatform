@@ -422,8 +422,6 @@ virsh attach-disk --domain kylin10.0 --source /var/lib/libvirt/images/kylin10.0-
 Disk attached successfully
 ```
 
-
-
 - 查看虚拟机磁盘挂载情况
 
   ```shell
@@ -434,7 +432,22 @@ Disk attached successfully
    vda      /var/lib/libvirt/images/kylin2.snap-2-manual
   ```
 
+
+
+
+## 十一、虚拟机迁移
+
+- 导出虚拟机 xml 文件
+
+  ```
   
+  ```
+
+  
+
+
+
+
 
 ## 其他 virsh 命令
 
