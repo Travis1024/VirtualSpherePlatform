@@ -39,7 +39,7 @@ import java.util.Optional;
  * @Data 2024/6/23
  */
 @Service
-public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobMapper, ScheduleJob> implements ScheduleJobService{
+public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobMapper, ScheduleJob> implements ScheduleJobService {
 
     @Resource
     private QuartzService quartzService;
