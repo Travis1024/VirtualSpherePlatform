@@ -37,6 +37,7 @@ public enum SnapshotVersionTypeEnum {
                 return anEnum;
             }
         }
+
         return null;
     }
 }
