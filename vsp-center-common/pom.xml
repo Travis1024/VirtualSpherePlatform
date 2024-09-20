@@ -24,15 +24,15 @@
             <artifactId>vsp-shared-common</artifactId>
             <version>1.0</version>
         </dependency>
-        <!--本地缓存依赖-->
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.travis.shared</groupId>
             <artifactId>vsp-shared-api</artifactId>
             <version>1.0</version>
+        </dependency>
+        <!--本地缓存依赖-->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
         </dependency>
         <!-- 达梦数据库 -->
         <dependency>

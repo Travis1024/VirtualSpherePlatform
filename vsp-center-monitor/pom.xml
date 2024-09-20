@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>org.travis.center</groupId>
-            <artifactId>vsp-center-common</artifactId>
+            <artifactId>vsp-center-support</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>

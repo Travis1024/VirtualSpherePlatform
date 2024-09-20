@@ -25,11 +25,6 @@
         </dependency>
         <dependency>
             <groupId>org.travis.center</groupId>
-            <artifactId>vsp-center-common</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.travis.center</groupId>
             <artifactId>vsp-center-manage</artifactId>
             <version>1.0</version>
         </dependency>
@@ -46,12 +41,6 @@
         <dependency>
             <groupId>org.travis.center</groupId>
             <artifactId>vsp-center-auth</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.travis.center</groupId>
-            <artifactId>vsp-center-support</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>

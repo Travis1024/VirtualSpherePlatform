@@ -6,6 +6,8 @@
 
 ## 模块关系图
 
+<img src="https://travisnotes.oss-cn-shanghai.aliyuncs.com/mdpic/202409201753967.png" alt="image-20240920175354858" style="zoom:68%;" />
+
 <img src="https://travisnotes.oss-cn-shanghai.aliyuncs.com/mdpic/202405082348901.png" alt="image-20240508234854859" style="zoom:50%;" />
 
 ## 功能介绍
