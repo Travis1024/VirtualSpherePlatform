@@ -3,6 +3,8 @@ package org.travis.center.manage.creation.snapshot;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentSnapshotClient;
+import org.travis.center.common.entity.manage.SnapshotInfo;
+import org.travis.center.common.mapper.manage.SnapshotInfoMapper;
 import org.travis.center.manage.pojo.pipe.SnapshotInsertPipe;
 import org.travis.center.manage.service.SnapshotInfoService;
 import org.travis.shared.common.domain.R;
@@ -24,7 +26,7 @@ public class SnapshotLatestCreateAction implements BusinessExecutor<SnapshotInse
     @Resource
     private AgentSnapshotClient agentSnapshotClient;
     @Resource
-    private SnapshotInfoService snapshotInfoService;
+    private SnapshotInfoMapper snapshotInfoMapper;
 
     @Transactional
     @Override
@@ -32,7 +34,7 @@ public class SnapshotLatestCreateAction implements BusinessExecutor<SnapshotInse
         SnapshotInsertPipe dataModel = context.getDataModel();
 
         // 持久化新快照列表到数据库
-        snapshotInfoService.saveBatch(dataModel.getLatestSnapshotInfoList());
+        dataModel.getLatestSnapshotInfoList().forEach(snapshotInfo -> snapshotInfoMapper.insert(snapshotInfo));
 
         // 创建最新快照
         R<Void> createSnapshotR = agentSnapshotClient.createSnapshot(dataModel.getHostIp(), dataModel.getVmwareUuid(), dataModel.getSnapshotName());

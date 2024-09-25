@@ -6,7 +6,7 @@ import org.travis.center.common.entity.manage.SnapshotInfo;
 
 /**
  * @ClassName SnapshotInfoMapper
- * @Description TODO
+ * @Description SnapshotInfoMapper
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/7/5

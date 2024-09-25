@@ -1,11 +1,13 @@
 package org.travis.center.manage.creation.snapshot;
 
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentSnapshotClient;
 import org.travis.api.pojo.dto.SnapshotBasicInfoDTO;
 import org.travis.center.common.entity.manage.SnapshotInfo;
+import org.travis.center.common.mapper.manage.SnapshotInfoMapper;
 import org.travis.center.common.service.AgentAssistService;
 import org.travis.center.manage.pojo.pipe.SnapshotInsertPipe;
 import org.travis.center.manage.service.SnapshotInfoService;
@@ -18,6 +20,7 @@ import org.travis.shared.common.pipeline.ProcessContext;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -31,10 +34,10 @@ import java.util.stream.Collectors;
 public class SnapshotHistoryMergeAction implements BusinessExecutor<SnapshotInsertPipe> {
     @Resource
     private AgentAssistService agentAssistService;
-    @Resource
+    @DubboReference
     private AgentSnapshotClient agentSnapshotClient;
     @Resource
-    private SnapshotInfoService snapshotInfoService;
+    private SnapshotInfoMapper snapshotInfoMapper;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
@@ -64,6 +67,6 @@ public class SnapshotHistoryMergeAction implements BusinessExecutor<SnapshotInse
         }
 
         // 4.删除数据库历史快照数据
-        snapshotInfoService.removeBatchByIds(historySnapshotInfoList.stream().map(SnapshotInfo::getId).collect(Collectors.toList()));
+        snapshotInfoMapper.deleteBatchIds(historySnapshotInfoList.stream().map(SnapshotInfo::getId).filter(Objects::nonNull).collect(Collectors.toList()));
     }
 }
