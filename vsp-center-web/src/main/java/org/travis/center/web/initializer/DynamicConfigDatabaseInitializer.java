@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 /**
  * @ClassName DynamicConfigDatabaseInitializer
- * @Description DynamicConfigDatabaseInitializer
+ * @Description 动态参数数据库初始化器
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/6/2
@@ -33,7 +33,7 @@ public class DynamicConfigDatabaseInitializer implements CommandLineRunner {
     public static final List<DynamicConfigInfo> DYNAMIC_CONFIG_INFOS = new ArrayList<>();
 
     static {
-        // todo 添加待持久化的动态参数配置
+        // TODO 添加待持久化的动态参数配置
         // DynamicConfigInfo monitoringPeriodConfig = DynamicConfigInfo.builder()
         //         .id()
         //         .configName("")

@@ -14,14 +14,14 @@ import javax.annotation.Resource;
 
 /**
  * @ClassName InitProgramStartTime
- * @Description 初始化程序启动时间（本地缓存）
+ * @Description Redis缓存初始化程序启动时间「LOWEST_PRECEDENCE」
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/6/15
  */
 @Slf4j
 @Component
-@Order(Ordered.LOWEST_PRECEDENCE)
+@Order
 public class InitProgramStartTime implements CommandLineRunner {
 
     @Resource

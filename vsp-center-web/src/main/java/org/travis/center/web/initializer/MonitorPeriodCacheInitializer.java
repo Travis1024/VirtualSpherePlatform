@@ -30,6 +30,8 @@ public class MonitorPeriodCacheInitializer implements CommandLineRunner {
     @Resource
     public MonitorPeriodDynamicConfigService monitorPeriodDynamicConfigService;
 
+    // TODO 判断此类的必要性
+
     @Override
     public void run(String... args) throws Exception {
         log.info("[5] MonitorPeriodCacheInitializer start");

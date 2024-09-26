@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 /**
  * @ClassName QuartzJobsDatabaseInitializer
- * @Description QuartzJobsDatabaseInitializer
+ * @Description Quartz 定时任务初始化 + 持久化
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/6/23

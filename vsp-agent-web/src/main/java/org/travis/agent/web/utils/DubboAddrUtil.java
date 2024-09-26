@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class DubboAddrUtil {
-    @Value("${dubbo.provider.host:}")
+    @Value("${dubbo.provider.host}")
     private String dubboProviderHost;
 
     public String getRegisterToDubboIpAddr() {

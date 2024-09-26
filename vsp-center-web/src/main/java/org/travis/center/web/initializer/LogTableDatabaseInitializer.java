@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 /**
  * @ClassName LogTableDatabaseInitializer
- * @Description LogTableDatabaseInitializer
+ * @Description 检查当前日志表是否存在「不存在则创建」 + redis缓存日志表时间范围后缀
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/6/1

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * @ClassName DynamicConfigCacheInitializer
- * @Description DynamicConfigCacheInitializer
+ * @Description 动态配置Redis缓存初始化器
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/6/2
@@ -30,6 +30,8 @@ public class DynamicConfigCacheInitializer implements CommandLineRunner {
     public DynamicConfigInfoMapper dynamicConfigInfoMapper;
     @Resource
     public RedissonClient redissonClient;
+
+    // TODO 判断此类是否弃用，动态配置缓存策略改为-延时双删
 
     @Override
     public void run(String... args) {

@@ -1,16 +1,12 @@
 package org.travis.agent.web.controller;
 
-import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.travis.agent.web.utils.DubboAddrUtil;
 import org.travis.api.client.center.CenterHealthyClient;
-import org.travis.api.client.center.CenterMessageClient;
 import org.travis.shared.common.domain.R;
 
 import javax.annotation.Resource;
@@ -25,6 +21,7 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/dubbo")
 public class DubboController {
+
     @DubboReference
     public CenterHealthyClient centerHealthyClient;
     @Resource

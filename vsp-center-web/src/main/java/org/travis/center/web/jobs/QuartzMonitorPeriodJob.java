@@ -26,6 +26,8 @@ public class QuartzMonitorPeriodJob extends QuartzJobBean {
     @Resource
     private RedissonClient redissonClient;
 
+    // TODO 此类需要改造：兼容不同的短周期定时任务的执行
+
     @Override
     protected void executeInternal(JobExecutionContext context) {
         Integer second = (Integer) context.getJobDetail().getJobDataMap().get(QuartzJobsDatabaseInitializer.PERIOD_KEY);
@@ -36,6 +38,7 @@ public class QuartzMonitorPeriodJob extends QuartzJobBean {
             return;
         }
 
+        // Go端定时任务消费 WAIT_MONITOR_VMWARE_UUID_LIST 中的数据，完成监测数据推送
         RSet<String> waitRedisSet = redissonClient.getSet(RedissonConstant.WAIT_MONITOR_VMWARE_UUID_LIST);
         waitRedisSet.addAll(rSet.readAll());
         log.info("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s, 刷新数量: {}, 刷新成功！", second, rSet.size());
