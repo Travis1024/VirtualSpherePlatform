@@ -10,7 +10,6 @@ import org.travis.center.common.entity.manage.SnapshotInfo;
 import org.travis.center.common.mapper.manage.SnapshotInfoMapper;
 import org.travis.center.common.service.AgentAssistService;
 import org.travis.center.manage.pojo.pipe.SnapshotInsertPipe;
-import org.travis.center.manage.service.SnapshotInfoService;
 import org.travis.shared.common.constants.SnapshotConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
@@ -48,14 +47,19 @@ public class SnapshotHistoryMergeAction implements BusinessExecutor<SnapshotInse
         // 1.获取共享存储路径
         String sharedStoragePath = agentAssistService.getHostSharedStoragePath();
 
-        // 2.封装虚拟机历史快照信息列表
+        // 2.封装虚拟机历史快照信息列表 (创建时间升序)
         List<SnapshotInfo> historySnapshotInfoList = dataModel.getHistorySnapshotInfoList();
+        historySnapshotInfoList.sort((o1, o2) -> (int) (o1.getCreateTime().getTime() - o2.getCreateTime().getTime()));
+
         List<SnapshotBasicInfoDTO> historySnapshotBasicInfoList = new ArrayList<>();
         for (SnapshotInfo snapshotInfo : historySnapshotInfoList) {
             SnapshotBasicInfoDTO snapshotBasicInfoDTO = new SnapshotBasicInfoDTO();
             snapshotBasicInfoDTO.setTargetDev(snapshotInfo.getTargetDev());
             snapshotBasicInfoDTO.setSubPath(snapshotInfo.getSubPath());
             historySnapshotBasicInfoList.add(snapshotBasicInfoDTO);
+        }
+        if (historySnapshotBasicInfoList.isEmpty()) {
+            return;
         }
 
         // 3.执行虚拟机历史版本快照合并
