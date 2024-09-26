@@ -81,9 +81,6 @@ public class MonitorPeriodDynamicConfigService extends AbstractDynamicConfigServ
         // 2.2.向 redis 监测周期队列中添加 「主机UUID」
         RSet<String> rSet = redissonClient.getSet(RedissonConstant.MONITOR_PERIOD_MACHINE_QUEUE_PREFIX + monitorPeriodEnum.getDisplay());
         rSet.add(dynamicConfigInfo.getAffiliationMachineUuid());
-
-        // 3.新增「主机UUID」与「监测周期 display」映射
-        // commonPermanentCache.put(dynamicConfigInfo.getAffiliationMachineUuid(), monitorPeriodEnum.getDisplay());
     }
 
     /**

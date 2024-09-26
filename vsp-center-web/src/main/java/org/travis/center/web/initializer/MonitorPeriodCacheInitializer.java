@@ -15,14 +15,14 @@ import java.util.List;
 
 /**
  * @ClassName MonitorPeriodCacheInitializer
- * @Description MonitorPeriodCacheInitializer
+ * @Description 启动时缓存「动态配置-监控周期」信息
  * @Author travis-wei
  * @Version v1.0
  * @Data 2024/7/3
  */
 @Slf4j
 @Component
-@Order(5)
+@Order(4)
 public class MonitorPeriodCacheInitializer implements CommandLineRunner {
 
     @Resource
@@ -30,15 +30,15 @@ public class MonitorPeriodCacheInitializer implements CommandLineRunner {
     @Resource
     public MonitorPeriodDynamicConfigService monitorPeriodDynamicConfigService;
 
-    // TODO 判断此类的必要性
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("[5] MonitorPeriodCacheInitializer start");
+        log.info("[4] MonitorPeriodCacheInitializer start");
         List<DynamicConfigInfo> dynamicConfigInfoList = dynamicConfigInfoMapper.selectList(
                 Wrappers.<DynamicConfigInfo>lambdaQuery().eq(DynamicConfigInfo::getConfigType, DynamicConfigTypeEnum.MONITOR_PERIOD)
         );
         // 初始化：向 redis 中添加缓存
         dynamicConfigInfoList.forEach(dynamicConfigInfo -> monitorPeriodDynamicConfigService.addMonitorPeriodCache(dynamicConfigInfo));
+        log.info("[4] MonitorPeriodCacheInitializer run finished!");
     }
 }
