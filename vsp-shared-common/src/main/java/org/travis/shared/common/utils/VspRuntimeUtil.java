@@ -31,7 +31,11 @@ public class VspRuntimeUtil {
             return R.error(BizCodeEnum.INTERNAL_MESSAGE.getCode(), e.getMessage());
         }
         int exitValue = process.exitValue();
-        log.warn("exitValue: {}", exitValue);
+        if (exitValue == 0) {
+            log.info("[VspRuntimeUtil.execForStr] ExitValue: {}", exitValue);
+        } else {
+            log.error("[VspRuntimeUtil.execForStr] ExitValue: {}", exitValue);
+        }
         return exitValue == 0
                 ? R.ok(RuntimeUtil.getResult(process, CharsetUtil.CHARSET_UTF_8))
                 : R.error(BizCodeEnum.INTERNAL_MESSAGE.getCode(), RuntimeUtil.getErrorResult(process, CharsetUtil.CHARSET_UTF_8));
@@ -48,7 +52,11 @@ public class VspRuntimeUtil {
             return R.error(0, e.getMessage());
         }
         int exitValue = process.exitValue();
-        log.warn("exitValue: {}", exitValue);
+        if (exitValue == 0) {
+            log.info("[VspRuntimeUtil.execForLines] ExitValue: {}", exitValue);
+        } else {
+            log.error("[VspRuntimeUtil.execForLines] ExitValue: {}", exitValue);
+        }
         return exitValue == 0
                 ? R.ok(RuntimeUtil.getResultLines(process, CharsetUtil.CHARSET_UTF_8))
                 : R.error(BizCodeEnum.INTERNAL_MESSAGE.getCode(), RuntimeUtil.getErrorResult(process, CharsetUtil.CHARSET_UTF_8));

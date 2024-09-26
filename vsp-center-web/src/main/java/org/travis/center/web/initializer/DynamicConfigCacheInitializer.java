@@ -31,7 +31,7 @@
 //     @Resource
 //     public RedissonClient redissonClient;
 //
-//     // TODO 判断此类是否弃用，动态配置缓存策略改为-延时双删
+//     // 判断此类是否弃用，动态配置缓存策略改为-延时双删
 //
 //     @Override
 //     public void run(String... args) {
