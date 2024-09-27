@@ -7,6 +7,7 @@ import org.travis.center.common.entity.manage.SnapshotInfo;
 import org.travis.center.common.mapper.manage.SnapshotInfoMapper;
 import org.travis.center.manage.pojo.pipe.SnapshotInsertPipe;
 import org.travis.center.manage.service.SnapshotInfoService;
+import org.travis.shared.common.constants.SnapshotConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.pipeline.BusinessExecutor;
@@ -37,7 +38,7 @@ public class SnapshotLatestCreateAction implements BusinessExecutor<SnapshotInse
         dataModel.getLatestSnapshotInfoList().forEach(snapshotInfo -> snapshotInfoMapper.insert(snapshotInfo));
 
         // 创建最新快照
-        R<Void> createSnapshotR = agentSnapshotClient.createSnapshot(dataModel.getHostIp(), dataModel.getVmwareUuid(), dataModel.getSnapshotName());
+        R<Void> createSnapshotR = agentSnapshotClient.createSnapshot(dataModel.getHostIp(), dataModel.getVmwareUuid(), SnapshotConstant.AUTO_SNAPSHOT_NAME);
         if (createSnapshotR.checkFail()) {
             context.setResponse(R.error(BizCodeEnum.PIPELINE_ERROR.getCode(), createSnapshotR.getMsg()));
             context.setNeedBreak(true);

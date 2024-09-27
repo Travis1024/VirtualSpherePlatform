@@ -431,6 +431,38 @@ server.1=localhost:2888:3888;2181
    snap-4-manual   2024-07-05 09:58:38 +0800   shutoff
   ```
 
+- 快照恢复（新 -> 旧）
+
+  - 初始虚拟机为运行状态：先关闭虚拟机再执行恢复操作
+  - 需要遍历所有磁盘（系统盘 + 数据盘）
+
+  ```shell
+  # 初始虚拟机为关闭状态
+  
+  # 移除虚拟机的硬盘
+  [root@kylin1 share_disk]# virt-xml 7613011f-d50a-4f91-b66f-1b6d1d8e61dd --remove-device --disk target=vda
+  Domain '虚拟机-2' defined successfully.
+  Changes will take effect after the domain is fully powered off.
+  
+  # 将原有硬盘挂载到虚拟机上
+  [root@kylin1 share_disk]# virt-xml 7613011f-d50a-4f91-b66f-1b6d1d8e61dd --add-device --disk /root/vsp/share/share_disk/Root-Disk-1839223404004249600.qcow2,format=qcow2,bus=virtio
+  Domain '虚拟机-2' defined successfully.
+  Changes will take effect after the domain is fully powered off.
+  
+  # 启动虚拟机才可以生效
+  virsh start xxx
+  
+  # 合并后历史快照删除命令
+  virsh snapshot-delete --domain a5c655a8-589a-4524-b338-fa9b947a334d --snapshotname auto-snapshot --children --metadata
+  # 结果
+  Domain snapshot auto-snapshot deleted
+  
+  # 手动删除快照文件（for）
+  TODO
+  
+  # 删除数据库中快照记录（for）
+  ```
+
 
 
 ## 十、磁盘操作

@@ -68,7 +68,7 @@ public class SnapshotCreatePreCheckAction implements BusinessExecutor<SnapshotIn
             // 3.1.循环初始化 Snapshot 对象
             SnapshotInfo snapshotInfo = new SnapshotInfo();
             snapshotInfo.setId(SnowflakeIdUtil.nextId());
-            snapshotInfo.setSnapshotName(dataModel.getSnapshotName() + StrUtil.DASHED + diskInfo.getTargetDev());
+            snapshotInfo.setSnapshotName(dataModel.getSnapshotName());
             snapshotInfo.setVmwareId(dataModel.getVmwareId());
             snapshotInfo.setVmwareUuid(dataModel.getVmwareUuid());
             snapshotInfo.setDescription(dataModel.getDescription());
