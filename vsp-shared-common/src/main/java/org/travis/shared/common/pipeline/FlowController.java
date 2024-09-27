@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
+import org.travis.shared.common.exceptions.CommonException;
 import org.travis.shared.common.exceptions.PipelineProcessException;
 
 import javax.annotation.Resource;
@@ -72,7 +73,7 @@ public class FlowController {
      * @params {@link ProcessContext}
      * @return 返回上下文内容
      */
-    @Transactional
+    @Transactional(rollbackFor = {PipelineProcessException.class, CommonException.class, Exception.class})
     @SuppressWarnings({"rawtypes", "unchecked"})
     public ProcessContext<?> processInTransaction(ProcessContext<?> processContext) {
         // 1.前置检查（责任链上下文、业务代码、执行模版、执行动作列表）
@@ -95,7 +96,7 @@ public class FlowController {
                 processContext.setResponse(R.error(BizCodeEnum.PIPELINE_ERROR.getCode(), e.getMessage()));
             }
             if (processContext.getNeedBreak()) {
-                break;
+                throw new PipelineProcessException(processContext);
             }
         }
         return processContext;

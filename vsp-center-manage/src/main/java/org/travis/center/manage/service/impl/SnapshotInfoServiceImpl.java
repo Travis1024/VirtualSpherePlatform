@@ -1,6 +1,7 @@
 package org.travis.center.manage.service.impl;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.redisson.api.RLock;
@@ -122,9 +123,12 @@ public class SnapshotInfoServiceImpl extends ServiceImpl<SnapshotInfoMapper, Sna
              * 6.责任链流执行器执行 (事务)
              */
             ProcessContext<?> resultContext = resourceFlowController.processInTransaction(processContext);
-            Assert.isTrue(resultContext.checkSuccess(), () -> new PipelineProcessException(resultContext.getResponse().getCode(), resultContext.getResponse().getMsg()));
+            if (resultContext.checkFail()) {
+                log.error("快照创建失败:" + resultContext.getResponse().getMsg());
+                throw new PipelineProcessException(JSONUtil.toJsonStr(resultContext));
+            }
 
-        }catch (CommonException commonException) {
+        } catch (CommonException commonException) {
             log.error(commonException.getMessage(), commonException);
             throw commonException;
         } catch (Exception e) {
