@@ -1,6 +1,5 @@
 package org.travis.center.manage.service;
 
-import org.springframework.transaction.annotation.Transactional;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
@@ -10,6 +9,7 @@ import org.travis.shared.common.domain.PageResult;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName VmwareInfoService
@@ -50,4 +50,6 @@ public interface VmwareInfoService extends IService<VmwareInfo>{
     void correctVmwareState();
 
     String queryIpAddress(Long vmwareId);
+
+    Map<Long, String> batchQueryIpAddress(List<Long> vmwareIds);
 }

@@ -422,7 +422,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public String queryIpAddress(Long vmwareId) {
-        // 1.校验虚拟机是否存在
+        // 1.校验虚拟机是否存在 + 运行状态
         if (vmwareId == null) {
             throw new BadRequestException("虚拟机ID不能为空!");
         }
@@ -430,6 +430,10 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         if (optional.isEmpty()) {
             throw new NotFoundException("未查询到虚拟机信息!");
         }
+        if (!VmwareStateEnum.RUNNING.equals(optional.get().getState())) {
+            throw new BadRequestException("虚拟机处于非运行状态, 无法查询 IP 地址信息!");
+        }
+
         // 2.查询虚拟机所在的宿主机IP
         HostInfo hostInfo = queryHostInfoByVmwareId(vmwareId);
 
@@ -448,6 +452,12 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         R<String> queryIpR = agentVmwareClient.queryIpAddress(hostInfo.getIp(), optional.get().getUuid(), netRange);
         Assert.isTrue(queryIpR.checkSuccess(), () -> new DubboFunctionException("虚拟机IP地址查询失败:" + queryIpR.getMsg()));
         return queryIpR.getData();
+    }
+
+    @Override
+    public Map<Long, String> batchQueryIpAddress(List<Long> vmwareIds) {
+        // TODO 虚拟机IP地址批量查询
+        throw new UnsupportedOperationException("开发中，暂不支持批量查询!");
     }
 
     /**

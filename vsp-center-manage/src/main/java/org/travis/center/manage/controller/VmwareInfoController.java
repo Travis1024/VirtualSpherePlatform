@@ -17,6 +17,7 @@ import org.travis.shared.common.domain.PageResult;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
 * (VSP.VSP_VMWARE_INFO)表控制层
@@ -141,6 +142,13 @@ public class VmwareInfoController {
     @GetMapping("/ipAddr")
     public String queryIpAddress(@RequestParam("vmwareId") Long vmwareId) {
         return vmwareInfoService.queryIpAddress(vmwareId);
+    }
+
+    @Log(title = "批量获取虚拟机IP地址", businessType = BusinessTypeEnum.QUERY)
+    @Operation(summary = "批量获取虚拟机IP地址")
+    @GetMapping("/batchIpAddr")
+    public Map<Long, String> batchQueryIpAddress(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+        return vmwareInfoService.batchQueryIpAddress(vmwareIds);
     }
 
     @Log(title = "核对虚拟机状态信息")
