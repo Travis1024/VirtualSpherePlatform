@@ -136,6 +136,13 @@ public class VmwareInfoController {
         return vmwareInfoService.queryVncAddress(vmwareId);
     }
 
+    @Log(title = "获取虚拟机IP地址", businessType = BusinessTypeEnum.QUERY)
+    @Operation(summary = "获取虚拟机IP地址")
+    @GetMapping("/ipAddr")
+    public String queryIpAddress(@RequestParam("vmwareId") Long vmwareId) {
+        return vmwareInfoService.queryIpAddress(vmwareId);
+    }
+
     @Log(title = "核对虚拟机状态信息")
     @Operation(summary = "核对虚拟机状态信息")
     @GetMapping("/correct")

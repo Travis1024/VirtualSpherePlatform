@@ -27,6 +27,8 @@ import org.travis.api.client.agent.AgentHostClient;
 import org.travis.api.client.agent.AgentVmwareClient;
 import org.travis.api.pojo.bo.HostResourceInfoBO;
 import org.travis.center.common.entity.manage.HostInfo;
+import org.travis.center.common.entity.manage.NetworkLayerInfo;
+import org.travis.center.common.mapper.manage.NetworkLayerInfoMapper;
 import org.travis.center.manage.creation.vmware.IsoVmwareCreationService;
 import org.travis.center.manage.creation.vmware.SystemDiskVmwareCreationService;
 import org.travis.shared.common.enums.MsgModuleEnum;
@@ -76,6 +78,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     public IsoVmwareCreationService isoCreationService;
     @Resource
     public SystemDiskVmwareCreationService systemDiskCreationService;
+    @Resource
+    public NetworkLayerInfoMapper networkLayerInfoMapper;
 
     @Override
     public VmwareInfo selectOne(Long id) {
@@ -414,6 +418,36 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     @Override
     public void correctVmwareState() {
 
+    }
+
+    @Override
+    public String queryIpAddress(Long vmwareId) {
+        // 1.校验虚拟机是否存在
+        if (vmwareId == null) {
+            throw new BadRequestException("虚拟机ID不能为空!");
+        }
+        Optional<VmwareInfo> optional = Optional.ofNullable(getById(vmwareId));
+        if (optional.isEmpty()) {
+            throw new NotFoundException("未查询到虚拟机信息!");
+        }
+        // 2.查询虚拟机所在的宿主机IP
+        HostInfo hostInfo = queryHostInfoByVmwareId(vmwareId);
+
+        // 3.查询网段
+        Optional<Long> networkLayerIdOptional = Optional.ofNullable(hostInfo.getNetworkLayerId());
+        if (networkLayerIdOptional.isEmpty()) {
+            throw new NotFoundException("未查询到宿主机所属网络ID!");
+        }
+        Optional<NetworkLayerInfo> networkLayerInfoOptional = Optional.ofNullable(networkLayerInfoMapper.selectById(networkLayerIdOptional.get()));
+        if (networkLayerInfoOptional.isEmpty()) {
+            throw new NotFoundException("未查询到宿主机所属网络!");
+        }
+        String netRange = hostInfo.getIp().trim() + StrUtil.C_SLASH + networkLayerInfoOptional.get().getNicMask();
+
+        // 4.Dubbo-查询虚拟机 IP 地址
+        R<String> queryIpR = agentVmwareClient.queryIpAddress(hostInfo.getIp(), optional.get().getUuid(), netRange);
+        Assert.isTrue(queryIpR.checkSuccess(), () -> new DubboFunctionException("虚拟机IP地址查询失败:" + queryIpR.getMsg()));
+        return queryIpR.getData();
     }
 
     /**

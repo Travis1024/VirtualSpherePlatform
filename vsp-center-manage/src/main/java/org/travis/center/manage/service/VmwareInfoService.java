@@ -48,4 +48,6 @@ public interface VmwareInfoService extends IService<VmwareInfo>{
     String queryVncAddress(Long vmwareId);
 
     void correctVmwareState();
+
+    String queryIpAddress(Long vmwareId);
 }

@@ -15,6 +15,9 @@ import org.travis.shared.common.utils.VspRuntimeUtil;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName AgentVmwareClientImpl
@@ -213,6 +216,55 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             log.error("[AgentVmwareClientImpl::queryVncAddress] Agent Vmware Query Vnc Address Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<String> queryIpAddress(String targetAgentIp, String uuid, String netRange) {
+        try {
+            Map<String, String> macIpMap = new HashMap<>();
+
+            // 1.NMAP 扫描网段内 IP 地址
+            R<List<String>> listR = VspRuntimeUtil.execForLines("nmap -sP " + netRange);
+            Assert.isTrue(listR.checkSuccess(), () -> new DubboFunctionException("NMAP-扫描网段失败:" + listR.getMsg()));
+            List<String> data = listR.getData();
+            String mac = null;
+            String ip = null;
+            for (String oneLine : data) {
+                oneLine = oneLine.trim();
+                if (oneLine.startsWith("Nmap scan report for")) {
+                    String[] split = oneLine.split("\\s+");
+                    ip = split[4];
+                } else if (oneLine.startsWith("MAC Address:")) {
+                    String[] split = oneLine.split("\\s+");
+                    mac = split[2];
+                    macIpMap.put(mac, ip);
+                }
+            }
+
+            // 2.查询虚拟机 MAC 地址
+            R<List<String>> macListR = VspRuntimeUtil.execForLines("virsh domiflist " + uuid);
+            Assert.isTrue(macListR.checkSuccess(), () -> new DubboFunctionException("虚拟机 MAC 查询失败:" + macListR.getMsg()));
+            List<String> macList = macListR.getData();
+            String macAddr = null;
+            for (int i = 2; i < macList.size(); i++) {
+                String line = macList.get(i).trim();
+                String[] split = line.split("\\s+");
+                if (macIpMap.containsKey(split[split.length - 1].toUpperCase())) {
+                    macAddr = split[split.length - 1].toUpperCase();
+                    break;
+                }
+            }
+
+            if (StrUtil.isEmpty(macAddr)) {
+                return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), "虚拟机 MAC 地址未找到");
+            }
+
+            return R.ok(macIpMap.get(macAddr));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            log.error("[AgentVmwareClientImpl::queryIpAddress] Agent Vmware Query Ip Address Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
     }

@@ -1,4 +1,5 @@
-## 一、安装 kvm-qemu
+- [ ] ## 一、安装 kvm-qemu
+
 
 ### 1、安装 kvm
 
@@ -192,6 +193,8 @@ chmod +x init_bridge.sh
 
 ## 三、查询虚拟机 IP 地址
 
+### 方法一
+
 `virsh domifaddr kylin-1` 无输出结果
 
 采用以下命令：`virsh domifaddr kylin-1 --source agent`，输出结果如下：
@@ -204,6 +207,33 @@ chmod +x init_bridge.sh
  -          -                    ipv6         ::1/128
  ens3       52:54:00:4c:ee:9c    ipv4         192.168.0.104/24
  -          -                    ipv6         fe80::dcab:7ce6:298e:16b/64
+```
+
+注意：虚拟机需要安装qemu-guest-agent，否则会报错
+
+```shell
+# 报错
+[root@kylin1 ~]# virsh domifaddr --domain 7613011f-d50a-4f91-b66f-1b6d1d8e61dd --source agent
+error: Failed to query for interfaces addresses
+error: 虚拟机代理不响应：QEMU guest agent is not connected
+
+# 虚拟机内部安装
+yum install qemu-guest-agent
+
+# 启动 qemu-guest-agent 服务
+systemctl start qemu-guest-agent.service
+```
+
+[参考-1](https://www.cnblogs.com/wang272/p/some_virsh_domxxx_commands.html)
+
+### 方法二
+
+- 使用 `nmap -sn 192.168.0.0/24`扫描网段内的 IP 地址
+- 查询虚拟机的 mac 地址
+- 根据虚拟机 mac 地址匹配虚拟机 IP 地址
+
+```shell
+
 ```
 
 

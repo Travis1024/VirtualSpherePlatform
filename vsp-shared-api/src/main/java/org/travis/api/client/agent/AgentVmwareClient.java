@@ -31,4 +31,6 @@ public interface AgentVmwareClient {
     R<Void> modifyVmwareVcpu(String targetAgentIp, String vmwareUuid, Integer vcpuNumber, boolean isPowerOff);
 
     R<String> queryVncAddress(String targetAgentIp, String vmwareUuid);
+
+    R<String> queryIpAddress(String targetAgentIp, String uuid, String netRange);
 }
