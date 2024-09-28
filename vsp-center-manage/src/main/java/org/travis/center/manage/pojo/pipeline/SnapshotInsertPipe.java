@@ -1,4 +1,4 @@
-package org.travis.center.manage.pojo.pipe;
+package org.travis.center.manage.pojo.pipeline;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

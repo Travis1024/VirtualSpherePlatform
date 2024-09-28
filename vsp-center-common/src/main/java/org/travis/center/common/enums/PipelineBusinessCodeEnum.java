@@ -19,7 +19,11 @@ public enum PipelineBusinessCodeEnum {
     /**
      * 虚拟机快照创建业务
      */
-    SNAPSHOT_CREATE("snapshot_create", "虚拟机快照创建业务")
+    SNAPSHOT_CREATE("snapshot_create", "虚拟机快照创建业务"),
+    /**
+     * 虚拟机快照恢复业务
+     */
+    SNAPSHOT_RESUME("snapshot_resume", "虚拟机快照恢复业务")
     ;
 
     /**

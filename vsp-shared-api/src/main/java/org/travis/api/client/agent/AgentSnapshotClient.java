@@ -5,6 +5,7 @@ import org.travis.api.pojo.dto.SnapshotBasicInfoDTO;
 import org.travis.shared.common.domain.R;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @ClassName AgentSnapshotClient
@@ -14,7 +15,14 @@ import java.util.List;
  * @Data 2024/7/6
  */
 public interface AgentSnapshotClient {
+
     R<Void> mergeHistorySnapshot(String targetAgentIp, String vmwareUuid, String autoSnapshotName, String sharedStoragePath, List<SnapshotBasicInfoDTO> historySnapshotBasicInfoList);
+
     R<Void> createSnapshot(String targetAgentIp, String vmwareUuid, String autoSnapshotName);
+
     R<List<DiskBasicInfoBO>> queryDiskBasicInfo(String targetAgentIp, String vmwareUuid);
+
+    R<Void> deleteSnapshot(String targetAgentIp, String vmwareUuid, String autoSnapshotName);
+
+    R<Void> deleteSnapshotFile(String targetAgentIp, Set<String> absolutePathSet);
 }

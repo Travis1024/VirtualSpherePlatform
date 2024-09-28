@@ -1,11 +1,14 @@
-package org.travis.center.manage.creation.workflow;
+package org.travis.center.manage.template.workflow;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.travis.center.common.enums.PipelineBusinessCodeEnum;
-import org.travis.center.manage.creation.snapshot.SnapshotCreatePreCheckAction;
-import org.travis.center.manage.creation.snapshot.SnapshotHistoryMergeAction;
-import org.travis.center.manage.creation.snapshot.SnapshotLatestCreateAction;
+import org.travis.center.manage.template.snapshot.build.SnapshotCreatePreCheckAction;
+import org.travis.center.manage.template.snapshot.build.SnapshotHistoryMergeAction;
+import org.travis.center.manage.template.snapshot.build.SnapshotLatestCreateAction;
+import org.travis.center.manage.template.snapshot.resume.SnapshotDiskCleanAction;
+import org.travis.center.manage.template.snapshot.resume.SnapshotDiskMountAction;
+import org.travis.center.manage.template.snapshot.resume.SnapshotDiskUnmountAction;
 import org.travis.shared.common.pipeline.FlowController;
 import org.travis.shared.common.pipeline.ProcessTemplate;
 
@@ -29,6 +32,12 @@ public class ResourcePipelineConfig {
     private SnapshotHistoryMergeAction snapshotHistoryMergeAction;
     @Resource
     private SnapshotLatestCreateAction snapshotLatestCreateAction;
+    @Resource
+    private SnapshotDiskCleanAction snapshotDiskCleanAction;
+    @Resource
+    private SnapshotDiskMountAction snapshotDiskMountAction;
+    @Resource
+    private SnapshotDiskUnmountAction snapshotDiskUnmountAction;
 
     /**
      * 虚拟机快照创建过程
@@ -51,11 +60,35 @@ public class ResourcePipelineConfig {
         return processTemplate;
     }
 
+    /**
+     * 虚拟机快照恢复流程
+     * 1.虚拟机关闭 + 移除虚拟机硬盘
+     * 2.挂载原有虚拟机磁盘 + 重启虚拟机
+     * 3.删除原有快照信息 + 删除快照文件 + 删除数据库快照记录
+     */
+    public ProcessTemplate snapshotResumeTemplate() {
+        ProcessTemplate processTemplate = new ProcessTemplate();
+        processTemplate.setProcessTemplateActionList(
+                Arrays.asList(
+                        // 虚拟机关闭 + 移除虚拟机硬盘
+                        snapshotDiskUnmountAction,
+                        // 挂载原有虚拟机磁盘 + 重启虚拟机
+                        snapshotDiskMountAction,
+                        // 删除原有快照信息 + 删除快照文件 + 删除数据库快照记录
+                        snapshotDiskCleanAction
+                )
+        );
+        return processTemplate;
+    }
+
     @Bean("resourceFlowController")
     public FlowController resourceFlowController() {
         FlowController flowController = new FlowController();
         Map<String, ProcessTemplate> processTemplateMap = new HashMap<>();
+        // 「START」流程构建
         processTemplateMap.put(PipelineBusinessCodeEnum.SNAPSHOT_CREATE.getCode(), snapshotCreateTemplate());
+        processTemplateMap.put(PipelineBusinessCodeEnum.SNAPSHOT_RESUME.getCode(), snapshotResumeTemplate());
+        // 「 END 」流程构建
         flowController.setProcessTemplateMap(processTemplateMap);
         return flowController;
     }

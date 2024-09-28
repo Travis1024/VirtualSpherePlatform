@@ -452,7 +452,7 @@ server.1=localhost:2888:3888;2181
   # 启动虚拟机才可以生效
   virsh start xxx
   
-  # 合并后历史快照删除命令
+  # 删除恢复前的快照信息
   virsh snapshot-delete --domain a5c655a8-589a-4524-b338-fa9b947a334d --snapshotname auto-snapshot --children --metadata
   # 结果
   Domain snapshot auto-snapshot deleted

@@ -3,6 +3,7 @@ package org.travis.agent.web.service.dubbo;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.travis.api.client.agent.AgentVmwareClient;
@@ -18,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @ClassName AgentVmwareClientImpl
@@ -221,7 +223,7 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     }
 
     @Override
-    public R<String> queryIpAddress(String targetAgentIp, String uuid, String netRange) {
+    public R<String> queryIpAddress(String targetAgentIp, String vmwareUuid, String netRange) {
         try {
             Map<String, String> macIpMap = new HashMap<>();
 
@@ -244,7 +246,7 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
             }
 
             // 2.查询虚拟机 MAC 地址
-            R<List<String>> macListR = VspRuntimeUtil.execForLines("virsh domiflist " + uuid);
+            R<List<String>> macListR = VspRuntimeUtil.execForLines("virsh domiflist " + vmwareUuid);
             Assert.isTrue(macListR.checkSuccess(), () -> new DubboFunctionException("虚拟机 MAC 查询失败:" + macListR.getMsg()));
             List<String> macList = macListR.getData();
             String macAddr = null;
@@ -265,6 +267,45 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             log.error("[AgentVmwareClientImpl::queryIpAddress] Agent Vmware Query Ip Address Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<Void> diskUnmount(String targetAgentIp, String vmwareUuid, Set<String> targetDevSet) {
+        try {
+            for (String targetDev : targetDevSet) {
+                log.info("[AgentVmwareClientImpl::diskUnmount] Disk Unmount Target Dev -> {}", targetDev);
+                R<String> execked = VspRuntimeUtil.execForStr("virt-xml " + vmwareUuid + " --remove-device --disk target=" + targetDev);
+                log.info("Disk Unmount Result -> {}", JSONUtil.toJsonStr(execked));
+                Assert.isTrue(execked.checkSuccess(), () -> new DubboFunctionException("虚拟机磁盘卸载失败:" + execked.getMsg()));
+                String result = execked.getData().trim();
+                Assert.isTrue(result.contains("defined successfully"), () -> new DubboFunctionException("虚拟机磁盘卸载失败:" + result));
+            }
+            return R.ok();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            log.error("[AgentVmwareClientImpl::diskUnmount] Disk Unmount Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<Void> diskMount(String targetAgentIp, String vmwareUuid, String hostSharedStoragePath, Set<String> diskPathSet) {
+        try {
+            for (String subPath : diskPathSet) {
+                String absolutePath = hostSharedStoragePath + subPath;
+                log.info("[AgentVmwareClientImpl::diskMount] Disk Mount Path -> {}", absolutePath);
+                R<String> execked = VspRuntimeUtil.execForStr("virt-xml " + vmwareUuid + " --add-device --disk " + absolutePath + ",format=qcow2,bus=virtio");
+                log.info("Disk Mount Result -> {}", JSONUtil.toJsonStr(execked));
+                Assert.isTrue(execked.checkSuccess(), () -> new DubboFunctionException("虚拟机磁盘挂载失败:" + execked.getMsg()));
+                String result = execked.getData().trim();
+                Assert.isTrue(result.contains("defined successfully"), () -> new DubboFunctionException("虚拟机磁盘挂载失败:" + result));
+            }
+            return R.ok();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            log.error("[AgentVmwareClientImpl::diskMount] Disk Mount Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
     }

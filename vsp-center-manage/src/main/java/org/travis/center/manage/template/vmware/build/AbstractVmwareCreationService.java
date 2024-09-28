@@ -1,4 +1,4 @@
-package org.travis.center.manage.creation.vmware;
+package org.travis.center.manage.template.vmware.build;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;

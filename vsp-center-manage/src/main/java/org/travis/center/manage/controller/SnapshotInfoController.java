@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.travis.center.support.aspect.Log;
 import org.travis.center.support.aspect.RequestLock;
+import org.travis.center.support.aspect.RequestLockKey;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
@@ -51,4 +52,11 @@ public class SnapshotInfoController {
         snapshotInfoService.createSnapshotInfo(snapshotInsertDTO);
     }
 
+    @RequestLock
+    @Log(title = "恢复虚拟机快照", businessType = BusinessTypeEnum.UPDATE)
+    @Operation(summary = "恢复虚拟机快照")
+    @GetMapping("/resume")
+    public void resumeSnapshot(@RequestLockKey @RequestParam("vmwareId") Long vmwareId) {
+        snapshotInfoService.resumeSnapshot(vmwareId);
+    }
 }

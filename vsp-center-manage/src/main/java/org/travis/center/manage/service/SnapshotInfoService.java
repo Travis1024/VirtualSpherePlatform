@@ -21,4 +21,6 @@ public interface SnapshotInfoService extends IService<SnapshotInfo>{
     PageResult<SnapshotInfo> pageSelectSnapshotList(PageQuery pageQuery);
 
     void createSnapshotInfo(SnapshotInsertDTO snapshotInsertDTO);
+
+    void resumeSnapshot(Long vmwareId);
 }

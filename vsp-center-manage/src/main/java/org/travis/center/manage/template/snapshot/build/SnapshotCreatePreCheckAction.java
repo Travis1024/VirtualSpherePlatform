@@ -1,4 +1,4 @@
-package org.travis.center.manage.creation.snapshot;
+package org.travis.center.manage.template.snapshot.build;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
@@ -11,7 +11,7 @@ import org.travis.center.common.entity.manage.SnapshotInfo;
 import org.travis.center.common.enums.DiskMountEnum;
 import org.travis.center.common.mapper.manage.DiskInfoMapper;
 import org.travis.center.common.mapper.manage.SnapshotInfoMapper;
-import org.travis.center.manage.pojo.pipe.SnapshotInsertPipe;
+import org.travis.center.manage.pojo.pipeline.SnapshotInsertPipe;
 import org.travis.shared.common.constants.DiskConstant;
 import org.travis.shared.common.constants.SnapshotConstant;
 import org.travis.shared.common.domain.R;

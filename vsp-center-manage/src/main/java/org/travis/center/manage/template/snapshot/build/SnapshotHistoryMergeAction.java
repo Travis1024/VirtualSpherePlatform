@@ -1,4 +1,4 @@
-package org.travis.center.manage.creation.snapshot;
+package org.travis.center.manage.template.snapshot.build;
 
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,7 @@ import org.travis.api.pojo.dto.SnapshotBasicInfoDTO;
 import org.travis.center.common.entity.manage.SnapshotInfo;
 import org.travis.center.common.mapper.manage.SnapshotInfoMapper;
 import org.travis.center.common.service.AgentAssistService;
-import org.travis.center.manage.pojo.pipe.SnapshotInsertPipe;
+import org.travis.center.manage.pojo.pipeline.SnapshotInsertPipe;
 import org.travis.shared.common.constants.SnapshotConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;

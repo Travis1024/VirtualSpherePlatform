@@ -1,4 +1,4 @@
-package org.travis.center.manage.creation.vmware;
+package org.travis.center.manage.template.vmware.build;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;

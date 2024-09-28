@@ -1,12 +1,10 @@
-package org.travis.center.manage.creation.snapshot;
+package org.travis.center.manage.template.snapshot.build;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentSnapshotClient;
-import org.travis.center.common.entity.manage.SnapshotInfo;
 import org.travis.center.common.mapper.manage.SnapshotInfoMapper;
-import org.travis.center.manage.pojo.pipe.SnapshotInsertPipe;
-import org.travis.center.manage.service.SnapshotInfoService;
+import org.travis.center.manage.pojo.pipeline.SnapshotInsertPipe;
 import org.travis.shared.common.constants.SnapshotConstant;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;

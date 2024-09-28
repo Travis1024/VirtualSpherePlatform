@@ -1,4 +1,4 @@
-package org.travis.center.manage.creation.vmware;
+package org.travis.center.manage.template.vmware.build;
 
 import org.travis.center.common.enums.VmwareCreateFormEnum;
 

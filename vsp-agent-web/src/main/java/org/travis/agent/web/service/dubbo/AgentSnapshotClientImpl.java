@@ -3,6 +3,7 @@ package org.travis.agent.web.service.dubbo;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.travis.api.client.agent.AgentSnapshotClient;
@@ -15,6 +16,7 @@ import org.travis.shared.common.utils.VspRuntimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @ClassName AgentSnapshotClientImpl
@@ -97,6 +99,36 @@ public class AgentSnapshotClientImpl implements AgentSnapshotClient {
             return R.ok(diskBasicInfoList);
         } catch (Exception e) {
             log.error("[AgentSnapshotClientImpl::queryDiskBasicInfo] Error -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<Void> deleteSnapshot(String targetAgentIp, String vmwareUuid, String autoSnapshotName) {
+        try {
+            R<String> execked = VspRuntimeUtil.execForStr("virsh snapshot-delete --domain " + vmwareUuid + " --snapshotname " + autoSnapshotName + " --children --metadata");
+            log.info("Delete Snapshot Result -> {}", JSONUtil.toJsonStr(execked));
+            Assert.isTrue(execked.checkSuccess(), () -> new DubboFunctionException("虚拟机快照删除失败:" + execked.getMsg()));
+            String result = execked.getData().trim();
+            Assert.isTrue(result.startsWith("Domain snapshot") && result.endsWith("deleted"), () -> new DubboFunctionException("虚拟机快照删除失败:" + result));
+            return R.ok();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            log.error("[AgentVmwareClientImpl::deleteSnapshot] Delete Snapshot Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<Void> deleteSnapshotFile(String targetAgentIp, Set<String> absolutePathSet) {
+        try {
+            for (String absolutePath : absolutePathSet) {
+                FileUtil.del(absolutePath);
+            }
+            return R.ok();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            log.error("[AgentVmwareClientImpl::deleteSnapshotFile] Delete Snapshot Files Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
     }

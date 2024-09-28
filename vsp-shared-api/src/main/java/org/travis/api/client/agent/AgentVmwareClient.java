@@ -2,6 +2,9 @@ package org.travis.api.client.agent;
 
 import org.travis.shared.common.domain.R;
 
+import java.util.Map;
+import java.util.Set;
+
 /**
  * @ClassName AgentVmwareClient
  * @Description AgentVmwareClient
@@ -32,5 +35,9 @@ public interface AgentVmwareClient {
 
     R<String> queryVncAddress(String targetAgentIp, String vmwareUuid);
 
-    R<String> queryIpAddress(String targetAgentIp, String uuid, String netRange);
+    R<String> queryIpAddress(String targetAgentIp, String vmwareUuid, String netRange);
+
+    R<Void> diskUnmount(String targetAgentIp, String vmwareUuid, Set<String> targetDevSet);
+
+    R<Void> diskMount(String targetAgentIp, String vmwareUuid, String hostSharedStoragePath, Set<String> diskPathSet);
 }
