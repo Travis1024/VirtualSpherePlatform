@@ -507,7 +507,18 @@ Disk attached successfully
 
   
 
+## 十二、麒麟v10 yum依赖包
 
+[yum 依赖包链接](https://update.cs2c.com.cn/NS/V10/V10SP3/os/adv/lic/base/aarch64/Packages/)
+
+
+
+## 十三、虚拟机安装 qemu-guest-agent
+
+1. 传输 qemu-guest-agent-4.1.0-63.p35.ky10.x86_64.rpm 包
+2. `rpm -i qemu-guest-agent-4.1.0-63.p35.ky10.x86_64.rpm`
+3. `systemctl start qemu-guest-agent`
+4. `systemctl enable qemu-guest-agent`（不一定需要，待测试）
 
 
 

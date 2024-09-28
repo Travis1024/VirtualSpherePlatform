@@ -417,7 +417,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public void correctVmwareState() {
-
+        throw new UnsupportedOperationException("开发中，暂不支持该操作!");
     }
 
     @Override
@@ -455,9 +455,18 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     }
 
     @Override
+    public String queryIpAddressByAgent(Long vmwareId) {
+        throw new UnsupportedOperationException("开发中，暂不支持该操作!");
+    }
+
+    @Override
     public Map<Long, String> batchQueryIpAddress(List<Long> vmwareIds) {
-        // TODO 虚拟机IP地址批量查询
-        throw new UnsupportedOperationException("开发中，暂不支持批量查询!");
+        throw new UnsupportedOperationException("开发中，暂不支持该操作!");
+    }
+
+    @Override
+    public Map<Long, String> batchQueryIpAddressByAgent(List<Long> vmwareIds) {
+        throw new UnsupportedOperationException("开发中，暂不支持该操作!");
     }
 
     /**

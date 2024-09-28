@@ -137,18 +137,32 @@ public class VmwareInfoController {
         return vmwareInfoService.queryVncAddress(vmwareId);
     }
 
-    @Log(title = "获取虚拟机IP地址", businessType = BusinessTypeEnum.QUERY)
-    @Operation(summary = "获取虚拟机IP地址")
+    @Log(title = "查询虚拟机IP地址-(扫描)", businessType = BusinessTypeEnum.QUERY)
+    @Operation(summary = "查询虚拟机IP地址-(扫描)")
     @GetMapping("/ipAddr")
     public String queryIpAddress(@RequestParam("vmwareId") Long vmwareId) {
         return vmwareInfoService.queryIpAddress(vmwareId);
     }
 
-    @Log(title = "批量获取虚拟机IP地址", businessType = BusinessTypeEnum.QUERY)
-    @Operation(summary = "批量获取虚拟机IP地址")
+    @Log(title = "查询虚拟机IP地址-(Agent)", businessType = BusinessTypeEnum.QUERY)
+    @Operation(summary = "查询虚拟机IP地址-(Agent)")
+    @GetMapping("/ipAddrAgent")
+    public String queryIpAddressByAgent(@RequestParam("vmwareId") Long vmwareId) {
+        return vmwareInfoService.queryIpAddressByAgent(vmwareId);
+    }
+
+    @Log(title = "批量查询虚拟机IP地址-(扫描)", businessType = BusinessTypeEnum.QUERY)
+    @Operation(summary = "批量查询虚拟机IP地址-(扫描)")
     @GetMapping("/batchIpAddr")
     public Map<Long, String> batchQueryIpAddress(@RequestParam("vmwareIds") List<Long> vmwareIds) {
         return vmwareInfoService.batchQueryIpAddress(vmwareIds);
+    }
+
+    @Log(title = "批量查询虚拟机IP地址-(Agent)", businessType = BusinessTypeEnum.QUERY)
+    @Operation(summary = "批量查询虚拟机IP地址-(Agent)")
+    @GetMapping("/batchIpAddrAgent")
+    public Map<Long, String> batchQueryIpAddressByAgent(@RequestParam("vmwareIds") List<Long> vmwareIds) {
+        return vmwareInfoService.batchQueryIpAddressByAgent(vmwareIds);
     }
 
     @Log(title = "核对虚拟机状态信息")

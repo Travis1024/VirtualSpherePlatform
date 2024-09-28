@@ -51,5 +51,9 @@ public interface VmwareInfoService extends IService<VmwareInfo>{
 
     String queryIpAddress(Long vmwareId);
 
+    String queryIpAddressByAgent(Long vmwareId);
+
     Map<Long, String> batchQueryIpAddress(List<Long> vmwareIds);
+
+    Map<Long, String> batchQueryIpAddressByAgent(List<Long> vmwareIds);
 }
