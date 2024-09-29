@@ -5,6 +5,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.validation.annotation.Validated;
@@ -32,6 +33,7 @@ import java.util.concurrent.TimeUnit;
  * @Version v1.0
  * @Data 2024/5/18
  */
+@Slf4j
 @RestController
 @RequestMapping(SystemConstant.AGENT_REQUEST_PREFIX + SystemConstant.AGENT_FILE_CONTROLLER)
 public class FileController {
@@ -94,6 +96,15 @@ public class FileController {
                 FileUtil.del(fileMergeDTO.getServerFilePath());
                 return new BadRequestException("文件校验码校验失败!");
             });
+
+            // 5.删除临时文件
+            for (String oneFilePath : tempFilePathList) {
+                try {
+                    FileUtil.del(oneFilePath);
+                } catch (Exception e) {
+                    log.error("临时文件删除失败：{} -> {}", oneFilePath, e.getMessage());
+                }
+            }
 
         } catch (InterruptedException | IOException e) {
             throw new ServerErrorException("切片文件合并失败 -> " + e.getMessage());

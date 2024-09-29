@@ -141,6 +141,9 @@ public abstract class AbstractVmwareCreationService {
         hostInfoOptional.orElseThrow(() -> new BadRequestException("宿主机信息查询失败!"));
         HostInfo hostInfo = hostInfoOptional.get();
         this.hostInfo = hostInfo;
+        if (!HostStateEnum.READY.equals(hostInfo.getState())) {
+            throw new BadRequestException("宿主机状态异常，请检查宿主机状态!");
+        }
         this.hostResourceInfoBO = validateHostFitTheBill(hostInfo.getIp(), vmwareInsertDTO.getVcpuCurrent(), vmwareInsertDTO.getMemoryCurrent());
     }
 

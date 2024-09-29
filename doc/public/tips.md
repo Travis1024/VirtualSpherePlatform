@@ -1,11 +1,28 @@
-## 一、安装 kvm-qemu
+## 一、麒麟 v10 安装 kvm-qemu
+
+### 1、检查是否支持虚拟化
+
+Kvm是基于x86虚拟化拓展(Intel VT或者 AMD-V)技术的虚拟机软件,所以查看CPU是否支持VT技术,就可以判断是否支持kvm .有返回结果,如果结果中有vmx(inel)或svm(AMD)字样,就说明CPU的支持的.
+
+```shell
+#cat /proc/cpuinfo | egrep 'vmx|svm'
+flags   : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse
+
+关闭selinux,将/etc/sysconfig/selinux中的selinux=enforcing修改为 selinux=disable
+
+#vi /etc/sysconfig/selinux
+```
 
 
-### 1、安装 kvm
+### 2、安装 kvm
 
 ```shell
 # 安装 kvm
 yum -y install qemu-kvm libvirt virt-install bridge-utils
+# 只下载 rpm 包到指定为止，但是不安装
+yum install --downloadonly --downloaddir=/root/vsp/dependent qemu-kvm libvirt virt-install bridge-utils
+
+
 # 验证模块是否加载成功
 lsmod | grep kvm
 # 启动虚拟化和开机自启动
@@ -14,7 +31,7 @@ systemctl enable libvirtd
 systemctl list-unit-files |grep libvirtd.service
 ```
 
-### 2、修改 libvirtd 权限
+### 3、修改 libvirtd 权限
 
 ```shell
 vim /etc/libvirt/qemu.conf
@@ -24,6 +41,64 @@ group = "root"
 # 重启
 systemctl restart libvirtd.service
 ```
+
+
+
+### 「离线」RPM安装
+
+- 宿主机安装
+
+  ```shell
+  -rw-r--r-- 1 root root   12436  9月 29 15:34 libvirt-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root   13192  9月 29 15:34 libvirt-bash-completion-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root  318264  9月 29 15:34 libvirt-client-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root  274480  9月 29 15:34 libvirt-daemon-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root   14456  9月 29 15:34 libvirt-daemon-config-network-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root   18572  9月 29 15:34 libvirt-daemon-config-nwfilter-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root  142992  9月 29 15:34 libvirt-daemon-driver-interface-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root  167732  9月 29 15:34 libvirt-daemon-driver-network-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root  142516  9月 29 15:34 libvirt-daemon-driver-nodedev-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root  166512  9月 29 15:34 libvirt-daemon-driver-nwfilter-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root  777780  9月 29 15:34 libvirt-daemon-driver-qemu-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root  132484  9月 29 15:34 libvirt-daemon-driver-secret-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root   12300  9月 29 15:34 libvirt-daemon-driver-storage-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root  183268  9月 29 15:34 libvirt-daemon-driver-storage-core-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root   22148  9月 29 15:34 libvirt-daemon-driver-storage-disk-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root   24120  9月 29 15:34 libvirt-daemon-driver-storage-gluster-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root   19184  9月 29 15:34 libvirt-daemon-driver-storage-iscsi-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root   21172  9月 29 15:34 libvirt-daemon-driver-storage-iscsi-direct-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root   23120  9月 29 15:34 libvirt-daemon-driver-storage-logical-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root   17172  9月 29 15:34 libvirt-daemon-driver-storage-mpath-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root   27236  9月 29 15:34 libvirt-daemon-driver-storage-rbd-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root   19288  9月 29 15:34 libvirt-daemon-driver-storage-scsi-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root 4375516  9月 29 15:34 libvirt-libs-6.2.0-16.p26.ky10.x86_64.rpm
+  -rw-r--r-- 1 root root 5771524  9月 29 15:34 qemu-4.1.0-63.p36.ky10.x86_64.rpm
+  
+  
+  # COMMAND
+  rpm -i *.rpm
+  # 启动虚拟化和开机自启动
+  systemctl start libvirtd
+  systemctl enable libvirtd
+  # libvirt权限问题待测试
+  ```
+
+- 虚拟机安装
+
+  ```shell
+  -rw-r--r-- 1 root root  178556  9月 27 14:54 qemu-guest-agent-4.1.0-63.p35.ky10.x86_64.rpm
+  
+  # COMMAND
+  rpm -i qemu-guest-agent-4.1.0-63.p35.ky10.x86_64.rpm
+  systemctl start qemu-guest-agent
+  # 不一定需要执行，待测试
+  systemctl enable qemu-guest-agent
+  ```
+
+  
+
+### 「yum 依赖包下载地址」麒麟 v10
+[yum 依赖包链接](https://update.cs2c.com.cn/NS/V10/V10SP3/os/adv/lic/base/aarch64/Packages/)
 
 
 
@@ -507,22 +582,7 @@ Disk attached successfully
 
   
 
-## 十二、麒麟v10 yum依赖包
-
-[yum 依赖包链接](https://update.cs2c.com.cn/NS/V10/V10SP3/os/adv/lic/base/aarch64/Packages/)
-
-
-
-## 十三、虚拟机安装 qemu-guest-agent
-
-1. 传输 qemu-guest-agent-4.1.0-63.p35.ky10.x86_64.rpm 包
-2. `rpm -i qemu-guest-agent-4.1.0-63.p35.ky10.x86_64.rpm`
-3. `systemctl start qemu-guest-agent`
-4. `systemctl enable qemu-guest-agent`（不一定需要，待测试）
-
-
-
-## 十四、Web noVNC & websockify 连接 Qemu/Kvm虚拟机
+## 十二、noVNC & websockify 连接虚拟机
 
 [通过 noVNC 和 websockify 连接到 Qemu 虚拟机](https://www.cnblogs.com/zqyanywn/p/11417028.html)
 
@@ -530,7 +590,7 @@ Disk attached successfully
 
 
 
-## 其他 virsh 命令
+## 常用 virsh 命令
 
 ```shell
 # 导出 xml 文件
@@ -590,50 +650,4 @@ virsh vncdisplay [vm]
   ```
 
 
-
-
-## 依赖包版本
-
-```shell
-libvirt-daemon-driver-qemu.aarch64                      6.2.0-16.p05.ky10                      @anaconda        
-libvirt-daemon-qemu.aarch64                             6.2.0-16.p05.ky10                      @anaconda        
-qemu.aarch64                                            2:4.1.0-63.p23.ky10                    @ks10-adv-updates
-qemu-block-curl.aarch64                                 2:4.1.0-63.p14.ky10                    @anaconda        
-qemu-block-iscsi.aarch64                                2:4.1.0-63.p14.ky10                    @anaconda        
-qemu-guest-agent.aarch64                                2:4.1.0-63.p14.ky10                    @anaconda        
-qemu-help.noarch                                        2:4.1.0-63.p14.ky10                    @anaconda        
-qemu-img.aarch64                                        2:4.1.0-63.p14.ky10                    @anaconda        
-ipxe-roms-qemu.noarch                                   20190930-5.ky10                        ks10-adv-os      
-libvirt-daemon-driver-qemu.aarch64                      6.2.0-16.p23.ky10                      ks10-adv-updates 
-libvirt-daemon-qemu.aarch64                             6.2.0-16.p23.ky10                      ks10-adv-updates 
-qemu.aarch64                                            2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-block-curl.aarch64                                 2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-block-iscsi.aarch64                                2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-block-rbd.aarch64                                  2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-block-ssh.aarch64                                  2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-guest-agent.aarch64                                2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-help.noarch                                        2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-img.aarch64                                        2:4.1.0-63.p35.ky10                    ks10-adv-updates
-
-
-
-libvirt-daemon-driver-qemu.x86_64                       6.2.0-16.p22.ky10                      @ks10-adv-updates
-qemu.x86_64                                             2:4.1.0-63.p32.ky10                    @ks10-adv-updates
-qemu-block-curl.x86_64                                  2:4.1.0-63.p32.ky10                    @ks10-adv-updates
-qemu-block-iscsi.x86_64                                 2:4.1.0-63.p32.ky10                    @ks10-adv-updates
-qemu-guest-agent.x86_64                                 2:4.1.0-63.p32.ky10                    @ks10-adv-updates
-qemu-img.x86_64                                         2:4.1.0-63.p32.ky10                    @ks10-adv-updates
-ipxe-roms-qemu.noarch                                   20190930-5.ky10                        ks10-adv-os      
-libvirt-daemon-driver-qemu.x86_64                       6.2.0-16.p23.ky10                      ks10-adv-updates 
-libvirt-daemon-qemu.x86_64                              6.2.0-16.p23.ky10                      ks10-adv-updates 
-qemu.x86_64                                             2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-block-curl.x86_64                                  2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-block-iscsi.x86_64                                 2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-block-rbd.x86_64                                   2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-block-ssh.x86_64                                   2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-guest-agent.x86_64                                 2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-help.noarch                                        2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-img.x86_64                                         2:4.1.0-63.p35.ky10                    ks10-adv-updates 
-qemu-seabios.x86_64                                     2:4.1.0-63.p35.ky10                    ks10-adv-updates
-```
 

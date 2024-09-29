@@ -38,13 +38,13 @@ public class BridgedAdapterHandler {
 
     public BridgeInitResultMessageBO execBridgedAdapter(HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO) {
         // 1.查询网卡列表
-        log.debug("1.查询网卡列表");
         List<NetworkIF> networkInterfaces = OshiUtil.getNetworkIFs();
         Map<String, NetworkIF> networkInterfaceMap = networkInterfaces.stream().collect(Collectors.toMap(NetworkIF::getName, one -> one));
+        log.debug("1.查询网卡列表:{}", JSONUtil.toJsonStr(networkInterfaceMap));
 
         // 2.获取目标网卡名称
-        log.debug("2.获取目标网卡名称");
         String targetInterfaceName = NetworkLayerConstant.INTERFACE_BR_NAME_PREFIX + hostBridgedAdapterToAgentDTO.getNicName().trim();
+        log.debug("2.获取目标网卡名称:{}", targetInterfaceName);
 
         /*
            准备桥接网卡
@@ -110,7 +110,7 @@ public class BridgedAdapterHandler {
         log.debug("5.桥接网卡创建成功,继续创建虚拟网络");
         if (isSuccess) {
             try {
-                R<String> stringR = VspRuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_NETWORK_KEY));
+                R<String> stringR = VspRuntimeUtil.execForStr("/bin/sh " + startDependentConfig.getFilePrefix() + File.separator + startDependentConfig.getFiles().get(AgentDependentConstant.INIT_VIRSH_NETWORK_KEY) + StrUtil.SPACE + targetInterfaceName);
                 Assert.isTrue(stringR.checkSuccess(), () -> new DubboFunctionException("虚拟网络创建失败:" + stringR.getMsg()));
                 stateMessage = stateMessage + " | 虚拟网络就绪-创建成功";
             } catch (Exception e) {

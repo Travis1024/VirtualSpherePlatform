@@ -33,6 +33,8 @@ public class StartDependentConfig {
 
     /**
      * 自定义-依赖文件路径前缀处理
+     * eg: /opt/vsp/dependent
+     *
      * @return filePrefix
      */
     public String getFilePrefix() {
