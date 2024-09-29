@@ -1,4 +1,4 @@
-- [ ] ## 一、安装 kvm-qemu
+## 一、安装 kvm-qemu
 
 
 ### 1、安装 kvm
@@ -519,6 +519,14 @@ Disk attached successfully
 2. `rpm -i qemu-guest-agent-4.1.0-63.p35.ky10.x86_64.rpm`
 3. `systemctl start qemu-guest-agent`
 4. `systemctl enable qemu-guest-agent`（不一定需要，待测试）
+
+
+
+## 十四、Web noVNC & websockify 连接 Qemu/Kvm虚拟机
+
+[通过 noVNC 和 websockify 连接到 Qemu 虚拟机](https://www.cnblogs.com/zqyanywn/p/11417028.html)
+
+- 中间服务器上部署websockify代理
 
 
 
