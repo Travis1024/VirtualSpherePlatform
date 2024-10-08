@@ -42,6 +42,20 @@ group = "root"
 systemctl restart libvirtd.service
 ```
 
+### 4、修改 libvirtd 本机默认的 uuid
+
+```shell
+# 随机生成一个本机 uuid
+cat /proc/sys/kernel/random/uuid
+输出：2d0984ae-bedb-4888-bb84-bf3624416ef7
+
+# 将 host_uuid 追加至文件末尾
+echo -n "host_uuid = \"2d0984ae-bedb-4888-bb84-bf3624416ef7\"" >> /etc/libvirt/libvirtd.conf
+
+# 重启
+systemctl restart libvirtd.service
+```
+
 
 
 ### 「离线」RPM安装
@@ -73,7 +87,7 @@ systemctl restart libvirtd.service
   -rw-r--r-- 1 root root   19288  9月 29 15:34 libvirt-daemon-driver-storage-scsi-6.2.0-16.p26.ky10.x86_64.rpm
   -rw-r--r-- 1 root root 4375516  9月 29 15:34 libvirt-libs-6.2.0-16.p26.ky10.x86_64.rpm
   -rw-r--r-- 1 root root 5771524  9月 29 15:34 qemu-4.1.0-63.p36.ky10.x86_64.rpm
-  
+  -rw-r--r-- 1 root root   25088 Oct  8 16:31 sshpass-1.06-8.ky10.x86_64.rpm
   
   # COMMAND
   rpm -i *.rpm
@@ -91,10 +105,11 @@ systemctl restart libvirtd.service
   # COMMAND
   rpm -i qemu-guest-agent-4.1.0-63.p35.ky10.x86_64.rpm
   systemctl start qemu-guest-agent
+  
   # 不一定需要执行，待测试
-  systemctl enable qemu-guest-agent
+  #systemctl enable qemu-guest-agent
   ```
-
+  
   
 
 ### 「yum 依赖包下载地址」麒麟 v10
@@ -324,10 +339,6 @@ systemctl start qemu-guest-agent.service
 - 使用 `nmap -sn 192.168.0.0/24`扫描网段内的 IP 地址
 - 查询虚拟机的 mac 地址
 - 根据虚拟机 mac 地址匹配虚拟机 IP 地址
-
-```shell
-
-```
 
 
 
@@ -589,16 +600,72 @@ Disk attached successfully
 
 
 
-
 ## 十一、虚拟机迁移
 
-- 导出虚拟机 xml 文件
+`virsh migrate` 命令附加选项
 
-  ```
-  
-  ```
+- **--persistent** - 在目标主机物理机器上保留域
+- **--undefinesource** - 取消定义源主机物理机器上的域
+- **--suspend** - 使域暂停在目标主机物理机器上
+- **--unsafe** - 强制迁移进行，忽略所有安全程序
+- **--verbose** - 在发生迁移时显示迁移的进度
+- **--live** - 在线迁移
+- **--offline** - 离线迁移可以与不活动域一起使用，且必须与 **--persistent** 选项一起使用。
+- [命令附加选项-参考链接](https://docs.redhat.com/zh_hans/documentation/red_hat_enterprise_linux/7/html/virtualization_deployment_and_administration_guide/sect-live_kvm_migration_with_virsh-additional_options_for_the_virsh_migrate_command)
 
-  
+```shell
+# 「运行态」热迁移命令-1
+virsh migrate a3b499b0-a417-4f75-8a76-70c0fb24eeb0 qemu+ssh://192.168.0.202/system tcp://192.168.0.202 --live --undefinesource --persistent --verbose --unsafe
+
+# 「运行态」热迁移命令-2（省略密码键入）
+sshpass -p 'xxx' virsh migrate a3b499b0-a417-4f75-8a76-70c0fb24eeb0 qemu+ssh://192.168.0.202/system tcp://192.168.0.202 --live --persistent --verbose --unsafe
+
+# 「非运行态」冷迁移命令-1
+virsh migrate a3b499b0-a417-4f75-8a76-70c0fb24eeb0 qemu+ssh://192.168.0.202/system tcp://192.168.0.202 --offline --undefinesource --persistent --verbose --unsafe
+
+# 「非运行态」冷迁移命令-2（省略密码键入）
+sshpass -p 'xxx' virsh migrate a3b499b0-a417-4f75-8a76-70c0fb24eeb0 qemu+ssh://192.168.0.202/system tcp://192.168.0.202 --offline --undefinesource --persistent --verbose --unsafe
+```
+
+
+
+### 【error: 内部错误：尝试将虚拟机迁移到同一主机】
+
+**报错原因：**
+
+很多厂商都是OEM服务器，导致UUID一样。
+
+使用`virsh sysinfo | grep uuid`或者`dmidecode -s system-uuid`都可以查询服务器的UUID，结果查询到计算节点的UUID都是一样的，所以导致迁移的时候源主机认为目的主机就是自己。
+
+KVM并不是直接查找这个硬件的UUID而是先到`/etc/libvirt/libvirtd.conf`内找`host_uuid`字段，但是此字段是被默认注释掉的，所以找到对方硬件的UUID。
+
+**解决方案：**
+
+先随机生成一个UUID，如下：
+
+```shell
+[root@kylin1 libvirt]# cat /proc/sys/kernel/random/uuid
+2d0984ae-bedb-4888-bb84-bf3624416ef7
+```
+
+然后使用上面的uuid替换`/etc/libvirt/libvirtd.conf`中的`host_uuid`字段
+
+```shell
+#host_uuid = "00000000-0000-0000-0000-000000000000"  改为
+host_uuid = "2d0984ae-bedb-4888-bb84-bf3624416ef7" 
+```
+
+[解决方案参考链接](https://blog.csdn.net/bai0324lin/article/details/85337649)
+
+```shell
+# 将 host_uuid 追加至文件末尾
+echo -n "host_uuid = \"2d0984ae-bedb-4888-bb84-bf3624416ef7\"" >> /etc/libvirt/libvirtd.conf
+
+# 查询文件最后 20 行
+tail -n 20 /etc/libvirt/libvirtd.conf
+```
+
+
 
 ## 十二、noVNC & websockify 连接虚拟机
 
