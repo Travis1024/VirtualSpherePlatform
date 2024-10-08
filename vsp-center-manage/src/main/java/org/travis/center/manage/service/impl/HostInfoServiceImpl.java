@@ -224,13 +224,14 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
             // 1.尝试拿锁 400ms 后停止重试 (自动续期)
             Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("当前宿主机正在操作中, 请稍后重试!"));
 
-            // 2.查询并删除所有虚拟机
-            List<Long> vmwareIds = vmwareInfoService.getBaseMapper().selectList(
+            // 2.校验当前宿主机下是否存在虚拟机
+            List<VmwareInfo> vmwareIds = vmwareInfoService.getBaseMapper().selectList(
                     Wrappers.<VmwareInfo>lambdaQuery().select(VmwareInfo::getId).eq(VmwareInfo::getHostId, hostId)
-            ).stream().map(VmwareInfo::getId).collect(Collectors.toList());
+            );
 
-            List<VmwareErrorVO> vmwareErrorList = vmwareInfoService.deleteVmware(vmwareIds);
-            Assert.isTrue(vmwareErrorList.isEmpty(), () -> new ServerErrorException("从属虚拟机删除失败:" + JSONUtil.toJsonStr(vmwareErrorList)));
+            if (vmwareIds != null && !vmwareIds.isEmpty()) {
+                throw new Exception("当前宿主机下存在虚拟机, 请先删除虚拟机后再删除宿主机!");
+            }
 
             // 3.删除宿主机信息
             removeById(hostId);
