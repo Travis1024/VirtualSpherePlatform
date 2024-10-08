@@ -23,6 +23,16 @@ public class UniversalDynamicConfigService extends AbstractDynamicConfigService 
     }
 
     @Override
+    public void deleteConfigValue(Long configId) {
+        // 1.删除本地缓存
+        RMap<Long, DynamicConfigInfo> rMap = redissonClient.getMap(RedissonConstant.DYNAMIC_CONFIG_LIST_KEY);
+        rMap.remove(configId);
+
+        // 2.删除数据库
+        dynamicConfigInfoMapper.deleteById(configId);
+    }
+
+    @Override
     public void updateConfigValue(String configValue) {
         // 1.更新持久化配置
         dynamicConfigInfoMapper.update(

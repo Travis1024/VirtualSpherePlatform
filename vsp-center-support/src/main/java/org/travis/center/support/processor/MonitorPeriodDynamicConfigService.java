@@ -94,4 +94,23 @@ public class MonitorPeriodDynamicConfigService extends AbstractDynamicConfigServ
         RSet<String> rSet = redissonClient.getSet(RedissonConstant.MONITOR_PERIOD_MACHINE_QUEUE_PREFIX + monitorPeriodEnum.getDisplay());
         return rSet == null ? new ArrayList<>() : new ArrayList<>(rSet);
     }
+
+    @Override
+    public void deleteConfigValue(Long configId) {
+        RMap<Long, DynamicConfigInfo> rMap = redissonClient.getMap(RedissonConstant.DYNAMIC_CONFIG_LIST_KEY);
+        DynamicConfigInfo configInfo = rMap.get(configId);
+
+        // 1.删除动态配置缓存
+        rMap.remove(configId);
+
+        // 2.解析当前动态配置-监测周期
+        MonitorPeriodEnum monitorPeriodEnum = MonitorPeriodEnum.ofValue(Integer.valueOf(configInfo.getConfigValue()));
+
+        // 3.从 redis 监测周期队列中删除虚拟机 UUID
+        RSet<String> rSet = redissonClient.getSet(RedissonConstant.MONITOR_PERIOD_MACHINE_QUEUE_PREFIX + monitorPeriodEnum.getDisplay());
+        rSet.remove(configInfo.getAffiliationMachineUuid());
+
+        // 4.删除数据库配置
+        dynamicConfigInfoMapper.deleteById(configId);
+    }
 }

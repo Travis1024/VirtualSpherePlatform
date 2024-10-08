@@ -5,6 +5,8 @@ import org.travis.api.pojo.bo.HostResourceInfoBO;
 import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
 import org.travis.shared.common.domain.R;
 
+import java.util.List;
+
 /**
  * @ClassName AgentHostClient
  * @Description AgentHostClient
@@ -16,4 +18,5 @@ public interface AgentHostClient {
     R<HostDetailsBO> queryHostInfoDetails(String targetAgentIp);
     void execBridgedAdapter(String targetAgentIp, HostBridgedAdapterToAgentDTO hostBridgedAdapterToAgentDTO);
     R<HostResourceInfoBO> queryHostResourceInfo(String targetAgentIp);
+    R<Void> deleteFiles(String targetAgentIp, List<String> filePaths);
 }

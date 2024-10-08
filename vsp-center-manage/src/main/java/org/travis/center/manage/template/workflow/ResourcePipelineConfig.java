@@ -9,6 +9,7 @@ import org.travis.center.manage.template.snapshot.build.SnapshotLatestCreateActi
 import org.travis.center.manage.template.snapshot.resume.SnapshotDiskCleanAction;
 import org.travis.center.manage.template.snapshot.resume.SnapshotDiskMountAction;
 import org.travis.center.manage.template.snapshot.resume.SnapshotDiskUnmountAction;
+import org.travis.center.manage.template.vmware.destroy.*;
 import org.travis.shared.common.pipeline.FlowController;
 import org.travis.shared.common.pipeline.ProcessTemplate;
 
@@ -38,6 +39,18 @@ public class ResourcePipelineConfig {
     private SnapshotDiskMountAction snapshotDiskMountAction;
     @Resource
     private SnapshotDiskUnmountAction snapshotDiskUnmountAction;
+    @Resource
+    private VmCancelDefineAction vmCancelDefineAction;
+    @Resource
+    private VmConfigCleanAction vmConfigCleanAction;
+    @Resource
+    private VmDeleteDiskAction vmDeleteDiskAction;
+    @Resource
+    private VmDeleteRecordAction vmDeleteRecordAction;
+    @Resource
+    private VmDeleteSnapshotAction vmDeleteSnapshotAction;
+    @Resource
+    private VmStatusCheckAction vmStatusCheckAction;
 
     /**
      * 虚拟机快照创建过程
@@ -81,6 +94,37 @@ public class ResourcePipelineConfig {
         return processTemplate;
     }
 
+    /**
+     * 虚拟机删除流程
+     * 1.判断虚拟机状态（强制关闭）
+     * 2.删除监测任务 + 删除动态配置记录
+     * 3.取消虚拟机定义
+     * 4.删除快照文件 + 数据库
+     * 5.删除磁盘文件 + 数据库
+     * 6.删除虚拟机数据库记录（vm + vmXml + vm权限关联）
+     */
+    public ProcessTemplate vmwareDestroyTemplate() {
+        ProcessTemplate processTemplate = new ProcessTemplate();
+        processTemplate.setProcessTemplateActionList(
+                Arrays.asList(
+                        // 判断虚拟机状态（强制关闭）
+                        vmStatusCheckAction,
+                        // 删除监测任务 + 删除动态配置记录
+                        vmConfigCleanAction,
+                        // 取消虚拟机定义
+                        vmCancelDefineAction,
+                        // 删除快照文件 + 数据库
+                        vmDeleteSnapshotAction,
+                        // 删除磁盘文件 + 数据库
+                        vmDeleteDiskAction,
+                        // 删除虚拟机数据库记录（vm + vmXml + vm权限关联）
+                        vmDeleteRecordAction
+                )
+        );
+        return processTemplate;
+    }
+
+
     @Bean("resourceFlowController")
     public FlowController resourceFlowController() {
         FlowController flowController = new FlowController();
@@ -88,6 +132,7 @@ public class ResourcePipelineConfig {
         // 「START」流程构建
         processTemplateMap.put(PipelineBusinessCodeEnum.SNAPSHOT_CREATE.getCode(), snapshotCreateTemplate());
         processTemplateMap.put(PipelineBusinessCodeEnum.SNAPSHOT_RESUME.getCode(), snapshotResumeTemplate());
+        processTemplateMap.put(PipelineBusinessCodeEnum.VMWARE_DESTROY.getCode(), vmwareDestroyTemplate());
         // 「 END 」流程构建
         flowController.setProcessTemplateMap(processTemplateMap);
         return flowController;

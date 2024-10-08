@@ -102,6 +102,24 @@ systemctl restart libvirtd.service
 
 
 
+### 「JDK11」宿主机配置 JDK11
+
+```shell
+# amd64 环境
+yum install java-11-openjdk.x86_64 java-11-openjdk-devel.x86_64
+
+# 环境变量配置
+vim /etc/profile
+
+export JAVA_HOME=/usr/lib/jvm/jre-11-openjdk
+export PATH=$JAVA_HOME/bin:$PATH
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+
+source /etc/profile
+```
+
+
+
 ## 二、创建桥接网络流程
 
 ### 1、执行 shell 脚本

@@ -1,5 +1,7 @@
 package org.travis.agent.web.service.dubbo;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.system.oshi.OshiUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -126,6 +128,30 @@ public class AgentHostClientImpl implements AgentHostClient {
 
         } catch (Exception e) {
             log.error("[AgentHostClientImpl::queryHostResourceInfo] Query Host Resource Info Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<Void> deleteFiles(String targetAgentIp, List<String> filePaths) {
+        try {
+            log.info("[AgentHostClientImpl::deleteFile] Delete File Number: {}", filePaths.size());
+            for (String filePath : filePaths) {
+                if (StrUtil.isNotEmpty(filePath)) {
+                    try {
+                        FileUtil.del(filePath);
+                    } catch (Exception e) {
+                        log.warn("{} error, continue!", filePath);
+                        continue;
+                    }
+                    log.info("[AgentHostClientImpl::deleteFile] '{}' Delete Success!", filePath);
+                } else {
+                    log.warn("[AgentHostClientImpl::deleteFile] File Path Is Empty!");
+                }
+            }
+            return R.ok();
+        } catch (Exception e) {
+            log.error("[AgentHostClientImpl::deleteFile] Delete File Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
     }

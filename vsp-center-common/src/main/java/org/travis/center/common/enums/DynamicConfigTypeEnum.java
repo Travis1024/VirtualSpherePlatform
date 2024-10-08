@@ -15,15 +15,15 @@ import lombok.Getter;
  */
 @Getter
 public enum DynamicConfigTypeEnum {
-
-    OTHER(0, "其他配置"),
-    MONITOR_PERIOD(1, "监测周期配置"),
-    THRESHOLD(2, "阈值配置"),
-
     /**
-     * 不要使用（对齐配置项）
+     * 新增类型：关注链路处理
+     * {@see org.travis.center.support.processor.AbstractDynamicConfigService#getMatchedService}
      */
-    UNIVERSAL(999, "通用配置")
+
+    MONITOR_PERIOD(1, "监测周期配置"),
+    UNIVERSAL(900, "通用配置"),
+    UNIVERSAL_THRESHOLDS_CEILING(901, "通用配置-阈值上限"),
+    UNIVERSAL_THRESHOLDS_FLOOR(902, "通用配置-阈值下限"),
     ;
 
     @EnumValue
@@ -34,6 +34,13 @@ public enum DynamicConfigTypeEnum {
     DynamicConfigTypeEnum(Integer value, String display) {
         this.value = value;
         this.display = display;
+    }
+
+    public static boolean isUniversal(DynamicConfigTypeEnum dynamicConfigTypeEnum) {
+        if (dynamicConfigTypeEnum == null) {
+            return false;
+        }
+        return dynamicConfigTypeEnum.getValue() >= UNIVERSAL.getValue();
     }
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)

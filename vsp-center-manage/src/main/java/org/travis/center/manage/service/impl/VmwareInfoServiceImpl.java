@@ -3,6 +3,7 @@ package org.travis.center.manage.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.*;
@@ -28,7 +29,9 @@ import org.travis.api.client.agent.AgentVmwareClient;
 import org.travis.api.pojo.bo.HostResourceInfoBO;
 import org.travis.center.common.entity.manage.HostInfo;
 import org.travis.center.common.entity.manage.NetworkLayerInfo;
+import org.travis.center.common.enums.PipelineBusinessCodeEnum;
 import org.travis.center.common.mapper.manage.NetworkLayerInfoMapper;
+import org.travis.center.manage.pojo.pipeline.VmwareDestroyPipe;
 import org.travis.center.manage.template.vmware.build.IsoVmwareCreationService;
 import org.travis.center.manage.template.vmware.build.SystemDiskVmwareCreationService;
 import org.travis.shared.common.enums.MsgModuleEnum;
@@ -50,6 +53,8 @@ import org.travis.shared.common.domain.PageResult;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.*;
+import org.travis.shared.common.pipeline.FlowController;
+import org.travis.shared.common.pipeline.ProcessContext;
 
 import javax.annotation.Resource;
 
@@ -80,6 +85,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     public SystemDiskVmwareCreationService systemDiskCreationService;
     @Resource
     public NetworkLayerInfoMapper networkLayerInfoMapper;
+    @Resource(name = "resourceFlowController")
+    public FlowController resourceFlowController;
 
     @Override
     public VmwareInfo selectOne(Long id) {
@@ -304,10 +311,30 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             // 1.根据虚拟机 ID 加锁, 尝试拿锁
             Assert.isTrue(rLock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException(BizCodeEnum.LOCKED.getCode(), "虚拟机正在操作中，请稍后重试!"));
 
-            // 2.TODO 删除相关磁盘、快照等信息
+            // 2.查询虚拟机信息 + 宿主机信息
+            VmwareInfo vmwareInfo = Optional.ofNullable(getById(vmwareId)).orElseThrow(() -> new NotFoundException("未找到虚拟机信息!"));
+            HostInfo hostInfo = Optional.ofNullable(hostInfoMapper.selectOne(Wrappers.<HostInfo>lambdaQuery().eq(HostInfo::getId, vmwareInfo.getHostId()))).orElseThrow(() -> new NotFoundException("未找到宿主机信息!"));
 
-            // 3.数据库删除
-            removeById(vmwareId);
+            // 3.封装责任链上下文数据模型
+            VmwareDestroyPipe vmwareDestroyPipe = VmwareDestroyPipe.builder()
+                    .vmwareId(vmwareId)
+                    .vmwareInfo(vmwareInfo)
+                    .hostInfo(hostInfo)
+                    .build();
+
+            ProcessContext<?> processContext = ProcessContext.builder()
+                    .businessCode(PipelineBusinessCodeEnum.VMWARE_DESTROY.getCode())
+                    .dataModel(vmwareDestroyPipe)
+                    .needBreak(false)
+                    .response(R.ok())
+                    .build();
+
+            // 4.责任链流执行器执行（事务）
+            ProcessContext<?> resultContext = resourceFlowController.processInTransaction(processContext);
+            if (resultContext.checkFail()) {
+                log.error("虚拟机删除失败:{}", resultContext.getResponse().getMsg());
+                throw new PipelineProcessException(JSONUtil.toJsonStr(resultContext));
+            }
             return null;
         } catch (Exception e) {
             log.error(e.getMessage(), e);

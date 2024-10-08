@@ -23,7 +23,11 @@ public enum PipelineBusinessCodeEnum {
     /**
      * 虚拟机快照恢复业务
      */
-    SNAPSHOT_RESUME("snapshot_resume", "虚拟机快照恢复业务")
+    SNAPSHOT_RESUME("snapshot_resume", "虚拟机快照恢复业务"),
+    /**
+     * 虚拟机删除业务
+     */
+    VMWARE_DESTROY("vmware_destroy", "虚拟机删除业务")
     ;
 
     /**

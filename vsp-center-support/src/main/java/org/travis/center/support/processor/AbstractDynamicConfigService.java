@@ -68,6 +68,16 @@ public abstract class AbstractDynamicConfigService {
         log.info("执行更新配置成功：{} - {}", dynamicConfigTypeEnum, dynamicConfigInfo.getId());
     }
 
+    public void executeDeleteValue(Long configId) {
+        log.info("执行删除配置：{} - {}", dynamicConfigTypeEnum, configId);
+        // 1.获取配置锁
+        synchronized (DynamicConfigLockUtil.getConfigLock(configId)) {
+            // 2.执行删除操作
+            deleteConfigValue(configId);
+        }
+        log.info("执行删除配置成功：{} - {}", dynamicConfigTypeEnum, configId);
+    }
+
     public String executeQueryValue(Long configId) {
         log.info("执行查询配置：{} - {}", dynamicConfigTypeEnum, configId);
         // 1.获取配置锁
@@ -110,6 +120,18 @@ public abstract class AbstractDynamicConfigService {
     public List<String> cacheQueryUuidsByPeriod(MonitorPeriodEnum monitorPeriodEnum) {
         return null;
     }
+
+    public static AbstractDynamicConfigService getMatchedService(DynamicConfigTypeEnum dynamicConfigTypeEnum) {
+        if (DynamicConfigTypeEnum.MONITOR_PERIOD.equals(dynamicConfigTypeEnum)) {
+            return AbstractDynamicConfigHolder.getDynamicConfigHandler(DynamicConfigTypeEnum.MONITOR_PERIOD);
+        } else if (DynamicConfigTypeEnum.isUniversal(dynamicConfigTypeEnum)) {
+            return AbstractDynamicConfigHolder.getDynamicConfigHandler(DynamicConfigTypeEnum.UNIVERSAL);
+        } else {
+            return null;
+        }
+    }
+
+    public abstract void deleteConfigValue(Long configId);
 
     public abstract void updateConfigValue(String configValue);
 
