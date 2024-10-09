@@ -553,7 +553,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
             // 4.异步向 Dubbo-Agent 发送信息 (执行虚拟机热迁移命令)
             CompletableFuture.runAsync(() -> {
-                RLock innerLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + currentHostInfo.getId());
+                RLock innerLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareMigrateDTO.getVmwareId());
                 try {
                     // 4.1.宿主机加锁 (最长等待 5s)
                     Assert.isTrue(innerLock.tryLock(5, TimeUnit.SECONDS), () -> new LockConflictException("「内部锁获取失败」虚拟机正在操作中，请稍后重试!"));
@@ -638,6 +638,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             );
 
             return "虚拟机迁移中, 请关注全局信息!";
+        } catch (CommonException commonException) {
+            throw commonException;
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -675,7 +677,7 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
             // 4.异步向 Dubbo-Agent 发送信息 (执行虚拟机冷迁移命令)
             CompletableFuture.runAsync(() -> {
-                RLock innerLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + currentHostInfo.getId());
+                RLock innerLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareMigrateDTO.getVmwareId());
                 try {
                     // 4.1.宿主机加锁 (最长等待 5s)
                     Assert.isTrue(innerLock.tryLock(5, TimeUnit.SECONDS), () -> new LockConflictException("「内部锁获取失败」虚拟机正在操作中，请稍后重试!"));
@@ -760,6 +762,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             );
 
             return "虚拟机迁移中, 请关注全局信息!";
+        } catch (CommonException commonException) {
+            throw commonException;
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

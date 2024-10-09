@@ -343,7 +343,7 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     @Override
     public R<Void> liveMigrate(String targetAgentIp, String targetHostIp, String targetHostLoginPassword, String vmwareUuid) {
         try {
-            String command = StrUtil.format("sshpass -p '{}' virsh migrate {} qemu+ssh://{}/system tcp://{} --live --persistent --verbose --unsafe", targetHostLoginPassword, vmwareUuid, targetHostIp, targetHostIp);
+            String command = StrUtil.format("sudo sshpass -p '{}' virsh migrate {} qemu+ssh://{}/system tcp://{} --live --persistent --verbose --unsafe", targetHostLoginPassword, vmwareUuid, targetHostIp, targetHostIp);
             log.info("[AgentVmwareClientImpl::liveMigrate] Live Migrate Command -> {}", command);
             return processRealTimeMigrateInfo(vmwareUuid, command);
         } catch (Exception e) {
@@ -356,7 +356,7 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
     @Override
     public R<Void> offlineMigrate(String targetAgentIp, String targetHostIp, String targetHostLoginPassword, String vmwareUuid) {
         try {
-            String command = StrUtil.format("sshpass -p '{}' virsh migrate {} qemu+ssh://{}/system tcp://{} --offline --undefinesource --persistent --verbose --unsafe", targetHostLoginPassword, vmwareUuid, targetHostIp, targetHostIp);
+            String command = StrUtil.format("sudo sshpass -p '{}' virsh migrate {} qemu+ssh://{}/system tcp://{} --offline --undefinesource --persistent --verbose --unsafe", targetHostLoginPassword, vmwareUuid, targetHostIp, targetHostIp);
             log.info("[AgentVmwareClientImpl::offlineMigrate] Offline Migrate Command -> {}", command);
             return processRealTimeMigrateInfo(vmwareUuid, command);
         } catch (Exception e) {
