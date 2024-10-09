@@ -40,4 +40,8 @@ public interface AgentVmwareClient {
     R<Void> diskUnmount(String targetAgentIp, String vmwareUuid, Set<String> targetDevSet);
 
     R<Void> diskMount(String targetAgentIp, String vmwareUuid, String hostSharedStoragePath, Set<String> diskPathSet);
+
+    R<Void> liveMigrate(String targetAgentIp, String targetHostIp, String targetHostLoginPassword, String vmwareUuid);
+
+    R<Void> offlineMigrate(String targetAgentIp, String targetHostIp, String targetHostLoginPassword, String vmwareUuid);
 }

@@ -27,10 +27,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.travis.api.client.agent.AgentHostClient;
 import org.travis.api.client.agent.AgentVmwareClient;
 import org.travis.api.pojo.bo.HostResourceInfoBO;
+import org.travis.api.pojo.dto.HostBridgedAdapterToAgentDTO;
 import org.travis.center.common.entity.manage.HostInfo;
 import org.travis.center.common.entity.manage.NetworkLayerInfo;
+import org.travis.center.common.entity.support.GlobalMessage;
+import org.travis.center.common.enums.HostStateEnum;
 import org.travis.center.common.enums.PipelineBusinessCodeEnum;
 import org.travis.center.common.mapper.manage.NetworkLayerInfoMapper;
+import org.travis.center.manage.pojo.dto.VmwareMigrateDTO;
 import org.travis.center.manage.pojo.pipeline.VmwareDestroyPipe;
 import org.travis.center.manage.template.vmware.build.IsoVmwareCreationService;
 import org.travis.center.manage.template.vmware.build.SystemDiskVmwareCreationService;
@@ -431,15 +435,27 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public String queryVncAddress(Long vmwareId) {
-        // 1.查询虚拟机信息, 并验证虚拟机当前状态
-        VmwareInfo vmwareInfo = getById(vmwareId);
-        Assert.isTrue(VmwareStateEnum.RUNNING.equals(vmwareInfo.getState()), () -> new BadRequestException("虚拟机处于非运行状态, 无法查询 VNC 地址信息!"));
-        // 2.查询虚拟机所在的宿主机IP
-        HostInfo hostInfo = queryHostInfoByVmwareId(vmwareId);
-        // 3.Dubbo-发送查询 VNC 请求信息
-        R<String> queryVncR = agentVmwareClient.queryVncAddress(hostInfo.getIp(), vmwareInfo.getUuid());
-        Assert.isTrue(queryVncR.checkSuccess(), () -> new DubboFunctionException("VNC远程查询失败:" + queryVncR.getMsg()));
-        return queryVncR.getData();
+        RLock lock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareId);
+        try {
+            // 0.根据虚拟机 ID 加锁, 尝试拿锁
+            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("虚拟机正在操作中，请稍后重试!"));
+
+            // 1.查询虚拟机信息, 并验证虚拟机当前状态
+            VmwareInfo vmwareInfo = getById(vmwareId);
+            Assert.isTrue(VmwareStateEnum.RUNNING.equals(vmwareInfo.getState()), () -> new BadRequestException("虚拟机处于非运行状态, 无法查询 VNC 地址信息!"));
+            // 2.查询虚拟机所在的宿主机IP
+            HostInfo hostInfo = queryHostInfoByVmwareId(vmwareId);
+            // 3.Dubbo-发送查询 VNC 请求信息
+            R<String> queryVncR = agentVmwareClient.queryVncAddress(hostInfo.getIp(), vmwareInfo.getUuid());
+            Assert.isTrue(queryVncR.checkSuccess(), () -> new DubboFunctionException("VNC远程查询失败:" + queryVncR.getMsg()));
+            return queryVncR.getData();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
     }
 
     @Override
@@ -449,36 +465,49 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public String queryIpAddress(Long vmwareId) {
-        // 1.校验虚拟机是否存在 + 运行状态
-        if (vmwareId == null) {
-            throw new BadRequestException("虚拟机ID不能为空!");
-        }
-        Optional<VmwareInfo> optional = Optional.ofNullable(getById(vmwareId));
-        if (optional.isEmpty()) {
-            throw new NotFoundException("未查询到虚拟机信息!");
-        }
-        if (!VmwareStateEnum.RUNNING.equals(optional.get().getState())) {
-            throw new BadRequestException("虚拟机处于非运行状态, 无法查询 IP 地址信息!");
-        }
+        RLock lock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareId);
+        try {
+            // 0.根据虚拟机 ID 加锁, 尝试拿锁
+            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("虚拟机正在操作中，请稍后重试!"));
 
-        // 2.查询虚拟机所在的宿主机IP
-        HostInfo hostInfo = queryHostInfoByVmwareId(vmwareId);
+            // 1.校验虚拟机是否存在 + 运行状态
+            if (vmwareId == null) {
+                throw new BadRequestException("虚拟机ID不能为空!");
+            }
+            Optional<VmwareInfo> optional = Optional.ofNullable(getById(vmwareId));
+            if (optional.isEmpty()) {
+                throw new NotFoundException("未查询到虚拟机信息!");
+            }
+            if (!VmwareStateEnum.RUNNING.equals(optional.get().getState())) {
+                throw new BadRequestException("虚拟机处于非运行状态, 无法查询 IP 地址信息!");
+            }
 
-        // 3.查询网段
-        Optional<Long> networkLayerIdOptional = Optional.ofNullable(hostInfo.getNetworkLayerId());
-        if (networkLayerIdOptional.isEmpty()) {
-            throw new NotFoundException("未查询到宿主机所属网络ID!");
-        }
-        Optional<NetworkLayerInfo> networkLayerInfoOptional = Optional.ofNullable(networkLayerInfoMapper.selectById(networkLayerIdOptional.get()));
-        if (networkLayerInfoOptional.isEmpty()) {
-            throw new NotFoundException("未查询到宿主机所属网络!");
-        }
-        String netRange = hostInfo.getIp().trim() + StrUtil.C_SLASH + networkLayerInfoOptional.get().getNicMask();
+            // 2.查询虚拟机所在的宿主机IP
+            HostInfo hostInfo = queryHostInfoByVmwareId(vmwareId);
 
-        // 4.Dubbo-查询虚拟机 IP 地址
-        R<String> queryIpR = agentVmwareClient.queryIpAddress(hostInfo.getIp(), optional.get().getUuid(), netRange);
-        Assert.isTrue(queryIpR.checkSuccess(), () -> new DubboFunctionException("虚拟机IP地址查询失败:" + queryIpR.getMsg()));
-        return queryIpR.getData();
+            // 3.查询网段
+            Optional<Long> networkLayerIdOptional = Optional.ofNullable(hostInfo.getNetworkLayerId());
+            if (networkLayerIdOptional.isEmpty()) {
+                throw new NotFoundException("未查询到宿主机所属网络ID!");
+            }
+            Optional<NetworkLayerInfo> networkLayerInfoOptional = Optional.ofNullable(networkLayerInfoMapper.selectById(networkLayerIdOptional.get()));
+            if (networkLayerInfoOptional.isEmpty()) {
+                throw new NotFoundException("未查询到宿主机所属网络!");
+            }
+            String netRange = hostInfo.getIp().trim() + StrUtil.C_SLASH + networkLayerInfoOptional.get().getNicMask();
+
+            // 4.Dubbo-查询虚拟机 IP 地址
+            R<String> queryIpR = agentVmwareClient.queryIpAddress(hostInfo.getIp(), optional.get().getUuid(), netRange);
+            Assert.isTrue(queryIpR.checkSuccess(), () -> new DubboFunctionException("虚拟机IP地址查询失败:" + queryIpR.getMsg()));
+            return queryIpR.getData();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
     }
 
     @Override
@@ -494,6 +523,250 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
     @Override
     public Map<Long, String> batchQueryIpAddressByAgent(List<Long> vmwareIds) {
         throw new UnsupportedOperationException("开发中，暂不支持该操作!");
+    }
+
+    @Override
+    public String liveMigrate(VmwareMigrateDTO vmwareMigrateDTO) {
+        RLock lock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareMigrateDTO.getVmwareId());
+        try {
+            // 0.根据虚拟机 ID 加锁, 尝试拿锁
+            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("虚拟机正在操作中，请稍后重试!"));
+
+            // 1.参数校验
+            vmwareMigrateDTO.valid();
+
+            // 2.校验虚拟机是否存在 + 运行状态 + 宿主机ID
+            VmwareInfo vmwareInfo = Optional.ofNullable(getBaseMapper().selectById(vmwareMigrateDTO.getVmwareId())).orElseThrow(() -> new NotFoundException("未查询到虚拟机信息!"));
+            if (!VmwareStateEnum.RUNNING.equals(vmwareInfo.getState())) {
+                throw new BadRequestException("虚拟机处于非运行状态, 无法执行热迁移!");
+            }
+            if (vmwareInfo.getHostId().equals(vmwareMigrateDTO.getTargetHostId())) {
+                throw new BadRequestException("目标宿主机ID与当前宿主机ID一致, 无需迁移!");
+            }
+            HostInfo currentHostInfo = Optional.ofNullable(hostInfoMapper.selectOne(Wrappers.<HostInfo>lambdaQuery().eq(HostInfo::getId, vmwareInfo.getHostId()))).orElseThrow(() -> new NotFoundException("未查询到虚拟机所在宿主机信息!"));
+
+            // 3.检查目标宿主机状态
+            HostInfo targetHostInfo = Optional.ofNullable(hostInfoMapper.selectOne(Wrappers.<HostInfo>lambdaQuery().eq(HostInfo::getId, vmwareMigrateDTO.getTargetHostId()))).orElseThrow(() -> new NotFoundException("未查询到目标宿主机信息!"));
+            if (!HostStateEnum.READY.equals(targetHostInfo.getState())) {
+                throw new BadRequestException("目标宿主机状态异常，请检查宿主机状态!");
+            }
+
+            // 4.异步向 Dubbo-Agent 发送信息 (执行虚拟机热迁移命令)
+            CompletableFuture.runAsync(() -> {
+                RLock innerLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + currentHostInfo.getId());
+                try {
+                    // 4.1.宿主机加锁 (最长等待 5s)
+                    Assert.isTrue(innerLock.tryLock(5, TimeUnit.SECONDS), () -> new LockConflictException("「内部锁获取失败」虚拟机正在操作中，请稍后重试!"));
+
+                    // 4.2.向 Agent 发送虚拟机热迁移命令
+                    R<Void> livedMigrate = agentVmwareClient.liveMigrate(currentHostInfo.getIp(), targetHostInfo.getIp(), targetHostInfo.getLoginPassword(), vmwareInfo.getUuid());
+
+                    // 4.3.校验虚拟机迁移结果
+                    if (livedMigrate.checkFail()) {
+                        log.error("Dubbo-热迁移失败：{}", livedMigrate.getMsg());
+                        throw new DubboFunctionException(livedMigrate.getMsg());
+                    }
+
+                    // 4.4.更新虚拟机所在宿主机ID
+                    getBaseMapper().update(
+                            Wrappers.<VmwareInfo>lambdaUpdate()
+                                    .set(VmwareInfo::getHostId, vmwareMigrateDTO.getTargetHostId())
+                                    .eq(VmwareInfo::getId, vmwareMigrateDTO.getVmwareId())
+                    );
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    if (innerLock.isHeldByCurrentThread()) {
+                        innerLock.unlock();
+                    }
+                }
+            }, ManageThreadPoolConfig.businessProcessExecutor)
+                    .thenRun(() -> {
+                        String message = StrUtil.format(
+                                "虚拟机热迁移成功! 「INFO」虚拟机名称-{}, 原物理机IP-{}, 目标物理机IP-{}",
+                                vmwareInfo.getName(),
+                                currentHostInfo.getIp(),
+                                targetHostInfo.getIp()
+                        );
+                        log.info(message);
+                        // 全局推送迁移成功消息,记录日志
+                        wsMessageHolder.sendGlobalMessage(
+                                WebSocketMessage.builder()
+                                        .msgTitle("虚拟机热迁移")
+                                        .msgModule(MsgModuleEnum.VMWARE)
+                                        .msgState(MsgStateEnum.INFO)
+                                        .msgContent(message)
+                                        .build()
+                        );
+                    })
+                    .exceptionally(ex -> {
+                        String message = StrUtil.format(
+                                "虚拟机热迁移失败! 「INFO」虚拟机名称-{}, 原物理机IP-{}, 目标物理机IP-{} 「ERROR」错误信息-{}",
+                                vmwareInfo.getName(),
+                                currentHostInfo.getIp(),
+                                targetHostInfo.getIp(),
+                                ex.getMessage()
+                        );
+                        log.error(message, ex);
+                        // 全局推送迁移失败消息,记录日志
+                        wsMessageHolder.sendGlobalMessage(
+                                WebSocketMessage.builder()
+                                        .msgTitle("虚拟机热迁移")
+                                        .msgModule(MsgModuleEnum.VMWARE)
+                                        .msgState(MsgStateEnum.ERROR)
+                                        .msgContent(message)
+                                        .build()
+                        );
+                        return null;
+                    });
+
+            // 5.全局推送迁移中消息
+            String message = StrUtil.format(
+                    "虚拟机热迁移中, 请关注全局信息! 「INFO」虚拟机名称-{}, 原物理机IP-{}, 目标物理机IP-{}",
+                    vmwareInfo.getName(),
+                    currentHostInfo.getIp(),
+                    targetHostInfo.getIp()
+            );
+            log.info(message);
+            wsMessageHolder.sendGlobalMessage(
+                    WebSocketMessage.builder()
+                            .msgTitle("虚拟机热迁移")
+                            .msgModule(MsgModuleEnum.VMWARE)
+                            .msgState(MsgStateEnum.INFO)
+                            .msgContent(message)
+                            .build()
+            );
+
+            return "虚拟机迁移中, 请关注全局信息!";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
+    }
+
+    @Override
+    public String offlineMigrate(VmwareMigrateDTO vmwareMigrateDTO) {
+        RLock lock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareMigrateDTO.getVmwareId());
+        try {
+            // 0.根据虚拟机 ID 加锁, 尝试拿锁
+            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("虚拟机正在操作中，请稍后重试!"));
+
+            // 1.参数校验
+            vmwareMigrateDTO.valid();
+
+            // 2.校验虚拟机是否存在 + 运行状态 + 宿主机ID
+            VmwareInfo vmwareInfo = Optional.ofNullable(getBaseMapper().selectById(vmwareMigrateDTO.getVmwareId())).orElseThrow(() -> new NotFoundException("未查询到虚拟机信息!"));
+            if (!VmwareStateEnum.SHUT_OFF.equals(vmwareInfo.getState())) {
+                throw new BadRequestException("虚拟机处于非关闭状态, 无法执行冷迁移!");
+            }
+            if (vmwareInfo.getHostId().equals(vmwareMigrateDTO.getTargetHostId())) {
+                throw new BadRequestException("目标宿主机ID与当前宿主机ID一致, 无需迁移!");
+            }
+            HostInfo currentHostInfo = Optional.ofNullable(hostInfoMapper.selectOne(Wrappers.<HostInfo>lambdaQuery().eq(HostInfo::getId, vmwareInfo.getHostId()))).orElseThrow(() -> new NotFoundException("未查询到虚拟机所在宿主机信息!"));
+
+            // 3.检查目标宿主机状态
+            HostInfo targetHostInfo = Optional.ofNullable(hostInfoMapper.selectOne(Wrappers.<HostInfo>lambdaQuery().eq(HostInfo::getId, vmwareMigrateDTO.getTargetHostId()))).orElseThrow(() -> new NotFoundException("未查询到目标宿主机信息!"));
+            if (!HostStateEnum.READY.equals(targetHostInfo.getState())) {
+                throw new BadRequestException("目标宿主机状态异常，请检查宿主机状态!");
+            }
+
+            // 4.异步向 Dubbo-Agent 发送信息 (执行虚拟机冷迁移命令)
+            CompletableFuture.runAsync(() -> {
+                RLock innerLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + currentHostInfo.getId());
+                try {
+                    // 4.1.宿主机加锁 (最长等待 5s)
+                    Assert.isTrue(innerLock.tryLock(5, TimeUnit.SECONDS), () -> new LockConflictException("「内部锁获取失败」虚拟机正在操作中，请稍后重试!"));
+
+                    // 4.2.向 Agent 发送虚拟机热迁移命令
+                    R<Void>  offlineMigrate = agentVmwareClient.offlineMigrate(currentHostInfo.getIp(), targetHostInfo.getIp(), targetHostInfo.getLoginPassword(), vmwareInfo.getUuid());
+
+                    // 4.3.校验虚拟机迁移结果
+                    if (offlineMigrate.checkFail()) {
+                        log.error("Dubbo-冷迁移失败：{}", offlineMigrate.getMsg());
+                        throw new DubboFunctionException(offlineMigrate.getMsg());
+                    }
+
+                    // 4.4.更新虚拟机所在宿主机ID
+                    getBaseMapper().update(
+                            Wrappers.<VmwareInfo>lambdaUpdate()
+                                    .set(VmwareInfo::getHostId, vmwareMigrateDTO.getTargetHostId())
+                                    .eq(VmwareInfo::getId, vmwareMigrateDTO.getVmwareId())
+                    );
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    if (innerLock.isHeldByCurrentThread()) {
+                        innerLock.unlock();
+                    }
+                }
+            }, ManageThreadPoolConfig.businessProcessExecutor)
+                    .thenRun(() -> {
+                        String message = StrUtil.format(
+                                "虚拟机冷迁移成功! 「INFO」虚拟机名称-{}, 原物理机IP-{}, 目标物理机IP-{}",
+                                vmwareInfo.getName(),
+                                currentHostInfo.getIp(),
+                                targetHostInfo.getIp()
+                        );
+                        log.info(message);
+                        // 全局推送迁移成功消息,记录日志
+                        wsMessageHolder.sendGlobalMessage(
+                                WebSocketMessage.builder()
+                                        .msgTitle("虚拟机冷迁移")
+                                        .msgModule(MsgModuleEnum.VMWARE)
+                                        .msgState(MsgStateEnum.INFO)
+                                        .msgContent(message)
+                                        .build()
+                        );
+                    })
+                    .exceptionally(ex -> {
+                        String message = StrUtil.format(
+                                "虚拟机冷迁移失败! 「INFO」虚拟机名称-{}, 原物理机IP-{}, 目标物理机IP-{} 「ERROR」错误信息-{}",
+                                vmwareInfo.getName(),
+                                currentHostInfo.getIp(),
+                                targetHostInfo.getIp(),
+                                ex.getMessage()
+                        );
+                        log.error(message, ex);
+                        // 全局推送迁移失败消息,记录日志
+                        wsMessageHolder.sendGlobalMessage(
+                                WebSocketMessage.builder()
+                                        .msgTitle("虚拟机冷迁移")
+                                        .msgModule(MsgModuleEnum.VMWARE)
+                                        .msgState(MsgStateEnum.ERROR)
+                                        .msgContent(message)
+                                        .build()
+                        );
+                        return null;
+                    });
+
+            // 5.全局推送迁移中消息
+            String message = StrUtil.format(
+                    "虚拟机冷迁移中, 请关注全局信息! 「INFO」虚拟机名称-{}, 原物理机IP-{}, 目标物理机IP-{}",
+                    vmwareInfo.getName(),
+                    currentHostInfo.getIp(),
+                    targetHostInfo.getIp()
+            );
+            log.info(message);
+            wsMessageHolder.sendGlobalMessage(
+                    WebSocketMessage.builder()
+                            .msgTitle("虚拟机冷迁移")
+                            .msgModule(MsgModuleEnum.VMWARE)
+                            .msgState(MsgStateEnum.INFO)
+                            .msgContent(message)
+                            .build()
+            );
+
+            return "虚拟机迁移中, 请关注全局信息!";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
     }
 
     /**

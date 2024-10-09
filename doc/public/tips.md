@@ -625,6 +625,9 @@ virsh migrate a3b499b0-a417-4f75-8a76-70c0fb24eeb0 qemu+ssh://192.168.0.202/syst
 
 # 「非运行态」冷迁移命令-2（省略密码键入）
 sshpass -p 'xxx' virsh migrate a3b499b0-a417-4f75-8a76-70c0fb24eeb0 qemu+ssh://192.168.0.202/system tcp://192.168.0.202 --offline --undefinesource --persistent --verbose --unsafe
+
+
+Migration: [100 %]
 ```
 
 

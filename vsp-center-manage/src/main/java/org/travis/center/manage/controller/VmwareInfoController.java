@@ -6,6 +6,7 @@ import org.travis.center.common.entity.manage.VmwareInfo;
 import org.springframework.web.bind.annotation.*;
 import org.travis.center.common.enums.BusinessTypeEnum;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
+import org.travis.center.manage.pojo.dto.VmwareMigrateDTO;
 import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.center.manage.service.VmwareInfoService;
 import org.travis.center.support.aspect.Log;
@@ -171,4 +172,19 @@ public class VmwareInfoController {
     public void correctVmwareState() {
         vmwareInfoService.correctVmwareState();
     }
+
+    @Log(title = "虚拟机热迁移")
+    @Operation(summary = "虚拟机热迁移")
+    @PostMapping("/liveMigrate")
+    public String liveMigrate(@Validated @RequestBody VmwareMigrateDTO vmwareMigrateDTO) {
+        return vmwareInfoService.liveMigrate(vmwareMigrateDTO);
+    }
+
+    @Log(title = "虚拟机冷迁移")
+    @Operation(summary = "虚拟机冷迁移")
+    @PostMapping("/offlineMigrate")
+    public String offlineMigrate(@Validated @RequestBody VmwareMigrateDTO vmwareMigrateDTO) {
+        return vmwareInfoService.offlineMigrate(vmwareMigrateDTO);
+    }
+
 }

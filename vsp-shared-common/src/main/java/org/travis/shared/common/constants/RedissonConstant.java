@@ -19,4 +19,6 @@ public class RedissonConstant {
     public static final String DYNAMIC_CONFIG_LIST_KEY = "dynamic-config:list";
 
     public static final String MONITOR_PERIOD_MACHINE_QUEUE_PREFIX = "monitor-period:";
+
+    public static final String VMWARE_MIGRATE_PROGRESS_PREFIX = "vmware:migrate:";
 }

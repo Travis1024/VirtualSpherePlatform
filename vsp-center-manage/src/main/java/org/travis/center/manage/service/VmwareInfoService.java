@@ -3,6 +3,7 @@ package org.travis.center.manage.service;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
+import org.travis.center.manage.pojo.dto.VmwareMigrateDTO;
 import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
@@ -56,4 +57,8 @@ public interface VmwareInfoService extends IService<VmwareInfo>{
     Map<Long, String> batchQueryIpAddress(List<Long> vmwareIds);
 
     Map<Long, String> batchQueryIpAddressByAgent(List<Long> vmwareIds);
+
+    String liveMigrate(VmwareMigrateDTO vmwareMigrateDTO);
+
+    String offlineMigrate(VmwareMigrateDTO vmwareMigrateDTO);
 }

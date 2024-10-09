@@ -2,11 +2,20 @@ package org.travis.agent.web.service.dubbo;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.apache.dubbo.config.annotation.Method;
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.travis.api.client.agent.AgentVmwareClient;
+import org.travis.shared.common.constants.RedissonConstant;
 import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.constants.VmwareConstant;
 import org.travis.shared.common.domain.R;
@@ -14,12 +23,21 @@ import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.DubboFunctionException;
 import org.travis.shared.common.utils.VspRuntimeUtil;
 
+import javax.annotation.Resource;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import static org.travis.shared.common.utils.VspRuntimeUtil.mapToStringArray;
 
 /**
  * @ClassName AgentVmwareClientImpl
@@ -29,8 +47,20 @@ import java.util.Set;
  * @Data 2024/5/29
  */
 @Slf4j
-@DubboService
+@Component
+@DubboService(
+        methods = {
+                // 热迁移超时时间: 10 分钟
+                @Method(name = "liveMigrate", timeout = 600000),
+                // 冷迁移超时时间: 10 分钟
+                @Method(name = "offlineMigrate", timeout = 600000)
+        }
+)
 public class AgentVmwareClientImpl implements AgentVmwareClient {
+
+    @Resource
+    private RedissonClient redissonClient;
+
     @Override
     public R<Void> createVmware(String targetAgentIp, String xmlContent, Long vmwareId) {
         try {
@@ -308,5 +338,75 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
             log.error("[AgentVmwareClientImpl::diskMount] Disk Mount Error! -> {}", e.getMessage());
             return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
         }
+    }
+
+    @Override
+    public R<Void> liveMigrate(String targetAgentIp, String targetHostIp, String targetHostLoginPassword, String vmwareUuid) {
+        try {
+            String command = StrUtil.format("sshpass -p '{}' virsh migrate {} qemu+ssh://{}/system tcp://{} --live --persistent --verbose --unsafe", targetHostLoginPassword, vmwareUuid, targetHostIp, targetHostIp);
+            log.info("[AgentVmwareClientImpl::liveMigrate] Live Migrate Command -> {}", command);
+            return processRealTimeMigrateInfo(vmwareUuid, command);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            log.error("[AgentVmwareClientImpl::liveMigrate] Live Migrate Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    @Override
+    public R<Void> offlineMigrate(String targetAgentIp, String targetHostIp, String targetHostLoginPassword, String vmwareUuid) {
+        try {
+            String command = StrUtil.format("sshpass -p '{}' virsh migrate {} qemu+ssh://{}/system tcp://{} --offline --undefinesource --persistent --verbose --unsafe", targetHostLoginPassword, vmwareUuid, targetHostIp, targetHostIp);
+            log.info("[AgentVmwareClientImpl::offlineMigrate] Offline Migrate Command -> {}", command);
+            return processRealTimeMigrateInfo(vmwareUuid, command);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            log.error("[AgentVmwareClientImpl::offlineMigrate] Offline Migrate Error! -> {}", e.getMessage());
+            return R.error(BizCodeEnum.DUBBO_FUNCTION_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    private R<Void> processRealTimeMigrateInfo(String vmwareUuid, String... commands) {
+        Map<String, String> newEnvMap = new HashMap<>(System.getenv());
+        newEnvMap.put("LANG", "en_US.UTF-8");
+        Process process = RuntimeUtil.exec(mapToStringArray(newEnvMap), commands);
+        InputStream inputStream = process.getInputStream();
+        BufferedReader bufferedReader = null;
+
+        // 初始化 redis 进度数据
+        RBucket<Integer> bucket = redissonClient.getBucket(RedissonConstant.VMWARE_MIGRATE_PROGRESS_PREFIX + vmwareUuid);
+        bucket.set(0);
+
+        try {
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String line, tmp = "";
+
+            while ((line = bufferedReader.readLine()) != null) {
+                log.info("{} Migrate Info -> {}", vmwareUuid, line);
+                List<String> list = ReUtil.findAll("\\[\\s*(\\d+)\\s*%\\s*\\]", line, 1);
+                if (list.isEmpty()) {
+                    continue;
+                }
+                if (!tmp.equals(list.get(0))) {
+                    bucket.set(Integer.parseInt(list.get(0)));
+                    tmp = list.get(0);
+                }
+            }
+            process.waitFor();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return R.error(BizCodeEnum.INTERNAL_MESSAGE.getCode(), e.getMessage());
+        }
+
+        // 10s 后释放进度数据
+        bucket.expire(Instant.now().plus(10, ChronoUnit.SECONDS));
+
+        int exitValue = process.exitValue();
+        if (exitValue == 0) {
+            log.info("[processRealTimeMigrateInfo] ExitValue: {}", exitValue);
+        } else {
+            log.error("[processRealTimeMigrateInfo] ExitValue: {}", exitValue);
+        }
+        return exitValue == 0 ? R.ok() : R.error(BizCodeEnum.INTERNAL_MESSAGE.getCode(), RuntimeUtil.getErrorResult(process, CharsetUtil.CHARSET_UTF_8));
     }
 }
