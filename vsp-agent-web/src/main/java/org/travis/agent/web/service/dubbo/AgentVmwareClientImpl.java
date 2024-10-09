@@ -24,10 +24,7 @@ import org.travis.shared.common.exceptions.DubboFunctionException;
 import org.travis.shared.common.utils.VspRuntimeUtil;
 
 import javax.annotation.Resource;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -366,20 +363,21 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
         }
     }
 
-    private R<Void> processRealTimeMigrateInfo(String vmwareUuid, String... commands) {
-        Map<String, String> newEnvMap = new HashMap<>(System.getenv());
-        newEnvMap.put("LANG", "en_US.UTF-8");
-        Process process = RuntimeUtil.exec(mapToStringArray(newEnvMap), commands);
-        InputStream inputStream = process.getInputStream();
-        BufferedReader bufferedReader = null;
-
+    private R<Void> processRealTimeMigrateInfo(String vmwareUuid, String command) {
         // 初始化 redis 进度数据
         RBucket<Integer> bucket = redissonClient.getBucket(RedissonConstant.VMWARE_MIGRATE_PROGRESS_PREFIX + vmwareUuid);
         bucket.set(0);
 
+        Map<String, String> newEnvMap = new HashMap<>(System.getenv());
+        newEnvMap.put("LANG", "en_US.UTF-8");
+        Process process = null;
+        BufferedReader bufferedReader = null;
+
         try {
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String line = "", tmp = "";
+            process = Runtime.getRuntime().exec(command, mapToStringArray(newEnvMap));
+            InputStream inputStream = process.getInputStream();
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            String line, tmp = "";
 
             while ((line = bufferedReader.readLine()) != null) {
                 log.info("{} Migrate Info -> {}", vmwareUuid, line);
@@ -396,16 +394,26 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return R.error(BizCodeEnum.INTERNAL_MESSAGE.getCode(), e.getMessage());
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
         }
-
-        // 10s 后释放进度数据
-        bucket.expire(Instant.now().plus(10, ChronoUnit.SECONDS));
 
         int exitValue = process.exitValue();
         if (exitValue == 0) {
             log.info("[processRealTimeMigrateInfo] ExitValue: {}", exitValue);
+            // 10s 后释放进度数据
+            bucket.set(100);
+            bucket.expire(Instant.now().plus(10, ChronoUnit.SECONDS));
         } else {
             log.error("[processRealTimeMigrateInfo] ExitValue: {}", exitValue);
+            // 直接释放进度数据
+            bucket.delete();
         }
         return exitValue == 0 ? R.ok() : R.error(BizCodeEnum.INTERNAL_MESSAGE.getCode(), RuntimeUtil.getErrorResult(process, CharsetUtil.CHARSET_UTF_8));
     }
