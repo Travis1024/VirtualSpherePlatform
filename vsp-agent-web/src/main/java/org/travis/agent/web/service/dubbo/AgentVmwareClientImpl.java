@@ -379,7 +379,7 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
 
         try {
             bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String line, tmp = "";
+            String line = "", tmp = "";
 
             while ((line = bufferedReader.readLine()) != null) {
                 log.info("{} Migrate Info -> {}", vmwareUuid, line);
