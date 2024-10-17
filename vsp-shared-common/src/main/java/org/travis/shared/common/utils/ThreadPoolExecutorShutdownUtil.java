@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
  * @Description 线程池关闭管理
  * @Author travis-wei
  * @Version v1.0
- * @Data 2023/11/19
  */
 @Slf4j
 public class ThreadPoolExecutorShutdownUtil implements ApplicationListener<ContextClosedEvent> {
@@ -54,7 +53,7 @@ public class ThreadPoolExecutorShutdownUtil implements ApplicationListener<Conte
                     log.warn("Timed out while waiting for executor [{}] to terminate!", pool);
                 }
             } catch (Exception e) {
-                log.warn("Timed out while waiting for executor [{}] to terminate!", pool);
+                log.warn("[Exception] Timed out while waiting for executor [{}] to terminate!", pool);
                 Thread.currentThread().interrupt();
             }
         }

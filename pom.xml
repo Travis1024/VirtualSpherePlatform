@@ -46,6 +46,7 @@
         <jsch.version>0.2.17</jsch.version>
         <oshi.version>6.6.0</oshi.version>
         <caffeine.version>3.1.8</caffeine.version>
+        <influxdb.version>6.6.0</influxdb.version>
     </properties>
 
     <dependencyManagement>
@@ -127,6 +128,12 @@
                 <groupId>com.github.ben-manes.caffeine</groupId>
                 <artifactId>caffeine</artifactId>
                 <version>${caffeine.version}</version>
+            </dependency>
+            <!--InfluxDB 客户端依赖-->
+            <dependency>
+                <groupId>com.influxdb</groupId>
+                <artifactId>influxdb-client-java</artifactId>
+                <version>${influxdb.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -99,6 +99,8 @@ systemctl restart libvirtd.service
 
 - 虚拟机安装
 
+  **如果缺少qemu-guest-agent，virsh snapshot-create-as + virsh 查询 ip 会报错**
+  
   ```shell
   -rw-r--r-- 1 root root  178556  9月 27 14:54 qemu-guest-agent-4.1.0-63.p35.ky10.x86_64.rpm
   

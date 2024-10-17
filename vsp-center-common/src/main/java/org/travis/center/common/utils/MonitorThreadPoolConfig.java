@@ -10,25 +10,24 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @ClassName MessageThreadPoolConfig
- * @Description MessageThreadPoolConfig
+ * @ClassName MonitorThreadPoolConfig
+ * @Description MonitorThreadPoolConfig
  * @Author travis-wei
  * @Version v1.0
- * @Data 2024/5/25
  */
-public class MessageThreadPoolConfig {
-    public static ExecutorService messageProcessExecutor = null;
+public class MonitorThreadPoolConfig {
+
+    public static ExecutorService monitorProcessExecutor = null;
 
     static {
         // 线程池初始化
         initMessageProcessExecutor();
-
         // 线程池关闭管理
-        ThreadPoolExecutorShutdownUtil.registryExecutor(messageProcessExecutor);
+        ThreadPoolExecutorShutdownUtil.registryExecutor(monitorProcessExecutor);
     }
 
     private static void initMessageProcessExecutor() {
-        messageProcessExecutor = ExecutorBuilder.create()
+        monitorProcessExecutor = ExecutorBuilder.create()
                 // 核心线程数量（初始化 8）
                 .setCorePoolSize(ThreadPoolConstant.SMALL_CORE_POOL_SIZE)
                 // 最大线程数量（初始化 16）
