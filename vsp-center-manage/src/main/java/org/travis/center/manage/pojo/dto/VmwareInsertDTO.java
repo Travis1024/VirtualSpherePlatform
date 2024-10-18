@@ -60,6 +60,7 @@ public class VmwareInsertDTO implements Serializable {
     @Max(value = 1024, message = "虚拟机系统磁盘容量最大为 1024 GB")
     private Integer systemDiskSize;
 
+    // TODO 待删除-创建时只做初始化
     @Schema(description = "虚拟机监控周期（单位: 秒）")
     @NotNull(message = "虚拟机监控周期不能为空!")
     private MonitorPeriodEnum monitorPeriodSeconds;

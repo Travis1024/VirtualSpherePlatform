@@ -48,6 +48,13 @@ public class DynamicConfigInfo extends com.baomidou.mybatisplus.extension.active
     private String configName;
 
     /**
+     * 动态配置 KEY
+     */
+    @TableField(value = "CONFIG_KEY")
+    @Schema(description = "动态配置 KEY")
+    private String configKey;
+
+    /**
      * 动态配置 VALUE
      */
     @TableField(value = "CONFIG_VALUE")

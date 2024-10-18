@@ -130,6 +130,8 @@ public abstract class AbstractVmwareCreationService {
         // 7.修改系统磁盘状态、修改虚拟机状态
         log.debug("7.修改系统磁盘状态、修改虚拟机状态");
         creationService.stepSeven();
+
+        // TODO 待修改-应放在虚拟机动态配置中统一处理，此处只做动态配置初始化
         // 8.新增动态配置-监测周期(s)
         log.debug("8.新增动态配置-监测周期(s)");
         creationService.stepEight();
