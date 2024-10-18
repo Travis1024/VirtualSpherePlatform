@@ -24,6 +24,13 @@
             <artifactId>vsp-center-support</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <!--Influxdb客户端依赖-->
+        <dependency>
+            <groupId>com.influxdb</groupId>
+            <artifactId>influxdb-client-java</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

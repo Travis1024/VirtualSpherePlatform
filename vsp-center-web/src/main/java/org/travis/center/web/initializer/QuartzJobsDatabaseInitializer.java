@@ -178,6 +178,14 @@ public class QuartzJobsDatabaseInitializer implements CommandLineRunner {
                 .jobDataMap(Collections.singletonMap(PERIOD_KEY, 30))
                 .build();
 
+        ScheduleJobCreateDTO dataMonitorTaskJob = ScheduleJobCreateDTO.builder()
+                .id(ScheduleJobConstant.DATA_MONITOR_TASK_JOB_INDEX_ID)
+                .scheduleName("物理机+虚拟机数据监测任务")
+                .jobGroup(ScheduleGroupEnum.SYSTEM)
+                .jobClass(ClassUtil.getClassName(QuartzMonitorTaskJob.class, false))
+                .isFixed(IsFixedEnum.DISALLOW_UPDATE)
+                .cronExpression(ScheduleJobConstant.CRON_30_S)
+
         SCHEDULE_JOB_INFOS.add(operationLogPersistentJob);
         SCHEDULE_JOB_INFOS.add(logTableCreateJob);
         SCHEDULE_JOB_INFOS.add(machineStateUpdateJob);

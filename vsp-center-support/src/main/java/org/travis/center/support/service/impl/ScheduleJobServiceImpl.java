@@ -58,7 +58,7 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobMapper, Sched
         scheduleJob.setId(ObjectUtil.isEmpty(scheduleJob.getId()) ? SnowflakeIdUtil.nextId() : scheduleJob.getId());
         save(scheduleJob);
 
-        // 3.初始化 QuartzCreateParamDTO + 创建JOB
+        // 3.初始化 QuartzCreateParamDTO + 创建JOB (新增 + 启动)
         QuartzCreateParamDTO createParamDTO = getQuartzCreateParamDTO(scheduleJob, jobCreateDTO.getJobDataMap());
         quartzService.addJob(createParamDTO);
 

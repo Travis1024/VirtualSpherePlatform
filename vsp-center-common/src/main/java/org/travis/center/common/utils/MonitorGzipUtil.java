@@ -20,7 +20,7 @@ import java.util.zip.GZIPOutputStream;
  * @Data 2023/8/29
  */
 @Slf4j
-public class GzipUtil {
+public class MonitorGzipUtil {
 
     /**
      * Gzip 序列化

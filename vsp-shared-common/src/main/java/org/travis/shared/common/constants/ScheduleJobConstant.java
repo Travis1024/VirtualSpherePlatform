@@ -70,6 +70,11 @@ public class ScheduleJobConstant {
     public static final Long PERIODIC_MONITOR_JOB_30S_INDEX_ID = 12L;
 
     /**
+     * 物理机、虚拟机数据监测任务 ID
+     */
+    public static final Long DATA_MONITOR_TASK_JOB_INDEX_ID = 13L;
+
+    /**
      * cron 描述模版
      */
     public static final String CRON_DESCRIPTION_TEMPLATE = "执行间隔秒数:{}";
