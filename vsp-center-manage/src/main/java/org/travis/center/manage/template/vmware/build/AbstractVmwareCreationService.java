@@ -26,6 +26,7 @@ import org.travis.center.manage.service.DiskInfoService;
 import org.travis.center.support.processor.AbstractDynamicConfigHolder;
 import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.domain.R;
+import org.travis.shared.common.enums.NodesInitializeDataEnum;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.exceptions.DubboFunctionException;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
@@ -130,10 +131,8 @@ public abstract class AbstractVmwareCreationService {
         // 7.修改系统磁盘状态、修改虚拟机状态
         log.debug("7.修改系统磁盘状态、修改虚拟机状态");
         creationService.stepSeven();
-
-        // TODO 待修改-应放在虚拟机动态配置中统一处理，此处只做动态配置初始化
-        // 8.新增动态配置-监测周期(s)
-        log.debug("8.新增动态配置-监测周期(s)");
+        // 8.初始化动态配置
+        log.debug("8.初始化动态配置");
         creationService.stepEight();
         log.debug("[AbstractCreationService-{}] 虚拟机创建成功!", vmwareInsertDTO.getName());
     }
@@ -205,20 +204,28 @@ public abstract class AbstractVmwareCreationService {
 
     @Transactional
     public void stepEight() {
-        // 1.构建 DynamicConfigInfo
-        DynamicConfigInfo dynamicConfigInfo = DynamicConfigInfo.builder()
-                .id(SnowflakeIdUtil.nextId())
-                .configName(DynamicConfigNameEnum.VMWARE_MONITOR_PERIOD_SECONDS.getDisplay())
-                .configValue(String.valueOf(vmwareInsertDTO.getMonitorPeriodSeconds().getValue()))
-                .configType(DynamicConfigTypeEnum.MONITOR_PERIOD)
-                .isFixed(IsFixedEnum.ALLOW_UPDATE)
-                .configExample("5")
-                .affiliationType(DynamicConfigAffiliationTypeEnum.VMWARE)
-                .affiliationMachineId(vmwareInfo.getId())
-                .affiliationMachineUuid(vmwareInfo.getUuid())
-                .build();
-        // 2.存储 DynamicConfigInfo
-        AbstractDynamicConfigHolder.getDynamicConfigHandler(DynamicConfigTypeEnum.MONITOR_PERIOD).executeInsertValue(dynamicConfigInfo);
+        for (NodesInitializeDataEnum initializeDataEnum : NodesInitializeDataEnum.values()) {
+            // 构建 DynamicConfigInfo
+            DynamicConfigInfo dynamicConfigInfo = DynamicConfigInfo.builder()
+                    .id(SnowflakeIdUtil.nextId())
+                    .configName(initializeDataEnum.getName())
+                    .configKey(initializeDataEnum.getKey())
+                    .configValue(initializeDataEnum.getValue().toString())
+                    .configType(
+                            NodesInitializeDataEnum.VMWARE_DATA_MONITOR_PERIOD.equals(initializeDataEnum)
+                                    ? DynamicConfigTypeEnum.MONITOR_PERIOD
+                                    : DynamicConfigTypeEnum.UNIVERSAL
+                    )
+                    .isFixed(IsFixedEnum.ALLOW_UPDATE)
+                    .configExample(initializeDataEnum.getValue().toString())
+                    .affiliationType(DynamicConfigAffiliationTypeEnum.VMWARE)
+                    .affiliationMachineId(vmwareInfo.getId())
+                    .affiliationMachineUuid(vmwareInfo.getUuid())
+                    .build();
+
+            // 存储 DynamicConfigInfo
+            AbstractDynamicConfigHolder.getDynamicConfigHandler(dynamicConfigInfo.getConfigType()).executeInsertValue(dynamicConfigInfo);
+        }
     }
 
     private String replaceXmlParams(XmlParamBO xmlParamBO) throws IOException {

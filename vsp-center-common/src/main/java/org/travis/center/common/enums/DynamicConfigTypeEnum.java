@@ -22,8 +22,6 @@ public enum DynamicConfigTypeEnum {
 
     MONITOR_PERIOD(1, "监测周期配置"),
     UNIVERSAL(900, "通用配置"),
-    UNIVERSAL_THRESHOLDS_CEILING(901, "通用配置-阈值上限"),
-    UNIVERSAL_THRESHOLDS_FLOOR(902, "通用配置-阈值下限"),
     ;
 
     @EnumValue
