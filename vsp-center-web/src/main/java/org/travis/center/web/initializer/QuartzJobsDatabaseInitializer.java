@@ -14,10 +14,7 @@ import org.travis.center.common.enums.ScheduleGroupEnum;
 import org.travis.center.common.mapper.support.ScheduleJobMapper;
 import org.travis.center.support.pojo.dto.ScheduleJobCreateDTO;
 import org.travis.center.support.service.ScheduleJobService;
-import org.travis.center.web.jobs.QuartzLogTableCreateJob;
-import org.travis.center.web.jobs.QuartzMachineStateUpdateJob;
-import org.travis.center.web.jobs.QuartzMonitorPeriodJob;
-import org.travis.center.web.jobs.QuartzOperationLogPersistentJob;
+import org.travis.center.web.jobs.*;
 import org.travis.shared.common.constants.ScheduleJobConstant;
 import org.travis.shared.common.utils.CrontabUtil;
 
@@ -180,11 +177,14 @@ public class QuartzJobsDatabaseInitializer implements CommandLineRunner {
 
         ScheduleJobCreateDTO dataMonitorTaskJob = ScheduleJobCreateDTO.builder()
                 .id(ScheduleJobConstant.DATA_MONITOR_TASK_JOB_INDEX_ID)
-                .scheduleName("物理机+虚拟机数据监测任务")
+                .scheduleName("虚拟机指标数据监测任务")
                 .jobGroup(ScheduleGroupEnum.SYSTEM)
-                .jobClass(ClassUtil.getClassName(QuartzMonitorTaskJob.class, false))
+                .jobClass(ClassUtil.getClassName(QuartzDataMonitorTaskJob.class, false))
                 .isFixed(IsFixedEnum.DISALLOW_UPDATE)
-                .cronExpression(ScheduleJobConstant.CRON_30_S)
+                .cronExpression(ScheduleJobConstant.CRON_1_S)
+                .cronDescription(StrUtil.format(ScheduleJobConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(ScheduleJobConstant.CRON_1_S)))
+                .jobDataMap(null)
+                .build();
 
         SCHEDULE_JOB_INFOS.add(operationLogPersistentJob);
         SCHEDULE_JOB_INFOS.add(logTableCreateJob);
@@ -199,6 +199,8 @@ public class QuartzJobsDatabaseInitializer implements CommandLineRunner {
         SCHEDULE_JOB_INFOS.add(periodicMonitoringJob15s);
         SCHEDULE_JOB_INFOS.add(periodicMonitoringJob20s);
         SCHEDULE_JOB_INFOS.add(periodicMonitoringJob30s);
+
+        SCHEDULE_JOB_INFOS.add(dataMonitorTaskJob);
     }
 
     @Override
