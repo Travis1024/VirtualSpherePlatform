@@ -17,7 +17,7 @@ import lombok.Getter;
 public enum MsgStateEnum {
 
     INFO(1, "普通消息"),
-    WARNING(2, "告警消息"),
+    ALARM(2, "告警消息"),
     ERROR(3, "异常消息")
     ;
 

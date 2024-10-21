@@ -1,22 +1,18 @@
 package org.travis.center.monitor.threads.addition;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hust.platform.common.constants.StatisticConstant;
-import com.hust.platform.common.entity.IpmiLogInfo;
-import com.hust.platform.common.mapper.IpmiLogInfoMapper;
-import com.hust.platform.common.utils.ApplicationContextUtil;
-import com.hust.platform.logger.service.LogInfoService;
-import com.hust.platform.logger.threads.TaskThreadNumberStatistic;
-import com.hust.platform.monitor.service.IpmiLogInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.travis.center.common.entity.monitor.IpmiLogInfo;
+import org.travis.center.common.mapper.monitor.IpmiLogInfoMapper;
+import org.travis.center.common.utils.ApplicationContextUtil;
+import org.travis.center.monitor.service.IpmiLogInfoService;
+import org.travis.shared.common.utils.SnowflakeIdUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @ClassName ThreadIpmiSelMonitor
@@ -30,20 +26,15 @@ public class ThreadIpmiLogMonitor implements Runnable{
 
     private String uuid;
     private String jsonStr;
-    private LogInfoService logInfoService;
-    private ThreadPoolExecutor threadPoolExecutor;
     private IpmiLogInfoService ipmiLogInfoService;
     private IpmiLogInfoMapper ipmiLogInfoMapper;
 
     public ThreadIpmiLogMonitor(String uuid, String jsonStr) {
         this.uuid = uuid;
         this.jsonStr = jsonStr;
-        this.logInfoService = ApplicationContextUtil.getBean(LogInfoService.class);
-        this.threadPoolExecutor = ApplicationContextUtil.getBean(ThreadPoolExecutor.class);
         this.ipmiLogInfoService = ApplicationContextUtil.getBean(IpmiLogInfoService.class);
         this.ipmiLogInfoMapper = ApplicationContextUtil.getBean(IpmiLogInfoMapper.class);
     }
-
 
     @Override
     public void run() {
@@ -63,26 +54,28 @@ public class ThreadIpmiLogMonitor implements Runnable{
                 String port = rootNode.get("port").asText();
                 long timestamp = rootNode.get("timestamp").asLong();
 
-                // 2.2 查询是否存在记录自增ID
+                // 2.2 查询是否存在记录
                 IpmiLogInfo selectOne = ipmiLogInfoMapper.selectOne(
                         Wrappers.<IpmiLogInfo>lambdaQuery()
-                                .eq(IpmiLogInfo::getIpmiLogName, name)
-                                .eq(IpmiLogInfo::getIpmiLogIp, ip)
-                                .eq(IpmiLogInfo::getIpmiLogPort, port)
-                                .select(IpmiLogInfo::getIpmiLogZzid)
+                                .eq(IpmiLogInfo::getIpmiName, name)
+                                .eq(IpmiLogInfo::getIpmiIp, ip)
+                                .eq(IpmiLogInfo::getIpmiPort, port)
+                                .select(IpmiLogInfo::getId)
                 );
 
                 // 2.3 组装成存储数据
                 IpmiLogInfo ipmiLogInfo = new IpmiLogInfo()
-                        .setIpmiLogName(name)
-                        .setIpmiLogIp(ip)
-                        .setIpmiLogPort(port)
-                        .setIpmiLogTimestamp(timestamp)
-                        .setIpmiLogData(rootNode.toString());
+                        .setIpmiName(name)
+                        .setIpmiIp(ip)
+                        .setIpmiPort(port)
+                        .setIpmiTimestamp(timestamp)
+                        .setIpmiData(rootNode.toString());
 
                 // 2.4 如果存在记录，则设置自增 ID
-                if (selectOne != null && ObjectUtil.isNotEmpty(selectOne.getIpmiLogZzid())) {
-                    ipmiLogInfo.setIpmiLogZzid(selectOne.getIpmiLogZzid());
+                if (selectOne != null && ObjectUtil.isNotEmpty(selectOne.getId())) {
+                    ipmiLogInfo.setId(selectOne.getId());
+                } else {
+                    ipmiLogInfo.setId(SnowflakeIdUtil.nextId());
                 }
 
                 resultList.add(ipmiLogInfo);
@@ -91,13 +84,10 @@ public class ThreadIpmiLogMonitor implements Runnable{
             // 批量存储或更新
             ipmiLogInfoService.saveOrUpdateBatch(resultList, resultList.size());
 
-            log.info("[IPMI-Sel 监测线程执行结束] -> " + uuid);
-            threadPoolExecutor.execute(new TaskThreadNumberStatistic(StatisticConstant.IPMI_LOG_THREAD, true));
+            log.info("[IPMI-Sel 监测线程执行结束] -> {}", uuid);
         } catch (Exception e) {
+            log.error("[IPMI-SEL-ERROR-{}] {}", uuid, e.getMessage());
             log.error(e.toString());
-            threadPoolExecutor.execute(new TaskThreadNumberStatistic(StatisticConstant.IPMI_LOG_THREAD, false));
-            StackTraceElement traceElement = e.getStackTrace()[0];
-            logInfoService.saveThreadExceptionLog(traceElement.getClassName(), traceElement.getMethodName(), e.toString(), DateUtil.date());
         }
     }
 }

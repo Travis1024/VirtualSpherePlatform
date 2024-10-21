@@ -1,23 +1,18 @@
 package org.travis.center.monitor.threads.addition;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hust.platform.common.constants.MonitorConstant;
-import com.hust.platform.common.constants.StatisticConstant;
-import com.hust.platform.common.utils.ApplicationContextUtil;
-import com.hust.platform.logger.service.LogInfoService;
-import com.hust.platform.logger.threads.TaskThreadNumberStatistic;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
 import lombok.extern.slf4j.Slf4j;
+import org.travis.center.common.utils.ApplicationContextUtil;
+import org.travis.shared.common.constants.MonitorConstant;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @ClassName ThreadIpmiSensorMonitor
@@ -33,16 +28,12 @@ public class ThreadIpmiSensorMonitor implements Runnable{
     private String uuid;
     private String jsonStr;
     private InfluxDBClient influxDBClient;
-    private LogInfoService logInfoService;
-    private ThreadPoolExecutor threadPoolExecutor;
 
     public ThreadIpmiSensorMonitor(String measurement, String uuid, String jsonStr) {
         this.measurement = measurement;
         this.uuid = uuid;
         this.jsonStr = jsonStr;
         this.influxDBClient = ApplicationContextUtil.getBean(InfluxDBClient.class);
-        this.logInfoService = ApplicationContextUtil.getBean(LogInfoService.class);
-        this.threadPoolExecutor = ApplicationContextUtil.getBean(ThreadPoolExecutor.class);
     }
 
     public void saveInfluxDb(Map<String, Object> flatMap, Long timestamp, String address) {
@@ -53,7 +44,6 @@ public class ThreadIpmiSensorMonitor implements Runnable{
                 .time(new Date(timestamp * 1000L).toInstant(), WritePrecision.MS);
         influxDBClient.getWriteApiBlocking().writePoint(point);
     }
-
 
     @Override
     public void run() {
@@ -75,13 +65,10 @@ public class ThreadIpmiSensorMonitor implements Runnable{
                 saveInfluxDb(fieldMap, timestamp, ip + StrUtil.COLON + port);
             }
 
-            log.info("[IPMI-Sensor 监测线程执行结束] -> " + uuid);
-            threadPoolExecutor.execute(new TaskThreadNumberStatistic(StatisticConstant.IPMI_SENSOR_THREAD, true));
+            log.info("[IPMI-Sensor 监测线程执行结束] -> {}", uuid);
         } catch (Exception e) {
+            log.error("[IPMI-Sensor-{}] {}", uuid, e.getMessage());
             log.error(e.toString());
-            threadPoolExecutor.execute(new TaskThreadNumberStatistic(StatisticConstant.IPMI_SENSOR_THREAD, false));
-            StackTraceElement traceElement = e.getStackTrace()[0];
-            logInfoService.saveThreadExceptionLog(traceElement.getClassName(), traceElement.getMethodName(), e.toString(), DateUtil.date());
         }
     }
 }

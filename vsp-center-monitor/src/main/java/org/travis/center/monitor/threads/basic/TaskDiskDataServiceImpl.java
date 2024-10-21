@@ -1,26 +1,20 @@
 package org.travis.center.monitor.threads.basic;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hust.platform.common.constants.MonitorConstant;
-import com.hust.platform.common.constants.StatisticConstant;
-import com.hust.platform.common.pojo.monitor.vo.DiskStatsResultVO;
-import com.hust.platform.common.pojo.monitor.vo.DiskStatsTempVO;
-import com.hust.platform.common.utils.ApplicationContextUtil;
-import com.hust.platform.common.websocket.WebSocketMonitorData;
-import com.hust.platform.logger.service.LogInfoService;
-import com.hust.platform.logger.threads.TaskThreadNumberStatistic;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.travis.center.common.utils.ApplicationContextUtil;
+import org.travis.center.monitor.pojo.vo.DiskStatsResultVO;
+import org.travis.center.monitor.pojo.vo.DiskStatsTempVO;
+import org.travis.shared.common.constants.MonitorConstant;
 
 import java.util.*;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @ClassName TaskDiskDataServiceImpl
@@ -31,13 +25,11 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 @Slf4j
 public class TaskDiskDataServiceImpl implements TaskMonitorDataService {
-    private String measurement;
-    private String uuid;
-    private String jsonStr;
-    private InfluxDBClient influxDBClient;
-    private RedisTemplate redisTemplate;
-    private LogInfoService logInfoService;
-    private ThreadPoolExecutor threadPoolExecutor;
+    private final String measurement;
+    private final String uuid;
+    private final String jsonStr;
+    private final InfluxDBClient influxDBClient;
+    private final RedisTemplate redisTemplate;
 
     public TaskDiskDataServiceImpl(String measurement, String uuid, String jsonStr) {
         this.measurement = measurement;
@@ -45,8 +37,6 @@ public class TaskDiskDataServiceImpl implements TaskMonitorDataService {
         this.jsonStr = jsonStr;
         this.influxDBClient = ApplicationContextUtil.getBean(InfluxDBClient.class);
         this.redisTemplate = ApplicationContextUtil.getBean("redisTemplate", RedisTemplate.class);
-        this.logInfoService = ApplicationContextUtil.getBean(LogInfoService.class);
-        this.threadPoolExecutor = ApplicationContextUtil.getBean(ThreadPoolExecutor.class);
     }
 
     @Override
@@ -80,11 +70,6 @@ public class TaskDiskDataServiceImpl implements TaskMonitorDataService {
         redisTemplate.opsForList().leftPush(MonitorConstant.CACHE_DISK + MonitorConstant.M + uuid, str);
     }
 
-    @Override
-    public void sendWebSocket(String message) {
-        WebSocketMonitorData.sendDiskMessage(uuid, message);
-    }
-
     private void forArrayHandle(JsonNode partitionWithUsageStatsNode, List<DiskStatsTempVO> list) {
         for (int i = 0; i < partitionWithUsageStatsNode.size(); i++) {
             JsonNode node = partitionWithUsageStatsNode.get(i);
@@ -113,21 +98,16 @@ public class TaskDiskDataServiceImpl implements TaskMonitorDataService {
             saveKeyToRedis(flatMap);
             // 4、将 Map 数据存入 influxDB
             saveInfluxDB(flatMap, timestamp);
-            // 5、将数据通过 WebSocket 推送给前端
+            // 5、将数据缓存到 redis 中，并删除旧的缓存数据
             List<DiskStatsTempVO> list = new ArrayList<>();
             forArrayHandle(partitionWithUsageStatsNode, list);
             String result = JSONUtil.toJsonStr(new DiskStatsResultVO(list, timestamp));
-            sendWebSocket(result);
-            // 6、将数据缓存到 redis 中，并删除旧的缓存数据
             saveCacheToRedis(result);
 
-            log.info("[Disk 指标解析线程执行结束] -> " + uuid);
-            threadPoolExecutor.execute(new TaskThreadNumberStatistic(StatisticConstant.DISK_THREAD, true));
+            log.info("[Disk 指标解析线程执行结束] -> {}", uuid);
         } catch (Exception e) {
-            log.error("[Disk-Error]" + e);
-            threadPoolExecutor.execute(new TaskThreadNumberStatistic(StatisticConstant.DISK_THREAD, false));
-            StackTraceElement traceElement = e.getStackTrace()[0];
-            logInfoService.saveThreadExceptionLog(traceElement.getClassName(), traceElement.getMethodName(), e.toString(), DateUtil.date());
+            log.error("[Disk-Error-{}] {}", uuid, e.getMessage());
+            log.error(e.toString());
         }
     }
 }

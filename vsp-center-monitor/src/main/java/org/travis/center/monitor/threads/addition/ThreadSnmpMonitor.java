@@ -1,23 +1,18 @@
 package org.travis.center.monitor.threads.addition;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.hust.platform.common.constants.MonitorConstant;
-import com.hust.platform.common.constants.StatisticConstant;
-import com.hust.platform.common.utils.ApplicationContextUtil;
-import com.hust.platform.logger.service.LogInfoService;
-import com.hust.platform.logger.threads.TaskThreadNumberStatistic;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
 import lombok.extern.slf4j.Slf4j;
+import org.travis.center.common.utils.ApplicationContextUtil;
+import org.travis.shared.common.constants.MonitorConstant;
 
 import java.util.*;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @ClassName ThreadSnmpMonitor
@@ -29,20 +24,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 public class ThreadSnmpMonitor implements Runnable{
 
-    private String measurement;
-    private String uuid;
-    private String jsonStr;
-    private InfluxDBClient influxDBClient;
-    private LogInfoService logInfoService;
-    private ThreadPoolExecutor threadPoolExecutor;
+    private final String measurement;
+    private final String uuid;
+    private final String jsonStr;
+    private final InfluxDBClient influxDBClient;
 
     public ThreadSnmpMonitor(String measurement, String uuid, String jsonStr) {
         this.measurement = measurement;
         this.uuid = uuid;
         this.jsonStr = jsonStr;
         this.influxDBClient = ApplicationContextUtil.getBean(InfluxDBClient.class);
-        this.logInfoService = ApplicationContextUtil.getBean(LogInfoService.class);
-        this.threadPoolExecutor = ApplicationContextUtil.getBean(ThreadPoolExecutor.class);
     }
 
     public void saveInfluxDb(Map<String, Object> flatMap, Integer index, Long timestamp, String address) {
@@ -54,7 +45,6 @@ public class ThreadSnmpMonitor implements Runnable{
                 .time(new Date(timestamp * 1000L).toInstant(), WritePrecision.MS);
         influxDBClient.getWriteApiBlocking().writePoint(point);
     }
-
 
     @Override
     public void run() {
@@ -70,9 +60,7 @@ public class ThreadSnmpMonitor implements Runnable{
                 String ip = rootNode.get("ip").asText();
                 String port = rootNode.get("port").asText();
 
-
                 // 2.2 处理 json 数据
-
                 // 获取 oid_instance_map 数组处理节点
                 JsonNode instanceMapNode = rootNode.get("oid_instance_map_list").get("oid_instance_map");
                 ArrayNode instanceMapNodeArray = (ArrayNode) instanceMapNode;
@@ -110,13 +98,10 @@ public class ThreadSnmpMonitor implements Runnable{
                 }
             }
 
-            log.info("[SNMP 监测线程执行结束] -> " + uuid);
-            threadPoolExecutor.execute(new TaskThreadNumberStatistic(StatisticConstant.SNMP_THREAD, true));
+            log.info("[SNMP 监测线程执行结束] -> {}", uuid);
         } catch (Exception e) {
+            log.error("[Snmp-Error-{}] {}", uuid, e.getMessage());
             log.error(e.toString());
-            threadPoolExecutor.execute(new TaskThreadNumberStatistic(StatisticConstant.SNMP_THREAD, false));
-            StackTraceElement traceElement = e.getStackTrace()[0];
-            logInfoService.saveThreadExceptionLog(traceElement.getClassName(), traceElement.getMethodName(), e.toString(), DateUtil.date());
         }
     }
 }

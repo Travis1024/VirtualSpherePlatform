@@ -1,23 +1,18 @@
 package org.travis.center.monitor.threads.basic;
 
-import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hust.platform.common.constants.MonitorConstant;
-import com.hust.platform.common.constants.StatisticConstant;
-import com.hust.platform.common.utils.ApplicationContextUtil;
-import com.hust.platform.logger.service.LogInfoService;
-import com.hust.platform.logger.threads.TaskThreadNumberStatistic;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.travis.center.common.utils.ApplicationContextUtil;
+import org.travis.shared.common.constants.MonitorConstant;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @ClassName TaskProcessDataServiceImpl
@@ -28,13 +23,11 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 @Slf4j
 public class TaskProcessDataServiceImpl implements TaskMonitorDataService {
-    private String measurement;
-    private String uuid;
-    private String jsonStr;
-    private InfluxDBClient influxDBClient;
-    private RedisTemplate redisTemplate;
-    private LogInfoService logInfoService;
-    private ThreadPoolExecutor threadPoolExecutor;
+    private final String measurement;
+    private final String uuid;
+    private final String jsonStr;
+    private final InfluxDBClient influxDBClient;
+    private final RedisTemplate redisTemplate;
 
     public TaskProcessDataServiceImpl(String measurement, String uuid, String jsonStr) {
         this.measurement = measurement;
@@ -42,8 +35,6 @@ public class TaskProcessDataServiceImpl implements TaskMonitorDataService {
         this.jsonStr = jsonStr;
         this.influxDBClient = ApplicationContextUtil.getBean(InfluxDBClient.class);
         this.redisTemplate = ApplicationContextUtil.getBean("redisTemplate", RedisTemplate.class);
-        this.logInfoService = ApplicationContextUtil.getBean(LogInfoService.class);
-        this.threadPoolExecutor = ApplicationContextUtil.getBean(ThreadPoolExecutor.class);
     }
 
     @Override
@@ -73,11 +64,6 @@ public class TaskProcessDataServiceImpl implements TaskMonitorDataService {
     }
 
     @Override
-    public void sendWebSocket(String message) {
-        // no action
-    }
-
-    @Override
     public void run() {
         try {
             // 1、将 json 字符串转为 JsonNode 节点，并提取其中的 process-stat 节点
@@ -94,13 +80,10 @@ public class TaskProcessDataServiceImpl implements TaskMonitorDataService {
             // 4、将 Map 数据存入 influxDB
             saveInfluxDB(flatMap, timestamp);
 
-            log.info("[Process 指标解析线程执行结束] -> " + uuid);
-            threadPoolExecutor.execute(new TaskThreadNumberStatistic(StatisticConstant.PROCESS_THREAD, true));
+            log.info("[Process 指标解析线程执行结束] -> {}", uuid);
         } catch (Exception e) {
-            log.error("[Process-Error]" + e);
-            threadPoolExecutor.execute(new TaskThreadNumberStatistic(StatisticConstant.PROCESS_THREAD, false));
-            StackTraceElement traceElement = e.getStackTrace()[0];
-            logInfoService.saveThreadExceptionLog(traceElement.getClassName(), traceElement.getMethodName(), e.toString(), DateUtil.date());
+            log.error("[Process-Error-{}] {}", uuid, e.getMessage());
+            log.error(e.toString());
         }
     }
 }

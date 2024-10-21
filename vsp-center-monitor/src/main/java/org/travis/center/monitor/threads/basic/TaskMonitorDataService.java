@@ -20,6 +20,4 @@ public interface TaskMonitorDataService extends Runnable{
     void saveKeyToRedis(Map<String, Object> flatMap);
 
     void saveCacheToRedis(String str);
-
-    void sendWebSocket(String message);
 }
