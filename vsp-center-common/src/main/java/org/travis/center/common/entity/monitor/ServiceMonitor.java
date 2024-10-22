@@ -14,6 +14,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.travis.shared.common.enums.MachineTypeEnum;
+import org.travis.shared.common.enums.ServiceControlTypeEnum;
+import org.travis.shared.common.enums.ServiceStateEnum;
 
 /**
  * @ClassName ServiceMonitor
@@ -45,7 +48,7 @@ public class ServiceMonitor extends com.baomidou.mybatisplus.extension.activerec
      */
     @TableField(value = "SERVICE_MACHINE_TYPE")
     @Schema(description="服务所属节点类型(1:宿主机、2:虚拟机)")
-    private Integer serviceMachineType;
+    private MachineTypeEnum serviceMachineType;
 
     /**
      * 服务所属节点UUID
@@ -101,14 +104,14 @@ public class ServiceMonitor extends com.baomidou.mybatisplus.extension.activerec
      */
     @TableField(value = "SERVICE_AUTO_TYPE")
     @Schema(description="服务自动调整类型（1:半自动、2:自动）")
-    private Integer serviceAutoType;
+    private ServiceControlTypeEnum serviceAutoType;
 
     /**
      * 服务监控启用状态
      */
     @TableField(value = "SERVICE_STATE")
     @Schema(description="服务监控启用状态")
-    private String serviceState;
+    private ServiceStateEnum serviceState;
 
     /**
      * 逻辑删除
@@ -176,4 +179,21 @@ public class ServiceMonitor extends com.baomidou.mybatisplus.extension.activerec
     public static final String COL_UPDATE_TIME = "UPDATE_TIME";
 
     public static final String COL_CREATE_TIME = "CREATE_TIME";
+
+    @Override
+    public String toString() {
+        return "{" +
+                "服务监控记录ID=" + id +
+                ", 服务所属节点类型=" + serviceMachineType.getDisplay() +
+                ", 服务所属节点UUID='" + serviceMachineUuid +
+                ", 当前服务名称='" + serviceName +
+                ", 预备替换服务名称='" + serviceReplaceName +
+                ", 当前服务进程ID=" + servicePid +
+                ", 服务CPU上限占用率=" + serviceCpuLimitRate +
+                ", 服务内存上限占用率=" + serviceMemLimitRate +
+                ", 服务健康值分数下限值=" + serviceHealthLimitScore +
+                ", 服务自动调整类型=" + serviceAutoType.getDisplay() +
+                ", 服务监控启动状态=" + serviceState.getDisplay() +
+                '}';
+    }
 }

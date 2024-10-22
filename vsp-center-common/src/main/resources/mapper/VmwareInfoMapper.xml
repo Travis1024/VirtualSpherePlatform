@@ -18,10 +18,13 @@
     <result column="CREATOR" jdbcType="BIGINT" property="creator" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="LOGIN_USERNAME" jdbcType="VARCHAR" property="loginUsername" />
+    <result column="LOGIN_PASSWORD" jdbcType="VARCHAR" property="loginPassword" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     ID, "NAME", UUID, DESCRIPTION, HOST_ID, "STATE", CREATE_FORM, VCPU_MAX, VCPU_CURRENT,
-    MEMORY_MAX, MEMORY_CURRENT, IS_DELETED, UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME
+    MEMORY_MAX, MEMORY_CURRENT, IS_DELETED, UPDATER, CREATOR, UPDATE_TIME, CREATE_TIME, LOGIN_USERNAME,
+    LOGIN_PASSWORD
   </sql>
 </mapper>

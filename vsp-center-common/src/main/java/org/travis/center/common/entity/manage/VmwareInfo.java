@@ -143,6 +143,21 @@ public class VmwareInfo extends com.baomidou.mybatisplus.extension.activerecord.
     @Schema(description="创建时间")
     private Date createTime;
 
+    /**
+     * 管理员登录用户名
+     */
+    @TableField(value = "LOGIN_USERNAME")
+    @Schema(description = "管理员登录用户名")
+    private String loginUsername;
+
+    /**
+     * 管理员登录密码
+     */
+    @TableField(value = "LOGIN_PASSWORD")
+    @Schema(description = "管理员登录密码")
+    private String loginPassword;
+
+
     private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "ID";
@@ -176,4 +191,8 @@ public class VmwareInfo extends com.baomidou.mybatisplus.extension.activerecord.
     public static final String COL_UPDATE_TIME = "UPDATE_TIME";
 
     public static final String COL_CREATE_TIME = "CREATE_TIME";
+
+    public static final String COL_LOGIN_USERNAME = "LOGIN_USERNAME";
+
+    public static final String COL_LOGIN_PASSWORD = "LOGIN_PASSWORD";
 }

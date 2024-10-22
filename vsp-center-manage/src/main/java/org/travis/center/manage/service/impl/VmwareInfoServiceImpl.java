@@ -6,6 +6,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -34,6 +36,7 @@ import org.travis.center.common.entity.support.GlobalMessage;
 import org.travis.center.common.enums.HostStateEnum;
 import org.travis.center.common.enums.PipelineBusinessCodeEnum;
 import org.travis.center.common.mapper.manage.NetworkLayerInfoMapper;
+import org.travis.center.manage.pojo.dto.VmwareLoginInfoUpdateDTO;
 import org.travis.center.manage.pojo.dto.VmwareMigrateDTO;
 import org.travis.center.manage.pojo.pipeline.VmwareDestroyPipe;
 import org.travis.center.manage.template.vmware.build.IsoVmwareCreationService;
@@ -769,6 +772,51 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         } finally {
             if (lock.isHeldByCurrentThread()) {
                 lock.unlock();
+            }
+        }
+    }
+
+    @Override
+    public void setLoginInfo(VmwareLoginInfoUpdateDTO vmwareLoginInfoUpdateDTO) {
+        getBaseMapper().update(
+                Wrappers.<VmwareInfo>lambdaUpdate()
+                        .set(VmwareInfo::getLoginUsername, vmwareLoginInfoUpdateDTO.getUsername())
+                        .set(VmwareInfo::getLoginPassword, vmwareLoginInfoUpdateDTO.getPassword())
+                        .eq(VmwareInfo::getId, vmwareLoginInfoUpdateDTO.getVmwareId())
+        );
+    }
+
+    @Override
+    public boolean validateVmwareSshConnect(Long vmwareId, String username, String password) {
+        // 1.校验虚拟机状态
+        VmwareInfo vmwareInfo = Optional.ofNullable(selectOne(vmwareId)).orElseThrow(() -> new NotFoundException("未找到虚拟机信息!"));
+        if (!VmwareStateEnum.RUNNING.equals(vmwareInfo.getState())) {
+            throw new CommonException(BizCodeEnum.BAD_REQUEST.getCode(), "虚拟机处于非运行状态, 无法校验连接!");
+        }
+
+        // 2.通过虚拟机ID查询IP地址
+        String ipAddress = queryIpAddress(vmwareId);
+        if (StrUtil.isEmpty(ipAddress)) {
+            throw new CommonException(BizCodeEnum.UNKNOW.getCode(), "IP地址为空！");
+        }
+
+        // 3.连接校验
+        Session session = null;
+        try {
+            JSch jSch = new JSch();
+            session = jSch.getSession(username, ipAddress, 22);
+            session.setPassword(password);
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.setTimeout(10000);
+            session.setServerAliveInterval(5000);
+            session.connect(10000);
+            return true;
+        } catch (Exception exception) {
+            log.error("[VmwareInfoServiceImpl::checkHostSshConnect] {} SSH Connect Pre-Check Error: {}", ipAddress, exception.getMessage());
+            return false;
+        } finally {
+            if (session != null) {
+                session.disconnect();
             }
         }
     }

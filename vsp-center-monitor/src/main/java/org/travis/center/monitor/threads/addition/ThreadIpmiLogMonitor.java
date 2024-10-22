@@ -24,10 +24,10 @@ import java.util.List;
 @Slf4j
 public class ThreadIpmiLogMonitor implements Runnable{
 
-    private String uuid;
-    private String jsonStr;
-    private IpmiLogInfoService ipmiLogInfoService;
-    private IpmiLogInfoMapper ipmiLogInfoMapper;
+    private final String uuid;
+    private final String jsonStr;
+    private final IpmiLogInfoService ipmiLogInfoService;
+    private final IpmiLogInfoMapper ipmiLogInfoMapper;
 
     public ThreadIpmiLogMonitor(String uuid, String jsonStr) {
         this.uuid = uuid;

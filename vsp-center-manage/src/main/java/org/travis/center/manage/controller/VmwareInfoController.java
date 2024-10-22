@@ -5,8 +5,7 @@ import org.springframework.validation.annotation.Validated;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import org.springframework.web.bind.annotation.*;
 import org.travis.center.common.enums.BusinessTypeEnum;
-import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
-import org.travis.center.manage.pojo.dto.VmwareMigrateDTO;
+import org.travis.center.manage.pojo.dto.*;
 import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.center.manage.service.VmwareInfoService;
 import org.travis.center.support.aspect.Log;
@@ -187,4 +186,22 @@ public class VmwareInfoController {
         return vmwareInfoService.offlineMigrate(vmwareMigrateDTO);
     }
 
+    @RequestLock
+    @Log(title = "设置虚拟机管理员登录信息", businessType = BusinessTypeEnum.UPDATE)
+    @Operation(summary = "设置虚拟机管理员登录信息")
+    @PutMapping("/setLoginInfo")
+    public void setLoginInfo(@Validated @RequestBody VmwareLoginInfoUpdateDTO vmwareLoginInfoUpdateDTO) {
+        vmwareInfoService.setLoginInfo(vmwareLoginInfoUpdateDTO);
+    }
+
+    @Log(title = "虚拟机SSH连接预检测")
+    @Operation(summary = "虚拟机SSH连接预检测")
+    @PostMapping("/sshPreCheck")
+    public boolean validateHostSshConnect(@Validated @RequestBody VmwareSshCheckDTO vmwareSshCheckDTO) {
+        return vmwareInfoService.validateVmwareSshConnect(
+                vmwareSshCheckDTO.getVmwareId(),
+                vmwareSshCheckDTO.getUsername(),
+                vmwareSshCheckDTO.getPassword()
+        );
+    }
 }

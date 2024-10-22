@@ -24,10 +24,10 @@ import java.util.Map;
 @Slf4j
 public class ThreadIpmiSensorMonitor implements Runnable{
 
-    private String measurement;
-    private String uuid;
-    private String jsonStr;
-    private InfluxDBClient influxDBClient;
+    private final String measurement;
+    private final String uuid;
+    private final String jsonStr;
+    private final InfluxDBClient influxDBClient;
 
     public ThreadIpmiSensorMonitor(String measurement, String uuid, String jsonStr) {
         this.measurement = measurement;

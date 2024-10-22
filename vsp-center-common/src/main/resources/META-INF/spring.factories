@@ -3,4 +3,5 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.travis.center.common.config.mybatis.MybatisAutoConfig,\
   org.travis.center.common.config.satoken.SaTokenConfig,\
   org.travis.center.common.config.zookeeper.ZookeeperConfig,\
-  org.travis.center.common.config.influxdb.InfluxdbConfig
+  org.travis.center.common.config.influxdb.InfluxdbConfig,\
+  org.travis.center.common.config.redis.RedisConfig

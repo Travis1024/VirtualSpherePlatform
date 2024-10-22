@@ -3,11 +3,14 @@ package org.travis.center.manage.service;
 import org.travis.center.common.entity.manage.VmwareInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.travis.center.manage.pojo.dto.VmwareInsertDTO;
+import org.travis.center.manage.pojo.dto.VmwareLoginInfoUpdateDTO;
 import org.travis.center.manage.pojo.dto.VmwareMigrateDTO;
 import org.travis.center.manage.pojo.vo.VmwareErrorVO;
 import org.travis.shared.common.domain.PageQuery;
 import org.travis.shared.common.domain.PageResult;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -61,4 +64,8 @@ public interface VmwareInfoService extends IService<VmwareInfo>{
     String liveMigrate(VmwareMigrateDTO vmwareMigrateDTO);
 
     String offlineMigrate(VmwareMigrateDTO vmwareMigrateDTO);
+
+    void setLoginInfo(VmwareLoginInfoUpdateDTO vmwareLoginInfoUpdateDTO);
+
+    boolean validateVmwareSshConnect(Long vmwareId, String username, String password);
 }

@@ -1,28 +1,23 @@
 package org.travis.center.monitor.threads.addition;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.hust.platform.common.constants.MonitorConstant;
-import com.hust.platform.common.constants.StatisticConstant;
-import com.hust.platform.common.entity.ServiceMonitor;
-import com.hust.platform.common.utils.ApplicationContextUtil;
-import com.hust.platform.common.utils.R;
-import com.hust.platform.common.utils.RedisUtil;
-import com.hust.platform.logger.service.LogInfoService;
-import com.hust.platform.logger.threads.TaskThreadNumberStatistic;
-import com.hust.platform.monitor.service.ServiceMonitorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.travis.center.common.entity.monitor.ServiceMonitor;
+import org.travis.center.common.utils.ApplicationContextUtil;
+import org.travis.center.common.utils.MonitorRedisUtil;
+import org.travis.center.monitor.service.ServiceMonitorService;
+import org.travis.shared.common.constants.MonitorConstant;
+import org.travis.shared.common.domain.R;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @ClassName ThreadServiceMonitor
@@ -33,21 +28,17 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 @Slf4j
 public class ThreadServiceMonitor implements Runnable{
-    private String uuid;
-    private String jsonStr;
-    private StringRedisTemplate stringRedisTemplate;
-    private RedisUtil redisUtil;
-    private LogInfoService logInfoService;
-    private ThreadPoolExecutor threadPoolExecutor;
-    private ServiceMonitorService serviceMonitorService;
+    private final String uuid;
+    private final String jsonStr;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final MonitorRedisUtil redisUtil;
+    private final ServiceMonitorService serviceMonitorService;
 
     public ThreadServiceMonitor(String uuid, String jsonStr) {
         this.uuid = uuid;
         this.jsonStr = jsonStr;
         this.stringRedisTemplate = ApplicationContextUtil.getBean(StringRedisTemplate.class);
-        this.redisUtil = ApplicationContextUtil.getBean(RedisUtil.class);
-        this.logInfoService = ApplicationContextUtil.getBean(LogInfoService.class);
-        this.threadPoolExecutor = ApplicationContextUtil.getBean(ThreadPoolExecutor.class);
+        this.redisUtil = ApplicationContextUtil.getBean(MonitorRedisUtil.class);
         this.serviceMonitorService = ApplicationContextUtil.getBean(ServiceMonitorService.class);
     }
 
@@ -69,8 +60,8 @@ public class ThreadServiceMonitor implements Runnable{
             }
             if (sumValue == 3) {
                 R<?> execkedReplace = serviceMonitorService.execReplace(uuid, serviceMonitor, healthScore);
-                if (!R.checkSuccess(execkedReplace)) {
-                    log.error("[服务替换执行失败] - 失败原因：" + JSONUtil.toJsonStr(execkedReplace));
+                if (execkedReplace.checkFail()) {
+                    log.error("[服务替换执行失败] - 失败原因：{}", JSONUtil.toJsonStr(execkedReplace));
                 }
             }
         } else {
@@ -121,14 +112,10 @@ public class ThreadServiceMonitor implements Runnable{
                 judgeHealth(serviceMonitor, healthScore);
             }
 
-            log.info("[服务质量监测线程执行结束] -> " + uuid);
-            threadPoolExecutor.execute(new TaskThreadNumberStatistic(StatisticConstant.SERVICE_MONITOR_THREAD, true));
-
+            log.info("[服务质量监测线程执行结束] -> {}", uuid);
         } catch (Exception e) {
-            log.error("[Service-Monitor-Error]" + e);
-            threadPoolExecutor.execute(new TaskThreadNumberStatistic(StatisticConstant.SERVICE_MONITOR_THREAD, false));
-            StackTraceElement traceElement = e.getStackTrace()[0];
-            logInfoService.saveThreadExceptionLog(traceElement.getClassName(), traceElement.getMethodName(), e.toString(), DateUtil.date());
+            log.error("[Service-Monitor-Error-{}] {}", uuid, e.getMessage());
+            log.error(e.toString());
         }
     }
 }
