@@ -12,6 +12,7 @@ import org.travis.center.support.websocket.WsMessageHolder;
 import org.travis.shared.common.domain.R;
 import org.travis.shared.common.domain.WebSocketMessage;
 import org.travis.shared.common.enums.BizCodeEnum;
+import org.travis.shared.common.enums.MachineTypeEnum;
 import org.travis.shared.common.enums.MsgModuleEnum;
 import org.travis.shared.common.enums.MsgStateEnum;
 import org.travis.shared.common.exceptions.BadRequestException;
@@ -47,6 +48,7 @@ public class CenterMessageClientImpl implements CenterMessageClient {
 
     @Override
     public void sendBridgedInitResultMessage(Long hostId, String hostName, boolean isSuccess, String stateMessage) {
+        String hostUuid = null;
         try {
             int updated = hostInfoMapper.update(
                     Wrappers.<HostInfo>lambdaUpdate()
@@ -56,12 +58,16 @@ public class CenterMessageClientImpl implements CenterMessageClient {
             );
             Assert.isTrue(updated != 0, () -> new BadRequestException("宿主机状态更新失败, 未找到当前宿主机信息!"));
 
+            hostUuid = hostInfoMapper.selectOne(Wrappers.<HostInfo>lambdaQuery().select(HostInfo::getUuid).eq(HostInfo::getId, hostId)).getUuid();
+
             wsMessageHolder.sendGlobalMessage(
                     WebSocketMessage.builder()
                             .msgTitle("宿主机创建")
                             .msgModule(MsgModuleEnum.HOST)
                             .msgState(MsgStateEnum.INFO)
                             .msgContent(hostName + " -> " + "宿主机创建成功!")
+                            .nodeMachineType(MachineTypeEnum.HOST)
+                            .nodeMachineUuid(hostUuid)
                             .build()
             );
 
@@ -73,6 +79,8 @@ public class CenterMessageClientImpl implements CenterMessageClient {
                             .msgModule(MsgModuleEnum.HOST)
                             .msgState(MsgStateEnum.ERROR)
                             .msgContent(hostName + " -> 宿主机创建失败:" + e.getMessage())
+                            .nodeMachineType(MachineTypeEnum.HOST)
+                            .nodeMachineUuid(hostUuid)
                             .build()
             );
         }

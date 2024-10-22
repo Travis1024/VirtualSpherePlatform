@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.travis.shared.common.enums.MachineTypeEnum;
 import org.travis.shared.common.enums.MsgModuleEnum;
 import org.travis.shared.common.enums.MsgStateEnum;
 
@@ -22,10 +23,19 @@ import org.travis.shared.common.enums.MsgStateEnum;
 public class WebSocketMessage {
     @Schema(description = "消息模块")
     private MsgModuleEnum msgModule;
+
     @Schema(description = "消息状态")
     private MsgStateEnum msgState;
+
     @Schema(description = "消息标题")
     private String msgTitle;
+
     @Schema(description = "消息内容")
     private String msgContent;
+
+    @Schema(description = "消息相关节点类型")
+    private MachineTypeEnum nodeMachineType;
+
+    @Schema(description = "消息相关节点UUID")
+    private String nodeMachineUuid;
 }

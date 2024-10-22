@@ -2,6 +2,7 @@ package org.travis.center.manage.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -41,6 +42,7 @@ import org.travis.center.manage.pojo.dto.VmwareMigrateDTO;
 import org.travis.center.manage.pojo.pipeline.VmwareDestroyPipe;
 import org.travis.center.manage.template.vmware.build.IsoVmwareCreationService;
 import org.travis.center.manage.template.vmware.build.SystemDiskVmwareCreationService;
+import org.travis.shared.common.enums.MachineTypeEnum;
 import org.travis.shared.common.enums.MsgModuleEnum;
 import org.travis.shared.common.enums.MsgStateEnum;
 import org.travis.center.common.enums.VmwareStateEnum;
@@ -62,6 +64,7 @@ import org.travis.shared.common.enums.BizCodeEnum;
 import org.travis.shared.common.exceptions.*;
 import org.travis.shared.common.pipeline.FlowController;
 import org.travis.shared.common.pipeline.ProcessContext;
+import org.travis.shared.common.utils.SnowflakeIdUtil;
 
 import javax.annotation.Resource;
 
@@ -128,10 +131,14 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
             default:
                 throw new BadRequestException("虚拟机创建形式错误!");
         }
+
+        // 初始化虚拟机UUID
+        String vmwareUuid = IdUtil.fastUUID();
+
         // 异步创建虚拟机
         CompletableFuture.runAsync(() -> {
                     try {
-                        creationService.build(vmwareInsertDTO);
+                        creationService.build(vmwareInsertDTO, vmwareUuid);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -144,6 +151,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                                     .msgModule(MsgModuleEnum.VMWARE)
                                     .msgState(MsgStateEnum.INFO)
                                     .msgContent(StrUtil.format("{} -> 虚拟机异步创建成功!", vmwareInsertDTO.getName()))
+                                    .nodeMachineType(MachineTypeEnum.VMWARE)
+                                    .nodeMachineUuid(vmwareUuid)
                                     .build()
                     );
                 })
@@ -155,6 +164,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                                     .msgModule(MsgModuleEnum.VMWARE)
                                     .msgState(MsgStateEnum.ERROR)
                                     .msgContent(StrUtil.format("{} -> 虚拟机异步创建失败:{}", vmwareInsertDTO.getName(), ex))
+                                    .nodeMachineType(MachineTypeEnum.VMWARE)
+                                    .nodeMachineUuid(vmwareUuid)
                                     .build()
                     );
                     return null;
@@ -167,6 +178,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                         .msgModule(MsgModuleEnum.VMWARE)
                         .msgState(MsgStateEnum.INFO)
                         .msgContent(StrUtil.format("{} -> 虚拟机异步创建中, 请关注全局消息!", vmwareInsertDTO.getName()))
+                        .nodeMachineType(MachineTypeEnum.VMWARE)
+                        .nodeMachineUuid(vmwareUuid)
                         .build()
         );
     }
@@ -599,6 +612,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                                         .msgModule(MsgModuleEnum.VMWARE)
                                         .msgState(MsgStateEnum.INFO)
                                         .msgContent(message)
+                                        .nodeMachineType(MachineTypeEnum.VMWARE)
+                                        .nodeMachineUuid(vmwareInfo.getUuid())
                                         .build()
                         );
                     })
@@ -618,6 +633,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                                         .msgModule(MsgModuleEnum.VMWARE)
                                         .msgState(MsgStateEnum.ERROR)
                                         .msgContent(message)
+                                        .nodeMachineType(MachineTypeEnum.VMWARE)
+                                        .nodeMachineUuid(vmwareInfo.getUuid())
                                         .build()
                         );
                         return null;
@@ -637,6 +654,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                             .msgModule(MsgModuleEnum.VMWARE)
                             .msgState(MsgStateEnum.INFO)
                             .msgContent(message)
+                            .nodeMachineType(MachineTypeEnum.VMWARE)
+                            .nodeMachineUuid(vmwareInfo.getUuid())
                             .build()
             );
 
@@ -723,6 +742,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                                         .msgModule(MsgModuleEnum.VMWARE)
                                         .msgState(MsgStateEnum.INFO)
                                         .msgContent(message)
+                                        .nodeMachineType(MachineTypeEnum.VMWARE)
+                                        .nodeMachineUuid(vmwareInfo.getUuid())
                                         .build()
                         );
                     })
@@ -742,6 +763,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                                         .msgModule(MsgModuleEnum.VMWARE)
                                         .msgState(MsgStateEnum.ERROR)
                                         .msgContent(message)
+                                        .nodeMachineType(MachineTypeEnum.VMWARE)
+                                        .nodeMachineUuid(vmwareInfo.getUuid())
                                         .build()
                         );
                         return null;
@@ -761,6 +784,8 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                             .msgModule(MsgModuleEnum.VMWARE)
                             .msgState(MsgStateEnum.INFO)
                             .msgContent(message)
+                            .nodeMachineType(MachineTypeEnum.VMWARE)
+                            .nodeMachineUuid(vmwareInfo.getUuid())
                             .build()
             );
 

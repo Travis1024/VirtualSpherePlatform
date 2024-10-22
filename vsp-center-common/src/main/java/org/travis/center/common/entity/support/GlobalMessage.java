@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.travis.shared.common.enums.MachineTypeEnum;
 import org.travis.shared.common.enums.MsgConfirmEnum;
 import org.travis.shared.common.enums.MsgModuleEnum;
 import org.travis.shared.common.enums.MsgStateEnum;
@@ -124,6 +125,20 @@ public class GlobalMessage extends com.baomidou.mybatisplus.extension.activereco
     @Schema(description="消息确认时间")
     private Date confirmTime;
 
+    /**
+     * 相关节点类型
+     */
+    @TableField(value = "NODE_MACHINE_TYPE")
+    @Schema(description = "消息相关节点类型")
+    private MachineTypeEnum nodeMachineType;
+
+    /**
+     * 相关节点ID
+     */
+    @TableField(value = "NODE_MACHINE_UUID")
+    @Schema(description = "消息相关节点UUID")
+    private String nodeMachineUuid;
+
     private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "ID";
@@ -151,4 +166,8 @@ public class GlobalMessage extends com.baomidou.mybatisplus.extension.activereco
     public static final String COL_CONFIRM_USER_ID = "CONFIRM_USER_ID";
 
     public static final String COL_CONFIRM_TIME = "CONFIRM_TIME";
+
+    public static final String COL_NODE_MACHINE_TYPE = "NODE_MACHINE_TYPE";
+
+    public static final String COL_NODE_MACHINE_UUID = "NODE_MACHINE_UUID";
 }

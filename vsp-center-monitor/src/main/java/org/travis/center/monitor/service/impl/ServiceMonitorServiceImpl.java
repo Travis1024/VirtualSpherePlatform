@@ -23,7 +23,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.travis.api.client.center.CenterVmwareClient;
 import org.travis.center.common.entity.manage.HostInfo;
 import org.travis.center.common.entity.manage.VmwareInfo;
-import org.travis.center.common.entity.support.GlobalMessage;
 import org.travis.center.common.enums.HostStateEnum;
 import org.travis.center.common.enums.VmwareStateEnum;
 import org.travis.center.common.mapper.manage.HostInfoMapper;
@@ -276,6 +275,8 @@ public class ServiceMonitorServiceImpl extends ServiceImpl<ServiceMonitorMapper,
                             .msgModule(MsgModuleEnum.SERVICE)
                             .msgState(MsgStateEnum.ALARM)
                             .msgContent("当前健康分数：" + currentHealthScore + " | " + serviceMonitor)
+                            .nodeMachineType(serviceMonitor.getServiceMachineType())
+                            .nodeMachineUuid(machineUuid)
                             .build()
             );
         } else if (ServiceControlTypeEnum.AUTOMATIC.equals(serviceMonitor.getServiceAutoType())) {
@@ -290,6 +291,8 @@ public class ServiceMonitorServiceImpl extends ServiceImpl<ServiceMonitorMapper,
                             .msgModule(MsgModuleEnum.SERVICE)
                             .msgState(MsgStateEnum.INFO)
                             .msgContent("当前健康分数：" + currentHealthScore + " | " + serviceMonitor)
+                            .nodeMachineType(serviceMonitor.getServiceMachineType())
+                            .nodeMachineUuid(machineUuid)
                             .build()
             );
         }

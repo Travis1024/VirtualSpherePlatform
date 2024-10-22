@@ -78,6 +78,8 @@ public abstract class AbstractVmwareCreationService {
     protected VmwareCreateFormEnum vmwareCreateFormEnum;
     // step 0
     protected VmwareInsertDTO vmwareInsertDTO;
+    // step 0
+    protected String vmwareUuid;
     // step 1
     protected HostResourceInfoBO hostResourceInfoBO;
     // step 1
@@ -87,14 +89,13 @@ public abstract class AbstractVmwareCreationService {
     // step 3
     protected DiskInfo diskInfo;
 
-
     @PostConstruct
     public void init() {
         CreationHolder.addCreationService(vmwareCreateFormEnum, this);
     }
 
     @Transactional
-    public void build(VmwareInsertDTO vmwareInsertDTO) throws IOException {
+    public void build(VmwareInsertDTO vmwareInsertDTO, String vmwareUuid) throws IOException {
         AbstractVmwareCreationService creationService;
         switch (vmwareCreateFormEnum) {
             case ISO:
@@ -108,6 +109,7 @@ public abstract class AbstractVmwareCreationService {
         }
 
         this.vmwareInsertDTO = vmwareInsertDTO;
+        this.vmwareUuid = vmwareUuid;
 
         // 1.查询宿主机信息并验证
         log.debug("1.查询宿主机信息并验证");
@@ -155,7 +157,7 @@ public abstract class AbstractVmwareCreationService {
         // 如果存在空格，全部替换为下划线
         vmwareInfo.setName(vmwareInfo.getName().trim().replace(CharUtil.SPACE, CharUtil.UNDERLINE));
         vmwareInfo.setId(SnowflakeIdUtil.nextId());
-        vmwareInfo.setUuid(IdUtil.fastUUID());
+        vmwareInfo.setUuid(this.vmwareUuid);
         vmwareInfo.setState(VmwareStateEnum.ING_CREATE);
         vmwareInfo.setVcpuMax(hostResourceInfoBO.getVCpuAllNum());
         vmwareInfo.setMemoryMax((long) ((hostResourceInfoBO.getMemoryTotalMax() * 1.0 / SystemConstant.GB_UNIT) * 0.8) * SystemConstant.GB_UNIT);

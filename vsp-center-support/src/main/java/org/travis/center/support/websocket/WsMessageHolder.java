@@ -38,6 +38,12 @@ public class WsMessageHolder {
         globalMessage.setMessageContent(webSocketMessage.getMsgContent());
         globalMessage.setMessageState(webSocketMessage.getMsgState());
         globalMessage.setMessageModule(webSocketMessage.getMsgModule());
+        if (webSocketMessage.getNodeMachineType() != null) {
+            globalMessage.setNodeMachineType(webSocketMessage.getNodeMachineType());
+        }
+        if (webSocketMessage.getNodeMachineUuid() != null) {
+            globalMessage.setNodeMachineUuid(webSocketMessage.getNodeMachineUuid());
+        }
         globalMessageMapper.insert(globalMessage);
     }
 }

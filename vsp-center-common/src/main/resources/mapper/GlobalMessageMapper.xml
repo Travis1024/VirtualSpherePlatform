@@ -16,10 +16,13 @@
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="CONFIRM_USER_ID" jdbcType="BIGINT" property="confirmUserId" />
     <result column="CONFIRM_TIME" jdbcType="TIMESTAMP" property="confirmTime" />
+    <result column="NODE_MACHINE_TYPE" jdbcType="INTEGER" property="nodeMachineType" />
+    <result column="NODE_MACHINE_UUID" jdbcType="VARCHAR" property="nodeMachineUuid" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     ID, MESSAGE_STATE, MESSAGE_MODULE, MESSAGE_CONTENT, IS_CONFIRM, IS_DELETED, UPDATER,
-    CREATOR, UPDATE_TIME, CREATE_TIME, CONFIRM_USER_ID, CONFIRM_TIME, MESSAGE_TITLE
+    CREATOR, UPDATE_TIME, CREATE_TIME, CONFIRM_USER_ID, CONFIRM_TIME, MESSAGE_TITLE,
+    NODE_MACHINE_TYPE, NODE_MACHINE_UUID
   </sql>
 </mapper>
