@@ -37,9 +37,6 @@ public class QuartzDataMonitorTaskJob extends QuartzJobBean {
     @Value("${influx.measurement}")
     private String measurement;
 
-    @Value("${alarmIntervalTime}")
-    private Long alarmIntervalTime;
-
     @Override
     protected void executeInternal(JobExecutionContext context) {
         try {
@@ -131,7 +128,7 @@ public class QuartzDataMonitorTaskJob extends QuartzJobBean {
             String uuid = triggerKey.substring(8);
 
             // addition:报警触发事件线程
-            CompletableFuture.runAsync(new ThreadTriggerMonitor(uuid, jsonStr, alarmIntervalTime), MonitorThreadPoolConfig.monitorProcessExecutor);
+            CompletableFuture.runAsync(new ThreadTriggerMonitor(uuid, jsonStr), MonitorThreadPoolConfig.monitorProcessExecutor);
         }
     }
 

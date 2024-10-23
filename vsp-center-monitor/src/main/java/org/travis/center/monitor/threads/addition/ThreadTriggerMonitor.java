@@ -28,7 +28,7 @@ public class ThreadTriggerMonitor implements Runnable{
     private final WsMessageHolder wsMessageHolder;
     private final VmwareInfoMapper vmwareInfoMapper;
 
-    public ThreadTriggerMonitor(String uuid, String jsonStr, Long alarmIntervalTime) {
+    public ThreadTriggerMonitor(String uuid, String jsonStr) {
         this.uuid = uuid;
         this.jsonStr = jsonStr;
         this.wsMessageHolder = ApplicationContextUtil.getBean(WsMessageHolder.class);

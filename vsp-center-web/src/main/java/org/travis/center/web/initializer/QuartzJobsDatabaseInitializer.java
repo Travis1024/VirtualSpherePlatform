@@ -175,14 +175,25 @@ public class QuartzJobsDatabaseInitializer implements CommandLineRunner {
                 .jobDataMap(Collections.singletonMap(PERIOD_KEY, 30))
                 .build();
 
-        ScheduleJobCreateDTO dataMonitorTaskJob = ScheduleJobCreateDTO.builder()
-                .id(ScheduleJobConstant.DATA_MONITOR_TASK_JOB_INDEX_ID)
-                .scheduleName("虚拟机指标数据监测任务")
-                .jobGroup(ScheduleGroupEnum.SYSTEM)
+        ScheduleJobCreateDTO dataMonitorParseTaskJob = ScheduleJobCreateDTO.builder()
+                .id(ScheduleJobConstant.DATA_MONITOR_PARSE_TASK_JOB_INDEX_ID)
+                .scheduleName("虚拟机指标数据解析任务")
+                .jobGroup(ScheduleGroupEnum.VMWARE)
                 .jobClass(ClassUtil.getClassName(QuartzDataMonitorTaskJob.class, false))
                 .isFixed(IsFixedEnum.DISALLOW_UPDATE)
                 .cronExpression(ScheduleJobConstant.CRON_1_S)
                 .cronDescription(StrUtil.format(ScheduleJobConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(ScheduleJobConstant.CRON_1_S)))
+                .jobDataMap(null)
+                .build();
+
+        ScheduleJobCreateDTO dataMonitorRegulateTaskJob = ScheduleJobCreateDTO.builder()
+                .id(ScheduleJobConstant.DATA_MONITOR_REGULATE_TASK_JOB_INDEX_ID)
+                .scheduleName("虚拟机指标监测调控任务")
+                .jobGroup(ScheduleGroupEnum.VMWARE)
+                .jobClass(ClassUtil.getClassName(QuartzDataMonitorRegulateTaskJob.class, false))
+                .isFixed(IsFixedEnum.DISALLOW_UPDATE)
+                .cronExpression(ScheduleJobConstant.CRON_10_S)
+                .cronDescription(StrUtil.format(ScheduleJobConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(ScheduleJobConstant.CRON_10_S)))
                 .jobDataMap(null)
                 .build();
 
@@ -200,7 +211,7 @@ public class QuartzJobsDatabaseInitializer implements CommandLineRunner {
         SCHEDULE_JOB_INFOS.add(periodicMonitoringJob20s);
         SCHEDULE_JOB_INFOS.add(periodicMonitoringJob30s);
 
-        SCHEDULE_JOB_INFOS.add(dataMonitorTaskJob);
+        SCHEDULE_JOB_INFOS.add(dataMonitorParseTaskJob);
     }
 
     @Override

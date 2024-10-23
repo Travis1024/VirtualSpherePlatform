@@ -70,9 +70,14 @@ public class ScheduleJobConstant {
     public static final Long PERIODIC_MONITOR_JOB_30S_INDEX_ID = 12L;
 
     /**
-     * 物理机、虚拟机数据监测任务 ID
+     * 物理机、虚拟机数据监测解析任务 ID
      */
-    public static final Long DATA_MONITOR_TASK_JOB_INDEX_ID = 13L;
+    public static final Long DATA_MONITOR_PARSE_TASK_JOB_INDEX_ID = 13L;
+
+    /**
+     * 虚拟机调控监测任务 ID
+     */
+    public static final Long DATA_MONITOR_REGULATE_TASK_JOB_INDEX_ID = 14L;
 
     /**
      * cron 描述模版

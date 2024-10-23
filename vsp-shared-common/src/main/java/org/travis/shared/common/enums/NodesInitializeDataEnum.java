@@ -29,14 +29,6 @@ public enum NodesInitializeDataEnum {
             "[UNIT-SECOND] 虚拟机调控「配置自动更新」或「迁移」最小时间间隔（默认：180 秒，三分钟内同一虚拟机同一资源只自动修改一次配置）"
     ),
 
-    VMWARE_ALARM_MIN_TIME_INTERVAL(
-            "虚拟机告警消息最小时间间隔",
-            "vmware.alarm.min.time.interval",
-            180,
-            Integer.class,
-            "[UNIT-SECOND] 虚拟机告警最小时间间隔（默认：180 秒，三分钟内同一虚拟机同一资源只发送一次报警信息）"
-    ),
-
     VMWARE_REGULATE_RECOMMEND_MESSAGE_MIN_TIME_INTERVAL(
             "虚拟机推荐消息最小时间间隔",
             "vmware.regulate.recommend.message.min.time.interval",
