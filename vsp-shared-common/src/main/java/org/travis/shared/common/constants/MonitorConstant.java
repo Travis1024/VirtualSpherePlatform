@@ -14,7 +14,6 @@ public class MonitorConstant {
     public static final String SERVICE_PREFIX = "ServiceMonitor";
     public static final String SERVICE_SUM_PREFIX = "ServiceMonitorSum";
     public static final String MONITOR_TRIGGER_REDIS_PREFIX = "trigger*";
-    public static final String TRIGGER = "TRIGGER";
     public static final int BUFFER_SIZE = 4096;
     public static final String CPU_STAT = "cpu_stat";
     public static final String MEM_STAT = "mem_stat";

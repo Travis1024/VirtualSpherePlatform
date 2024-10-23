@@ -48,8 +48,8 @@ public class QuartzDataMonitorTaskJob extends QuartzJobBean {
 
             // 处理「指标监控数据」（数据解析 + 数据存储）
             processIndicatorMonitorData();
-            // 处理「报警触发事件」
-            processAlarmTriggerEvent();
+            // 处理「触发报警事件」
+            processTriggerEvent();
             // SNMP 监测线程（数据解析 + 数据存储）
             processSnmpMonitorData();
             // IPMI:SEL 监测线程（数据解析 + 数据存储）
@@ -119,9 +119,9 @@ public class QuartzDataMonitorTaskJob extends QuartzJobBean {
     }
 
     /**
-     * 处理「报警触发事件」
+     * 处理「触发报警事件」
      */
-    private void processAlarmTriggerEvent() {
+    private void processTriggerEvent() {
         Set<String> triggerKeys = monitorRedisUtil.scan(MonitorConstant.MONITOR_TRIGGER_REDIS_PREFIX);
         for (String triggerKey : triggerKeys) {
             String jsonStr = (String) gzipRedisTemplate.opsForList().rightPop(triggerKey);
@@ -163,8 +163,6 @@ public class QuartzDataMonitorTaskJob extends QuartzJobBean {
             // basic:进程模块数据解析
             CompletableFuture.runAsync(new TaskProcessDataServiceImpl(measurement, uuid, jsonStr), MonitorThreadPoolConfig.monitorProcessExecutor);
 
-            // addition:报警监控线程
-            CompletableFuture.runAsync(new ThreadAlarmMonitor(uuid, jsonStr, alarmIntervalTime), MonitorThreadPoolConfig.monitorProcessExecutor);
             // addition:服务监控线程
             CompletableFuture.runAsync(new ThreadServiceMonitor(uuid, jsonStr), MonitorThreadPoolConfig.monitorProcessExecutor);
         }
