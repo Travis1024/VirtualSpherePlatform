@@ -233,7 +233,7 @@ public class HostInfoServiceImpl extends ServiceImpl<HostInfoMapper, HostInfo> i
                 throw new Exception("当前宿主机下存在虚拟机, 请先删除虚拟机后再删除宿主机!");
             }
 
-            // TODO 3.优雅关闭 SpringBoot Agent 进程
+            // TODO [非必要] 优雅关闭 SpringBoot Agent 进程
 
             // 4.删除宿主机信息
             removeById(hostId);

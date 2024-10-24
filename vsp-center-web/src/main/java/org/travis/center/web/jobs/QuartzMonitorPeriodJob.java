@@ -26,15 +26,14 @@ public class QuartzMonitorPeriodJob extends QuartzJobBean {
     @Resource
     private RedissonClient redissonClient;
 
-    // TODO 此类需要改造：兼容不同的短周期定时任务的执行
+    // TODO [非必要] 此类需要改造：兼容不同的短周期定时任务的执行
 
     @Override
     protected void executeInternal(JobExecutionContext context) {
         Integer second = (Integer) context.getJobDetail().getJobDataMap().get(QuartzJobsDatabaseInitializer.PERIOD_KEY);
-        // log.debug("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s", second);
         RSet<String> rSet = redissonClient.getSet(RedissonConstant.MONITOR_PERIOD_MACHINE_QUEUE_PREFIX + MonitorPeriodEnum.ofValue(second).getDisplay());
         if (rSet.isEmpty()) {
-            // log.debug("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s, 无刷新任务!", second);
+            log.debug("[定时任务] 监测周期定时刷新任务, 刷新间隔: {}s, 无刷新任务!", second);
             return;
         }
 

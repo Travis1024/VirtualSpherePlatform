@@ -26,7 +26,7 @@ import java.util.concurrent.CompletableFuture;
  */
 @Slf4j
 @Component
-public class QuartzDataMonitorTaskJob extends QuartzJobBean {
+public class QuartzDataMonitorParseTaskJob extends QuartzJobBean {
 
     @Resource
     private MonitorRedisUtil monitorRedisUtil;
@@ -56,7 +56,7 @@ public class QuartzDataMonitorTaskJob extends QuartzJobBean {
 
         } catch (Exception e) {
             log.error(e.toString());
-            log.error("当前周期内数据监控任务异常退出，请检查报错信息！\n {}", e.getMessage());
+            log.error("当前周期内数据监控「解析」任务异常退出，请检查报错信息！\n {}", e.getMessage());
         }
     }
 

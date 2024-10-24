@@ -3,7 +3,6 @@ package org.travis.center.manage.template.vmware.build;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.CharUtil;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.Data;
@@ -26,7 +25,7 @@ import org.travis.center.manage.service.DiskInfoService;
 import org.travis.center.support.processor.AbstractDynamicConfigHolder;
 import org.travis.shared.common.constants.SystemConstant;
 import org.travis.shared.common.domain.R;
-import org.travis.shared.common.enums.NodesInitializeDataEnum;
+import org.travis.center.common.enums.VmwareInitializeDataEnum;
 import org.travis.shared.common.exceptions.BadRequestException;
 import org.travis.shared.common.exceptions.DubboFunctionException;
 import org.travis.shared.common.utils.SnowflakeIdUtil;
@@ -206,7 +205,7 @@ public abstract class AbstractVmwareCreationService {
 
     @Transactional
     public void stepEight() {
-        for (NodesInitializeDataEnum initializeDataEnum : NodesInitializeDataEnum.values()) {
+        for (VmwareInitializeDataEnum initializeDataEnum : VmwareInitializeDataEnum.values()) {
             // 构建 DynamicConfigInfo
             DynamicConfigInfo dynamicConfigInfo = DynamicConfigInfo.builder()
                     .id(SnowflakeIdUtil.nextId())
@@ -214,7 +213,7 @@ public abstract class AbstractVmwareCreationService {
                     .configKey(initializeDataEnum.getKey())
                     .configValue(initializeDataEnum.getValue().toString())
                     .configType(
-                            NodesInitializeDataEnum.VMWARE_DATA_MONITOR_PERIOD.equals(initializeDataEnum)
+                            VmwareInitializeDataEnum.VMWARE_DATA_MONITOR_PERIOD.equals(initializeDataEnum)
                                     ? DynamicConfigTypeEnum.MONITOR_PERIOD
                                     : DynamicConfigTypeEnum.UNIVERSAL
                     )

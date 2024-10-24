@@ -179,7 +179,7 @@ public class QuartzJobsDatabaseInitializer implements CommandLineRunner {
                 .id(ScheduleJobConstant.DATA_MONITOR_PARSE_TASK_JOB_INDEX_ID)
                 .scheduleName("虚拟机指标数据解析任务")
                 .jobGroup(ScheduleGroupEnum.VMWARE)
-                .jobClass(ClassUtil.getClassName(QuartzDataMonitorTaskJob.class, false))
+                .jobClass(ClassUtil.getClassName(QuartzDataMonitorParseTaskJob.class, false))
                 .isFixed(IsFixedEnum.DISALLOW_UPDATE)
                 .cronExpression(ScheduleJobConstant.CRON_1_S)
                 .cronDescription(StrUtil.format(ScheduleJobConstant.CRON_DESCRIPTION_TEMPLATE, CrontabUtil.getCrontabIntervalInSeconds(ScheduleJobConstant.CRON_1_S)))
@@ -212,6 +212,7 @@ public class QuartzJobsDatabaseInitializer implements CommandLineRunner {
         SCHEDULE_JOB_INFOS.add(periodicMonitoringJob30s);
 
         SCHEDULE_JOB_INFOS.add(dataMonitorParseTaskJob);
+        SCHEDULE_JOB_INFOS.add(dataMonitorRegulateTaskJob);
     }
 
     @Override

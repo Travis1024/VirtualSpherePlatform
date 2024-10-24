@@ -82,7 +82,7 @@ public class SnapshotInfoServiceImpl extends ServiceImpl<SnapshotInfoMapper, Sna
     @Override
     public void createSnapshotInfo(SnapshotInsertDTO snapshotInsertDTO) {
 
-        // TODO 改为异步创建, 全局推送通知
+        // TODO [非必要] 改为异步创建, 全局推送通知
         RLock rLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + snapshotInsertDTO.getVmwareId());
 
         try {

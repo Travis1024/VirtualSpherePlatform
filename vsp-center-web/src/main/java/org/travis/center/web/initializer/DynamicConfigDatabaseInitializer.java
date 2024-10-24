@@ -33,7 +33,7 @@ public class DynamicConfigDatabaseInitializer implements CommandLineRunner {
     public static final List<DynamicConfigInfo> DYNAMIC_CONFIG_INFOS = new ArrayList<>();
 
     static {
-        // TODO 添加待持久化的动态参数配置
+        // TODO [非必要] 添加待持久化的动态参数配置
         // DynamicConfigInfo monitoringPeriodConfig = DynamicConfigInfo.builder()
         //         .id()
         //         .configName("")

@@ -379,7 +379,7 @@ public class AgentVmwareClientImpl implements AgentVmwareClient {
             bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             String line, tmp = "";
 
-            // TODO 检查实时进度更新
+            // 检查实时进度更新, 并未生效
             while ((line = bufferedReader.readLine()) != null) {
                 log.info("{} Migrate Info -> {}", vmwareUuid, line);
                 List<String> list = ReUtil.findAll("\\[\\s*(\\d+)\\s*%\\s*\\]", line, 1);
