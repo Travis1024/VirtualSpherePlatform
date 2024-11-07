@@ -5,6 +5,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import com.alibaba.ttl.TransmittableThreadLocal;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jcraft.jsch.JSch;
@@ -12,6 +13,7 @@ import com.jcraft.jsch.Session;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.redisson.api.RFuture;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.aop.framework.AopContext;
@@ -543,10 +545,13 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
     @Override
     public String liveMigrate(VmwareMigrateDTO vmwareMigrateDTO) {
-        RLock lock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareMigrateDTO.getVmwareId());
+        final TransmittableThreadLocal<Long> transmittableThreadLocal = new TransmittableThreadLocal<>();
+        transmittableThreadLocal.set(Thread.currentThread().getId());
+
+        RLock rLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareMigrateDTO.getVmwareId());
         try {
             // 0.根据虚拟机 ID 加锁, 尝试拿锁
-            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("虚拟机正在操作中，请稍后重试!"));
+            Assert.isTrue(rLock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("虚拟机正在操作中，请稍后重试!"));
 
             // 1.参数校验
             vmwareMigrateDTO.valid();
@@ -569,10 +574,11 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
             // 4.异步向 Dubbo-Agent 发送信息 (执行虚拟机热迁移命令)
             CompletableFuture.runAsync(() -> {
-                RLock innerLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareMigrateDTO.getVmwareId());
+                RFuture<Boolean> booleanRFuture = null;
                 try {
-                    // 4.1.宿主机加锁 (最长等待 5s)
-                    Assert.isTrue(innerLock.tryLock(5, TimeUnit.SECONDS), () -> new LockConflictException("「内部锁获取失败」虚拟机正在操作中，请稍后重试!"));
+                    // 4.1.获取锁
+                    booleanRFuture = rLock.tryLockAsync(5, -1, TimeUnit.SECONDS, transmittableThreadLocal.get());
+                    Assert.isTrue(booleanRFuture.get(), () -> new LockConflictException("「内部锁获取失败」虚拟机正在操作中，请稍后重试!"));
 
                     // 4.2.向 Agent 发送虚拟机热迁移命令
                     R<Void> livedMigrate = agentVmwareClient.liveMigrate(currentHostInfo.getIp(), targetHostInfo.getIp(), targetHostInfo.getLoginPassword(), vmwareInfo.getUuid());
@@ -592,8 +598,9 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {
-                    if (innerLock.isHeldByCurrentThread()) {
-                        innerLock.unlock();
+                    if (booleanRFuture != null && booleanRFuture.isDone()) {
+                        rLock.unlockAsync(transmittableThreadLocal.get());
+                        transmittableThreadLocal.remove();
                     }
                 }
             }, ManageThreadPoolConfig.businessProcessExecutor)
@@ -665,18 +672,22 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            if (lock.isHeldByCurrentThread()) {
-                lock.unlock();
+            transmittableThreadLocal.remove();
+            if (rLock.isHeldByCurrentThread()) {
+                rLock.unlock();
             }
         }
     }
 
     @Override
     public String offlineMigrate(VmwareMigrateDTO vmwareMigrateDTO) {
-        RLock lock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareMigrateDTO.getVmwareId());
+        final TransmittableThreadLocal<Long> transmittableThreadLocal = new TransmittableThreadLocal<>();
+        transmittableThreadLocal.set(Thread.currentThread().getId());
+
+        RLock rLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareMigrateDTO.getVmwareId());
         try {
             // 0.根据虚拟机 ID 加锁, 尝试拿锁
-            Assert.isTrue(lock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("虚拟机正在操作中，请稍后重试!"));
+            Assert.isTrue(rLock.tryLock(400, TimeUnit.MILLISECONDS), () -> new LockConflictException("虚拟机正在操作中，请稍后重试!"));
 
             // 1.参数校验
             vmwareMigrateDTO.valid();
@@ -699,10 +710,11 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
             // 4.异步向 Dubbo-Agent 发送信息 (执行虚拟机冷迁移命令)
             CompletableFuture.runAsync(() -> {
-                RLock innerLock = redissonClient.getLock(LockConstant.LOCK_VMWARE_PREFIX + vmwareMigrateDTO.getVmwareId());
+                RFuture<Boolean> booleanRFuture = null;
                 try {
-                    // 4.1.宿主机加锁 (最长等待 5s)
-                    Assert.isTrue(innerLock.tryLock(5, TimeUnit.SECONDS), () -> new LockConflictException("「内部锁获取失败」虚拟机正在操作中，请稍后重试!"));
+                    // 4.1.尝试指定线程 ID 获取虚拟机锁
+                    booleanRFuture = rLock.tryLockAsync(5, -1, TimeUnit.SECONDS, transmittableThreadLocal.get());
+                    Assert.isTrue(booleanRFuture.get(), () -> new LockConflictException("「内部锁获取失败」虚拟机正在操作中，请稍后重试!"));
 
                     // 4.2.向 Agent 发送虚拟机热迁移命令
                     R<Void>  offlineMigrate = agentVmwareClient.offlineMigrate(currentHostInfo.getIp(), targetHostInfo.getIp(), targetHostInfo.getLoginPassword(), vmwareInfo.getUuid());
@@ -722,8 +734,9 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {
-                    if (innerLock.isHeldByCurrentThread()) {
-                        innerLock.unlock();
+                    if (booleanRFuture != null && booleanRFuture.isDone()) {
+                        rLock.unlockAsync(transmittableThreadLocal.get());
+                        transmittableThreadLocal.remove();
                     }
                 }
             }, ManageThreadPoolConfig.businessProcessExecutor)
@@ -795,8 +808,9 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            if (lock.isHeldByCurrentThread()) {
-                lock.unlock();
+            transmittableThreadLocal.remove();
+            if (rLock.isHeldByCurrentThread()) {
+                rLock.unlock();
             }
         }
     }
