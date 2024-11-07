@@ -16,6 +16,6 @@ public interface ResourceAllocationService {
     R<?> reduceCpuResource(String vmwareUuid, Boolean autoFlag);
     R<?> reduceMemoryResource(String vmwareUuid, Boolean autoFlag);
 
-    R<?> recommendCpuResource(String vmwareUuid, boolean addFlag);
-    R<?> recommendMemoryResource(String vmwareUuid, boolean addFlag);
+    R<?> recommendCpuResource(String vmwareUuid, boolean expandFlag);
+    R<?> recommendMemoryResource(String vmwareUuid, boolean expandFlag);
 }

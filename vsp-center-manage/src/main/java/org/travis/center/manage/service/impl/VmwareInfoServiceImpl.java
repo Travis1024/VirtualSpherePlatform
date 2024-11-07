@@ -402,8 +402,12 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
             // 4.修改数据库内存大小
             getBaseMapper().update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getMemoryCurrent, memory).eq(VmwareInfo::getId, vmwareId));
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (CommonException commonException) {
+            log.error("modifyVmwareMemory common error: {}", commonException.getMessage());
+            throw commonException;
+        } catch (Exception e) {
+            log.error("modifyVmwareMemory unknow error: {}", e.getMessage());
+            throw new CommonException(BizCodeEnum.UNKNOW.getCode(), e.getMessage());
         } finally {
             if (lock.isHeldByCurrentThread()) {
                 lock.unlock();
@@ -442,8 +446,12 @@ public class VmwareInfoServiceImpl extends ServiceImpl<VmwareInfoMapper, VmwareI
 
             // 4.修改数据库
             getBaseMapper().update(Wrappers.<VmwareInfo>lambdaUpdate().set(VmwareInfo::getVcpuCurrent, vcpuNumber).eq(VmwareInfo::getId, vmwareId));
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (CommonException commonException) {
+            log.error("modifyVmwareVcpuNumber common error: {}", commonException.getMessage());
+            throw commonException;
+        } catch (Exception e) {
+            log.error("modifyVmwareVcpuNumber unknow error: {}", e.getMessage());
+            throw new CommonException(BizCodeEnum.UNKNOW.getCode(), e.getMessage());
         } finally {
             if (lock.isHeldByCurrentThread()) {
                 lock.unlock();

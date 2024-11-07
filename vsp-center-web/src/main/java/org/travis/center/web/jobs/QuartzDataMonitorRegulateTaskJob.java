@@ -110,7 +110,7 @@ public class QuartzDataMonitorRegulateTaskJob extends QuartzJobBean {
             }
         } else {
             log.info("CPU High Trigger Rate Threshold is Reached, Trigger CPU Resource Recommend.");
-            R<?> recommended = resourceAllocationService.recommendCpuResource(vmwareInfo.getUuid(), false);
+            R<?> recommended = resourceAllocationService.recommendCpuResource(vmwareInfo.getUuid(), true);
             if (recommended.checkFail()) {
                 throw new CommonException(BizCodeEnum.INTERNAL_MESSAGE.getCode(), "Recommend CPU Resource Fail.");
             }
@@ -146,7 +146,7 @@ public class QuartzDataMonitorRegulateTaskJob extends QuartzJobBean {
             }
         } else {
             log.info("CPU Low Trigger Rate Threshold is Reached, Trigger CPU Resource Recommend.");
-            R<?> recommended = resourceAllocationService.recommendCpuResource(vmwareInfo.getUuid(), true);
+            R<?> recommended = resourceAllocationService.recommendCpuResource(vmwareInfo.getUuid(), false);
             if (recommended.checkFail()) {
                 throw new CommonException(BizCodeEnum.INTERNAL_MESSAGE.getCode(), "Recommend CPU Resource Fail.");
             }
@@ -210,7 +210,7 @@ public class QuartzDataMonitorRegulateTaskJob extends QuartzJobBean {
             }
         } else {
             log.info("Memory High Trigger Rate Threshold is Reached, Trigger Memory Resource Recommend.");
-            R<?> recommended = resourceAllocationService.recommendMemoryResource(vmwareInfo.getUuid(), true);
+            R<?> recommended = resourceAllocationService.recommendMemoryResource(vmwareInfo.getUuid(), false);
             if (recommended.checkFail()) {
                 throw new CommonException(BizCodeEnum.INTERNAL_MESSAGE.getCode(), "Recommend Memory Resource Fail.");
             }
@@ -246,7 +246,7 @@ public class QuartzDataMonitorRegulateTaskJob extends QuartzJobBean {
             }
         } else {
             log.info("Memory Low Trigger Rate Threshold is Reached, Trigger Memory Resource Recommend.");
-            R<?> recommended = resourceAllocationService.recommendMemoryResource(vmwareInfo.getUuid(), false);
+            R<?> recommended = resourceAllocationService.recommendMemoryResource(vmwareInfo.getUuid(), true);
             if (recommended.checkFail()) {
                 throw new CommonException(BizCodeEnum.INTERNAL_MESSAGE.getCode(), "Recommend Memory Resource Fail.");
             }
