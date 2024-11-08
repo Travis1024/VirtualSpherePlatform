@@ -213,7 +213,7 @@ public abstract class AbstractVmwareCreationService {
                     .configKey(initializeDataEnum.getKey())
                     .configValue(initializeDataEnum.getValue().toString())
                     .configType(
-                            VmwareInitializeDataEnum.VMWARE_DATA_MONITOR_PERIOD.equals(initializeDataEnum)
+                            VmwareInitializeDataEnum.VMWARE_BASIC_DATA_MONITOR_PERIOD.equals(initializeDataEnum)
                                     ? DynamicConfigTypeEnum.MONITOR_PERIOD
                                     : DynamicConfigTypeEnum.UNIVERSAL
                     )
